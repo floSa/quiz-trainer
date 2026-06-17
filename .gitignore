@@ -1,0 +1,12 @@
+# Progression locale de l'utilisateur
+progress/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Divers
+.DS_Store
