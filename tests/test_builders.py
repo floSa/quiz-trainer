@@ -31,22 +31,29 @@ BUILDERS = [
 ]
 
 
+def _check(q, build_name, isos):
+    assert q["skill"] in quiz.SKILLS, (build_name, q["skill"])
+    assert q["item"] in isos, (build_name, q["item"])
+    ids = [o["id"] for o in q["options"]]
+    assert len(ids) >= 2, (build_name, "trop peu d'options", ids)
+    assert len(ids) == len(set(ids)), (build_name, "options en double", ids)
+    assert q["correct"] in ids, (build_name, q["correct"], ids)
+    kinds = {o["kind"] for o in q["options"]}
+    assert len(kinds) == 1, (build_name, "kinds mixtes", kinds)
+
+
 def test_builders_are_coherent():
-    cands = data.load_countries()
-    isos = {c["iso3"] for c in cands}
+    """Invariants tenus sur l'ensemble complet ET sous chaque filtre régional
+    (c'est ce dernier cas qui révèle les QCM dégénérés à 1 option)."""
+    full = data.load_countries()
+    isos = {c["iso3"] for c in full}
     state = {"items": {}}
-    for build in BUILDERS:
-        for _ in range(150):
-            q = build(cands, state, [])
-            assert q["skill"] in quiz.SKILLS, (build.__name__, q["skill"])
-            assert q["item"] in isos, (build.__name__, q["item"])
-            ids = [o["id"] for o in q["options"]]
-            assert len(ids) >= 2, (build.__name__, "trop peu d'options", ids)
-            assert len(ids) == len(set(ids)), (build.__name__, "options en double", ids)
-            assert q["correct"] in ids, (build.__name__, q["correct"], ids)
-            kinds = {o["kind"] for o in q["options"]}
-            assert len(kinds) == 1, (build.__name__, "kinds mixtes", kinds)
-    print(f"{len(BUILDERS)} générateurs OK (×150 tirages)")
+    candidate_sets = [full] + [data.countries_in([r]) for r in data.regions()]
+    for cands in candidate_sets:
+        for build in BUILDERS:
+            for _ in range(60):
+                _check(build(cands, state, []), build.__name__, isos)
+    print(f"{len(BUILDERS)} générateurs OK (toutes régions + {len(data.regions())} filtres)")
 
 
 def test_srs_dynamics():

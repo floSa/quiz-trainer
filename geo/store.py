@@ -23,6 +23,8 @@ def load():
             data = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
         data = {}
+    if not isinstance(data, dict):  # fichier contenant `null`, une liste, etc.
+        data = {}
     data.setdefault("items", {})
     return data
 

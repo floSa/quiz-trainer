@@ -163,6 +163,9 @@ def _session_caption(page_key):
 def play(page_key, build):
     """Boucle de jeu : `build(candidates, state, recent)` fabrique la question."""
     candidates = data.countries_in(region_sidebar())
+    if not candidates:
+        st.info("Sélectionne au moins une région dans la barre latérale.")
+        return
     if st.session_state.get(_ss(page_key, "q")) is None:
         recent = st.session_state.get(_ss(page_key, "recent"), [])
         st.session_state[_ss(page_key, "q")] = build(candidates, store.load(), recent)

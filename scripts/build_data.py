@@ -99,6 +99,13 @@ def main():
     for c in out:
         c["borders"] = [b for b in c["borders"] if b in kept]
 
+    # Invariant : les QCM de capitales affichent la capitale comme libellé et
+    # corrigent sur le pays → deux pays de même capitale donneraient deux choix
+    # identiques. On le garantit dès la génération des données.
+    caps = [c["capital"] for c in out if c["capital"]]
+    dups = sorted({c for c in caps if caps.count(c) > 1})
+    assert not dups, f"Capitales en double (QCM ambigu) : {dups}"
+
     out.sort(key=lambda x: x["name"])
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     with open(OUT, "w", encoding="utf-8") as f:
