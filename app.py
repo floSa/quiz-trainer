@@ -12,10 +12,12 @@ st.set_page_config(page_title="Géo — entraînement", page_icon="🌍", layout
 
 st.title("🌍 Géo — entraîne-toi intelligemment")
 st.markdown(
-    "Choisis un jeu dans la barre de gauche : **Carte**, **Drapeaux**, "
-    "**Capitales**, **Trouve le drapeau**. Les pays que tu rates reviennent "
-    "vite, ceux que tu maîtrises s'espacent. Ton **niveau** ci-dessous mesure "
-    "tes connaissances réelles — pas le score d'un quiz."
+    "**14 jeux** dans la barre de gauche (carte, drapeaux, capitales, "
+    "continents, voisins, superficies…). Le plus efficace : **🧠 Révision "
+    "intelligente**, qui te pose automatiquement ce que tu maîtrises le moins. "
+    "Les pays que tu rates reviennent vite, ceux que tu maîtrises s'espacent. "
+    "Ton **niveau** ci-dessous mesure tes connaissances réelles — pas le score "
+    "d'un quiz."
 )
 
 state = store.load()
