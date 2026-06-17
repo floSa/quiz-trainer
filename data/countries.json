@@ -5,7 +5,16 @@
     "name": "Afghanistan",
     "capital": "Kabul",
     "region": "Asie",
-    "subregion": "Southern Asia"
+    "subregion": "Southern Asia",
+    "borders": [
+      "IRN",
+      "PAK",
+      "TKM",
+      "UZB",
+      "TJK",
+      "CHN"
+    ],
+    "area": 652230
   },
   {
     "iso2": "ZA",
@@ -13,7 +22,16 @@
     "name": "Afrique du Sud",
     "capital": "Pretoria",
     "region": "Afrique",
-    "subregion": "Southern Africa"
+    "subregion": "Southern Africa",
+    "borders": [
+      "BWA",
+      "LSO",
+      "MOZ",
+      "NAM",
+      "SWZ",
+      "ZWE"
+    ],
+    "area": 1221037
   },
   {
     "iso2": "AL",
@@ -21,7 +39,13 @@
     "name": "Albanie",
     "capital": "Tirana",
     "region": "Europe",
-    "subregion": "Southeast Europe"
+    "subregion": "Southeast Europe",
+    "borders": [
+      "MNE",
+      "GRC",
+      "MKD"
+    ],
+    "area": 28748
   },
   {
     "iso2": "DZ",
@@ -29,7 +53,16 @@
     "name": "Algérie",
     "capital": "Alger",
     "region": "Afrique",
-    "subregion": "Northern Africa"
+    "subregion": "Northern Africa",
+    "borders": [
+      "TUN",
+      "LBY",
+      "NER",
+      "MRT",
+      "MLI",
+      "MAR"
+    ],
+    "area": 2381741
   },
   {
     "iso2": "DE",
@@ -37,7 +70,19 @@
     "name": "Allemagne",
     "capital": "Berlin",
     "region": "Europe",
-    "subregion": "Western Europe"
+    "subregion": "Western Europe",
+    "borders": [
+      "AUT",
+      "BEL",
+      "CZE",
+      "DNK",
+      "FRA",
+      "LUX",
+      "NLD",
+      "POL",
+      "CHE"
+    ],
+    "area": 357114
   },
   {
     "iso2": "AD",
@@ -45,7 +90,12 @@
     "name": "Andorre",
     "capital": "Andorra la Vella",
     "region": "Europe",
-    "subregion": "Southern Europe"
+    "subregion": "Southern Europe",
+    "borders": [
+      "FRA",
+      "ESP"
+    ],
+    "area": 468
   },
   {
     "iso2": "AO",
@@ -53,7 +103,14 @@
     "name": "Angola",
     "capital": "Luanda",
     "region": "Afrique",
-    "subregion": "Middle Africa"
+    "subregion": "Middle Africa",
+    "borders": [
+      "COG",
+      "COD",
+      "ZMB",
+      "NAM"
+    ],
+    "area": 1246700
   },
   {
     "iso2": "AG",
@@ -61,7 +118,9 @@
     "name": "Antigua-et-Barbuda",
     "capital": "Saint John's",
     "region": "Amériques",
-    "subregion": "Caribbean"
+    "subregion": "Caribbean",
+    "borders": [],
+    "area": 442
   },
   {
     "iso2": "SA",
@@ -69,7 +128,17 @@
     "name": "Arabie Saoudite",
     "capital": "Riyad",
     "region": "Asie",
-    "subregion": "Western Asia"
+    "subregion": "Western Asia",
+    "borders": [
+      "IRQ",
+      "JOR",
+      "KWT",
+      "OMN",
+      "QAT",
+      "ARE",
+      "YEM"
+    ],
+    "area": 2149690
   },
   {
     "iso2": "AR",
@@ -77,7 +146,15 @@
     "name": "Argentine",
     "capital": "Buenos Aires",
     "region": "Amériques",
-    "subregion": "South America"
+    "subregion": "South America",
+    "borders": [
+      "BOL",
+      "BRA",
+      "CHL",
+      "PRY",
+      "URY"
+    ],
+    "area": 2780400
   },
   {
     "iso2": "AM",
@@ -85,7 +162,14 @@
     "name": "Arménie",
     "capital": "Erevan",
     "region": "Asie",
-    "subregion": "Western Asia"
+    "subregion": "Western Asia",
+    "borders": [
+      "AZE",
+      "GEO",
+      "IRN",
+      "TUR"
+    ],
+    "area": 29743
   },
   {
     "iso2": "AU",
@@ -93,7 +177,9 @@
     "name": "Australie",
     "capital": "Canberra",
     "region": "Océanie",
-    "subregion": "Australia and New Zealand"
+    "subregion": "Australia and New Zealand",
+    "borders": [],
+    "area": 7692024
   },
   {
     "iso2": "AT",
@@ -101,7 +187,18 @@
     "name": "Autriche",
     "capital": "Vienne",
     "region": "Europe",
-    "subregion": "Central Europe"
+    "subregion": "Central Europe",
+    "borders": [
+      "CZE",
+      "DEU",
+      "HUN",
+      "ITA",
+      "LIE",
+      "SVK",
+      "SVN",
+      "CHE"
+    ],
+    "area": 83871
   },
   {
     "iso2": "AZ",
@@ -109,7 +206,15 @@
     "name": "Azerbaïdjan",
     "capital": "Bakou",
     "region": "Asie",
-    "subregion": "Western Asia"
+    "subregion": "Western Asia",
+    "borders": [
+      "ARM",
+      "GEO",
+      "IRN",
+      "RUS",
+      "TUR"
+    ],
+    "area": 86600
   },
   {
     "iso2": "BS",
@@ -117,7 +222,9 @@
     "name": "Bahamas",
     "capital": "Nassau",
     "region": "Amériques",
-    "subregion": "Caribbean"
+    "subregion": "Caribbean",
+    "borders": [],
+    "area": 13943
   },
   {
     "iso2": "BH",
@@ -125,7 +232,9 @@
     "name": "Bahreïn",
     "capital": "Manama",
     "region": "Asie",
-    "subregion": "Western Asia"
+    "subregion": "Western Asia",
+    "borders": [],
+    "area": 765
   },
   {
     "iso2": "BD",
@@ -133,7 +242,12 @@
     "name": "Bangladesh",
     "capital": "Dhaka",
     "region": "Asie",
-    "subregion": "Southern Asia"
+    "subregion": "Southern Asia",
+    "borders": [
+      "MMR",
+      "IND"
+    ],
+    "area": 147570
   },
   {
     "iso2": "BB",
@@ -141,7 +255,9 @@
     "name": "Barbade",
     "capital": "Bridgetown",
     "region": "Amériques",
-    "subregion": "Caribbean"
+    "subregion": "Caribbean",
+    "borders": [],
+    "area": 430
   },
   {
     "iso2": "BE",
@@ -149,7 +265,14 @@
     "name": "Belgique",
     "capital": "Bruxelles",
     "region": "Europe",
-    "subregion": "Western Europe"
+    "subregion": "Western Europe",
+    "borders": [
+      "FRA",
+      "DEU",
+      "LUX",
+      "NLD"
+    ],
+    "area": 30528
   },
   {
     "iso2": "BZ",
@@ -157,7 +280,12 @@
     "name": "Belize",
     "capital": "Belmopan",
     "region": "Amériques",
-    "subregion": "Central America"
+    "subregion": "Central America",
+    "borders": [
+      "GTM",
+      "MEX"
+    ],
+    "area": 22966
   },
   {
     "iso2": "BT",
@@ -165,7 +293,12 @@
     "name": "Bhoutan",
     "capital": "Thimphu",
     "region": "Asie",
-    "subregion": "Southern Asia"
+    "subregion": "Southern Asia",
+    "borders": [
+      "CHN",
+      "IND"
+    ],
+    "area": 38394
   },
   {
     "iso2": "MM",
@@ -173,7 +306,15 @@
     "name": "Birmanie",
     "capital": "Naypyidaw",
     "region": "Asie",
-    "subregion": "South-Eastern Asia"
+    "subregion": "South-Eastern Asia",
+    "borders": [
+      "BGD",
+      "CHN",
+      "IND",
+      "LAO",
+      "THA"
+    ],
+    "area": 676578
   },
   {
     "iso2": "BY",
@@ -181,7 +322,15 @@
     "name": "Biélorussie",
     "capital": "Minsk",
     "region": "Europe",
-    "subregion": "Eastern Europe"
+    "subregion": "Eastern Europe",
+    "borders": [
+      "LVA",
+      "LTU",
+      "POL",
+      "RUS",
+      "UKR"
+    ],
+    "area": 207600
   },
   {
     "iso2": "BO",
@@ -189,7 +338,15 @@
     "name": "Bolivie",
     "capital": "Sucre",
     "region": "Amériques",
-    "subregion": "South America"
+    "subregion": "South America",
+    "borders": [
+      "ARG",
+      "BRA",
+      "CHL",
+      "PRY",
+      "PER"
+    ],
+    "area": 1098581
   },
   {
     "iso2": "BA",
@@ -197,7 +354,13 @@
     "name": "Bosnie-Herzégovine",
     "capital": "Sarajevo",
     "region": "Europe",
-    "subregion": "Southeast Europe"
+    "subregion": "Southeast Europe",
+    "borders": [
+      "HRV",
+      "MNE",
+      "SRB"
+    ],
+    "area": 51209
   },
   {
     "iso2": "BW",
@@ -205,7 +368,14 @@
     "name": "Botswana",
     "capital": "Gaborone",
     "region": "Afrique",
-    "subregion": "Southern Africa"
+    "subregion": "Southern Africa",
+    "borders": [
+      "NAM",
+      "ZAF",
+      "ZMB",
+      "ZWE"
+    ],
+    "area": 582000
   },
   {
     "iso2": "BN",
@@ -213,7 +383,11 @@
     "name": "Brunei",
     "capital": "Bandar Seri Begawan",
     "region": "Asie",
-    "subregion": "South-Eastern Asia"
+    "subregion": "South-Eastern Asia",
+    "borders": [
+      "MYS"
+    ],
+    "area": 5765
   },
   {
     "iso2": "BR",
@@ -221,7 +395,19 @@
     "name": "Brésil",
     "capital": "Brasília",
     "region": "Amériques",
-    "subregion": "South America"
+    "subregion": "South America",
+    "borders": [
+      "ARG",
+      "BOL",
+      "COL",
+      "GUY",
+      "PRY",
+      "PER",
+      "SUR",
+      "URY",
+      "VEN"
+    ],
+    "area": 8515767
   },
   {
     "iso2": "BG",
@@ -229,7 +415,15 @@
     "name": "Bulgarie",
     "capital": "Sofia",
     "region": "Europe",
-    "subregion": "Southeast Europe"
+    "subregion": "Southeast Europe",
+    "borders": [
+      "GRC",
+      "MKD",
+      "ROU",
+      "SRB",
+      "TUR"
+    ],
+    "area": 110879
   },
   {
     "iso2": "BF",
@@ -237,7 +431,16 @@
     "name": "Burkina Faso",
     "capital": "Ouagadougou",
     "region": "Afrique",
-    "subregion": "Western Africa"
+    "subregion": "Western Africa",
+    "borders": [
+      "BEN",
+      "CIV",
+      "GHA",
+      "MLI",
+      "NER",
+      "TGO"
+    ],
+    "area": 272967
   },
   {
     "iso2": "BI",
@@ -245,7 +448,13 @@
     "name": "Burundi",
     "capital": "Gitega",
     "region": "Afrique",
-    "subregion": "Eastern Africa"
+    "subregion": "Eastern Africa",
+    "borders": [
+      "COD",
+      "RWA",
+      "TZA"
+    ],
+    "area": 27834
   },
   {
     "iso2": "BJ",
@@ -253,7 +462,14 @@
     "name": "Bénin",
     "capital": "Porto-Novo",
     "region": "Afrique",
-    "subregion": "Western Africa"
+    "subregion": "Western Africa",
+    "borders": [
+      "BFA",
+      "NER",
+      "NGA",
+      "TGO"
+    ],
+    "area": 112622
   },
   {
     "iso2": "KH",
@@ -261,7 +477,13 @@
     "name": "Cambodge",
     "capital": "Phnom Penh",
     "region": "Asie",
-    "subregion": "South-Eastern Asia"
+    "subregion": "South-Eastern Asia",
+    "borders": [
+      "LAO",
+      "THA",
+      "VNM"
+    ],
+    "area": 181035
   },
   {
     "iso2": "CM",
@@ -269,7 +491,16 @@
     "name": "Cameroun",
     "capital": "Yaoundé",
     "region": "Afrique",
-    "subregion": "Middle Africa"
+    "subregion": "Middle Africa",
+    "borders": [
+      "CAF",
+      "TCD",
+      "COG",
+      "GNQ",
+      "GAB",
+      "NGA"
+    ],
+    "area": 475442
   },
   {
     "iso2": "CA",
@@ -277,7 +508,11 @@
     "name": "Canada",
     "capital": "Ottawa",
     "region": "Amériques",
-    "subregion": "North America"
+    "subregion": "North America",
+    "borders": [
+      "USA"
+    ],
+    "area": 9984670
   },
   {
     "iso2": "CL",
@@ -285,7 +520,13 @@
     "name": "Chili",
     "capital": "Santiago",
     "region": "Amériques",
-    "subregion": "South America"
+    "subregion": "South America",
+    "borders": [
+      "ARG",
+      "BOL",
+      "PER"
+    ],
+    "area": 756102
   },
   {
     "iso2": "CN",
@@ -293,7 +534,24 @@
     "name": "Chine",
     "capital": "Pékin",
     "region": "Asie",
-    "subregion": "Eastern Asia"
+    "subregion": "Eastern Asia",
+    "borders": [
+      "AFG",
+      "BTN",
+      "MMR",
+      "IND",
+      "KAZ",
+      "NPL",
+      "PRK",
+      "KGZ",
+      "LAO",
+      "MNG",
+      "PAK",
+      "RUS",
+      "TJK",
+      "VNM"
+    ],
+    "area": 9706961
   },
   {
     "iso2": "CY",
@@ -301,7 +559,9 @@
     "name": "Chypre",
     "capital": "Nicosie",
     "region": "Europe",
-    "subregion": "Southern Europe"
+    "subregion": "Southern Europe",
+    "borders": [],
+    "area": 9251
   },
   {
     "iso2": "VA",
@@ -309,7 +569,11 @@
     "name": "Cité du Vatican",
     "capital": "Vatican City",
     "region": "Europe",
-    "subregion": "Southern Europe"
+    "subregion": "Southern Europe",
+    "borders": [
+      "ITA"
+    ],
+    "area": 0.44
   },
   {
     "iso2": "CO",
@@ -317,7 +581,15 @@
     "name": "Colombie",
     "capital": "Bogotá",
     "region": "Amériques",
-    "subregion": "South America"
+    "subregion": "South America",
+    "borders": [
+      "BRA",
+      "ECU",
+      "PAN",
+      "PER",
+      "VEN"
+    ],
+    "area": 1141748
   },
   {
     "iso2": "KM",
@@ -325,7 +597,9 @@
     "name": "Comores",
     "capital": "Moroni",
     "region": "Afrique",
-    "subregion": "Eastern Africa"
+    "subregion": "Eastern Africa",
+    "borders": [],
+    "area": 1862
   },
   {
     "iso2": "CG",
@@ -333,7 +607,15 @@
     "name": "Congo",
     "capital": "Brazzaville",
     "region": "Afrique",
-    "subregion": "Middle Africa"
+    "subregion": "Middle Africa",
+    "borders": [
+      "AGO",
+      "CMR",
+      "CAF",
+      "COD",
+      "GAB"
+    ],
+    "area": 342000
   },
   {
     "iso2": "CD",
@@ -341,7 +623,19 @@
     "name": "Congo (Rép. dém.)",
     "capital": "Kinshasa",
     "region": "Afrique",
-    "subregion": "Middle Africa"
+    "subregion": "Middle Africa",
+    "borders": [
+      "AGO",
+      "BDI",
+      "CAF",
+      "COG",
+      "RWA",
+      "SSD",
+      "TZA",
+      "UGA",
+      "ZMB"
+    ],
+    "area": 2344858
   },
   {
     "iso2": "KP",
@@ -349,7 +643,13 @@
     "name": "Corée du Nord",
     "capital": "Pyongyang",
     "region": "Asie",
-    "subregion": "Eastern Asia"
+    "subregion": "Eastern Asia",
+    "borders": [
+      "CHN",
+      "KOR",
+      "RUS"
+    ],
+    "area": 120538
   },
   {
     "iso2": "KR",
@@ -357,7 +657,11 @@
     "name": "Corée du Sud",
     "capital": "Séoul",
     "region": "Asie",
-    "subregion": "Eastern Asia"
+    "subregion": "Eastern Asia",
+    "borders": [
+      "PRK"
+    ],
+    "area": 100210
   },
   {
     "iso2": "CR",
@@ -365,7 +669,12 @@
     "name": "Costa Rica",
     "capital": "San José",
     "region": "Amériques",
-    "subregion": "Central America"
+    "subregion": "Central America",
+    "borders": [
+      "NIC",
+      "PAN"
+    ],
+    "area": 51100
   },
   {
     "iso2": "HR",
@@ -373,7 +682,15 @@
     "name": "Croatie",
     "capital": "Zagreb",
     "region": "Europe",
-    "subregion": "Southeast Europe"
+    "subregion": "Southeast Europe",
+    "borders": [
+      "BIH",
+      "HUN",
+      "MNE",
+      "SRB",
+      "SVN"
+    ],
+    "area": 56594
   },
   {
     "iso2": "CU",
@@ -381,7 +698,9 @@
     "name": "Cuba",
     "capital": "La Havane",
     "region": "Amériques",
-    "subregion": "Caribbean"
+    "subregion": "Caribbean",
+    "borders": [],
+    "area": 109884
   },
   {
     "iso2": "CI",
@@ -389,7 +708,15 @@
     "name": "Côte d'Ivoire",
     "capital": "Yamoussoukro",
     "region": "Afrique",
-    "subregion": "Western Africa"
+    "subregion": "Western Africa",
+    "borders": [
+      "BFA",
+      "GHA",
+      "GIN",
+      "LBR",
+      "MLI"
+    ],
+    "area": 322463
   },
   {
     "iso2": "DK",
@@ -397,7 +724,11 @@
     "name": "Danemark",
     "capital": "Copenhague",
     "region": "Europe",
-    "subregion": "Northern Europe"
+    "subregion": "Northern Europe",
+    "borders": [
+      "DEU"
+    ],
+    "area": 43094
   },
   {
     "iso2": "DJ",
@@ -405,7 +736,13 @@
     "name": "Djibouti",
     "capital": "Djibouti",
     "region": "Afrique",
-    "subregion": "Eastern Africa"
+    "subregion": "Eastern Africa",
+    "borders": [
+      "ERI",
+      "ETH",
+      "SOM"
+    ],
+    "area": 23200
   },
   {
     "iso2": "DM",
@@ -413,7 +750,9 @@
     "name": "Dominique",
     "capital": "Roseau",
     "region": "Amériques",
-    "subregion": "Caribbean"
+    "subregion": "Caribbean",
+    "borders": [],
+    "area": 751
   },
   {
     "iso2": "ES",
@@ -421,7 +760,14 @@
     "name": "Espagne",
     "capital": "Madrid",
     "region": "Europe",
-    "subregion": "Southern Europe"
+    "subregion": "Southern Europe",
+    "borders": [
+      "AND",
+      "FRA",
+      "PRT",
+      "MAR"
+    ],
+    "area": 505992
   },
   {
     "iso2": "EE",
@@ -429,7 +775,12 @@
     "name": "Estonie",
     "capital": "Tallinn",
     "region": "Europe",
-    "subregion": "Northern Europe"
+    "subregion": "Northern Europe",
+    "borders": [
+      "LVA",
+      "RUS"
+    ],
+    "area": 45227
   },
   {
     "iso2": "SZ",
@@ -437,7 +788,12 @@
     "name": "Eswatini",
     "capital": "Lobamba",
     "region": "Afrique",
-    "subregion": "Southern Africa"
+    "subregion": "Southern Africa",
+    "borders": [
+      "MOZ",
+      "ZAF"
+    ],
+    "area": 17364
   },
   {
     "iso2": "FJ",
@@ -445,7 +801,9 @@
     "name": "Fidji",
     "capital": "Suva",
     "region": "Océanie",
-    "subregion": "Melanesia"
+    "subregion": "Melanesia",
+    "borders": [],
+    "area": 18272
   },
   {
     "iso2": "FI",
@@ -453,7 +811,13 @@
     "name": "Finlande",
     "capital": "Helsinki",
     "region": "Europe",
-    "subregion": "Northern Europe"
+    "subregion": "Northern Europe",
+    "borders": [
+      "NOR",
+      "SWE",
+      "RUS"
+    ],
+    "area": 338424
   },
   {
     "iso2": "FR",
@@ -461,7 +825,18 @@
     "name": "France",
     "capital": "Paris",
     "region": "Europe",
-    "subregion": "Western Europe"
+    "subregion": "Western Europe",
+    "borders": [
+      "AND",
+      "BEL",
+      "DEU",
+      "ITA",
+      "LUX",
+      "MCO",
+      "ESP",
+      "CHE"
+    ],
+    "area": 551695
   },
   {
     "iso2": "GA",
@@ -469,7 +844,13 @@
     "name": "Gabon",
     "capital": "Libreville",
     "region": "Afrique",
-    "subregion": "Middle Africa"
+    "subregion": "Middle Africa",
+    "borders": [
+      "CMR",
+      "COG",
+      "GNQ"
+    ],
+    "area": 267668
   },
   {
     "iso2": "GM",
@@ -477,7 +858,11 @@
     "name": "Gambie",
     "capital": "Banjul",
     "region": "Afrique",
-    "subregion": "Western Africa"
+    "subregion": "Western Africa",
+    "borders": [
+      "SEN"
+    ],
+    "area": 10689
   },
   {
     "iso2": "GH",
@@ -485,7 +870,13 @@
     "name": "Ghana",
     "capital": "Accra",
     "region": "Afrique",
-    "subregion": "Western Africa"
+    "subregion": "Western Africa",
+    "borders": [
+      "BFA",
+      "CIV",
+      "TGO"
+    ],
+    "area": 238533
   },
   {
     "iso2": "GD",
@@ -493,7 +884,9 @@
     "name": "Grenade",
     "capital": "St. George's",
     "region": "Amériques",
-    "subregion": "Caribbean"
+    "subregion": "Caribbean",
+    "borders": [],
+    "area": 344
   },
   {
     "iso2": "GR",
@@ -501,7 +894,14 @@
     "name": "Grèce",
     "capital": "Athènes",
     "region": "Europe",
-    "subregion": "Southern Europe"
+    "subregion": "Southern Europe",
+    "borders": [
+      "ALB",
+      "BGR",
+      "TUR",
+      "MKD"
+    ],
+    "area": 131990
   },
   {
     "iso2": "GT",
@@ -509,7 +909,14 @@
     "name": "Guatemala",
     "capital": "Guatemala City",
     "region": "Amériques",
-    "subregion": "Central America"
+    "subregion": "Central America",
+    "borders": [
+      "BLZ",
+      "SLV",
+      "HND",
+      "MEX"
+    ],
+    "area": 108889
   },
   {
     "iso2": "GN",
@@ -517,7 +924,16 @@
     "name": "Guinée",
     "capital": "Conakry",
     "region": "Afrique",
-    "subregion": "Western Africa"
+    "subregion": "Western Africa",
+    "borders": [
+      "CIV",
+      "GNB",
+      "LBR",
+      "MLI",
+      "SEN",
+      "SLE"
+    ],
+    "area": 245857
   },
   {
     "iso2": "GQ",
@@ -525,7 +941,12 @@
     "name": "Guinée équatoriale",
     "capital": "Malabo",
     "region": "Afrique",
-    "subregion": "Middle Africa"
+    "subregion": "Middle Africa",
+    "borders": [
+      "CMR",
+      "GAB"
+    ],
+    "area": 28051
   },
   {
     "iso2": "GW",
@@ -533,7 +954,12 @@
     "name": "Guinée-Bissau",
     "capital": "Bissau",
     "region": "Afrique",
-    "subregion": "Western Africa"
+    "subregion": "Western Africa",
+    "borders": [
+      "GIN",
+      "SEN"
+    ],
+    "area": 36125
   },
   {
     "iso2": "GY",
@@ -541,7 +967,13 @@
     "name": "Guyana",
     "capital": "Georgetown",
     "region": "Amériques",
-    "subregion": "South America"
+    "subregion": "South America",
+    "borders": [
+      "BRA",
+      "SUR",
+      "VEN"
+    ],
+    "area": 214969
   },
   {
     "iso2": "GE",
@@ -549,7 +981,14 @@
     "name": "Géorgie",
     "capital": "Tbilissi",
     "region": "Asie",
-    "subregion": "Western Asia"
+    "subregion": "Western Asia",
+    "borders": [
+      "ARM",
+      "AZE",
+      "RUS",
+      "TUR"
+    ],
+    "area": 69700
   },
   {
     "iso2": "HT",
@@ -557,7 +996,11 @@
     "name": "Haïti",
     "capital": "Port-au-Prince",
     "region": "Amériques",
-    "subregion": "Caribbean"
+    "subregion": "Caribbean",
+    "borders": [
+      "DOM"
+    ],
+    "area": 27750
   },
   {
     "iso2": "HN",
@@ -565,7 +1008,13 @@
     "name": "Honduras",
     "capital": "Tegucigalpa",
     "region": "Amériques",
-    "subregion": "Central America"
+    "subregion": "Central America",
+    "borders": [
+      "GTM",
+      "SLV",
+      "NIC"
+    ],
+    "area": 112492
   },
   {
     "iso2": "HU",
@@ -573,7 +1022,17 @@
     "name": "Hongrie",
     "capital": "Budapest",
     "region": "Europe",
-    "subregion": "Central Europe"
+    "subregion": "Central Europe",
+    "borders": [
+      "AUT",
+      "HRV",
+      "ROU",
+      "SRB",
+      "SVK",
+      "SVN",
+      "UKR"
+    ],
+    "area": 93028
   },
   {
     "iso2": "IN",
@@ -581,7 +1040,16 @@
     "name": "Inde",
     "capital": "New Delhi",
     "region": "Asie",
-    "subregion": "Southern Asia"
+    "subregion": "Southern Asia",
+    "borders": [
+      "BGD",
+      "BTN",
+      "MMR",
+      "CHN",
+      "NPL",
+      "PAK"
+    ],
+    "area": 3287590
   },
   {
     "iso2": "ID",
@@ -589,7 +1057,13 @@
     "name": "Indonésie",
     "capital": "Jakarta",
     "region": "Asie",
-    "subregion": "South-Eastern Asia"
+    "subregion": "South-Eastern Asia",
+    "borders": [
+      "TLS",
+      "MYS",
+      "PNG"
+    ],
+    "area": 1904569
   },
   {
     "iso2": "IQ",
@@ -597,7 +1071,16 @@
     "name": "Irak",
     "capital": "Bagdad",
     "region": "Asie",
-    "subregion": "Western Asia"
+    "subregion": "Western Asia",
+    "borders": [
+      "IRN",
+      "JOR",
+      "KWT",
+      "SAU",
+      "SYR",
+      "TUR"
+    ],
+    "area": 438317
   },
   {
     "iso2": "IR",
@@ -605,7 +1088,17 @@
     "name": "Iran",
     "capital": "Téhéran",
     "region": "Asie",
-    "subregion": "Southern Asia"
+    "subregion": "Southern Asia",
+    "borders": [
+      "AFG",
+      "ARM",
+      "AZE",
+      "IRQ",
+      "PAK",
+      "TUR",
+      "TKM"
+    ],
+    "area": 1648195
   },
   {
     "iso2": "IE",
@@ -613,7 +1106,11 @@
     "name": "Irlande",
     "capital": "Dublin",
     "region": "Europe",
-    "subregion": "Northern Europe"
+    "subregion": "Northern Europe",
+    "borders": [
+      "GBR"
+    ],
+    "area": 70273
   },
   {
     "iso2": "IS",
@@ -621,7 +1118,9 @@
     "name": "Islande",
     "capital": "Reykjavik",
     "region": "Europe",
-    "subregion": "Northern Europe"
+    "subregion": "Northern Europe",
+    "borders": [],
+    "area": 103000
   },
   {
     "iso2": "IL",
@@ -629,7 +1128,14 @@
     "name": "Israël",
     "capital": "Jerusalem",
     "region": "Asie",
-    "subregion": "Western Asia"
+    "subregion": "Western Asia",
+    "borders": [
+      "EGY",
+      "JOR",
+      "LBN",
+      "SYR"
+    ],
+    "area": 20770
   },
   {
     "iso2": "IT",
@@ -637,7 +1143,16 @@
     "name": "Italie",
     "capital": "Rome",
     "region": "Europe",
-    "subregion": "Southern Europe"
+    "subregion": "Southern Europe",
+    "borders": [
+      "AUT",
+      "FRA",
+      "SMR",
+      "SVN",
+      "CHE",
+      "VAT"
+    ],
+    "area": 301336
   },
   {
     "iso2": "JM",
@@ -645,7 +1160,9 @@
     "name": "Jamaïque",
     "capital": "Kingston",
     "region": "Amériques",
-    "subregion": "Caribbean"
+    "subregion": "Caribbean",
+    "borders": [],
+    "area": 10991
   },
   {
     "iso2": "JP",
@@ -653,7 +1170,9 @@
     "name": "Japon",
     "capital": "Tokyo",
     "region": "Asie",
-    "subregion": "Eastern Asia"
+    "subregion": "Eastern Asia",
+    "borders": [],
+    "area": 377930
   },
   {
     "iso2": "JO",
@@ -661,7 +1180,14 @@
     "name": "Jordanie",
     "capital": "Amman",
     "region": "Asie",
-    "subregion": "Western Asia"
+    "subregion": "Western Asia",
+    "borders": [
+      "IRQ",
+      "ISR",
+      "SAU",
+      "SYR"
+    ],
+    "area": 89342
   },
   {
     "iso2": "KZ",
@@ -669,7 +1195,15 @@
     "name": "Kazakhstan",
     "capital": "Astana",
     "region": "Asie",
-    "subregion": "Central Asia"
+    "subregion": "Central Asia",
+    "borders": [
+      "CHN",
+      "KGZ",
+      "RUS",
+      "TKM",
+      "UZB"
+    ],
+    "area": 2724900
   },
   {
     "iso2": "KE",
@@ -677,7 +1211,15 @@
     "name": "Kenya",
     "capital": "Nairobi",
     "region": "Afrique",
-    "subregion": "Eastern Africa"
+    "subregion": "Eastern Africa",
+    "borders": [
+      "ETH",
+      "SOM",
+      "SSD",
+      "TZA",
+      "UGA"
+    ],
+    "area": 580367
   },
   {
     "iso2": "KG",
@@ -685,7 +1227,14 @@
     "name": "Kirghizistan",
     "capital": "Bishkek",
     "region": "Asie",
-    "subregion": "Central Asia"
+    "subregion": "Central Asia",
+    "borders": [
+      "CHN",
+      "KAZ",
+      "TJK",
+      "UZB"
+    ],
+    "area": 199951
   },
   {
     "iso2": "KI",
@@ -693,7 +1242,9 @@
     "name": "Kiribati",
     "capital": "South Tarawa",
     "region": "Océanie",
-    "subregion": "Micronesia"
+    "subregion": "Micronesia",
+    "borders": [],
+    "area": 811
   },
   {
     "iso2": "KW",
@@ -701,7 +1252,12 @@
     "name": "Koweït",
     "capital": "Koweït",
     "region": "Asie",
-    "subregion": "Western Asia"
+    "subregion": "Western Asia",
+    "borders": [
+      "IRQ",
+      "SAU"
+    ],
+    "area": 17818
   },
   {
     "iso2": "LA",
@@ -709,7 +1265,15 @@
     "name": "Laos",
     "capital": "Vientiane",
     "region": "Asie",
-    "subregion": "South-Eastern Asia"
+    "subregion": "South-Eastern Asia",
+    "borders": [
+      "MMR",
+      "KHM",
+      "CHN",
+      "THA",
+      "VNM"
+    ],
+    "area": 236800
   },
   {
     "iso2": "LS",
@@ -717,7 +1281,11 @@
     "name": "Lesotho",
     "capital": "Maseru",
     "region": "Afrique",
-    "subregion": "Southern Africa"
+    "subregion": "Southern Africa",
+    "borders": [
+      "ZAF"
+    ],
+    "area": 30355
   },
   {
     "iso2": "LV",
@@ -725,7 +1293,14 @@
     "name": "Lettonie",
     "capital": "Riga",
     "region": "Europe",
-    "subregion": "Northern Europe"
+    "subregion": "Northern Europe",
+    "borders": [
+      "BLR",
+      "EST",
+      "LTU",
+      "RUS"
+    ],
+    "area": 64559
   },
   {
     "iso2": "LB",
@@ -733,7 +1308,12 @@
     "name": "Liban",
     "capital": "Beyrouth",
     "region": "Asie",
-    "subregion": "Western Asia"
+    "subregion": "Western Asia",
+    "borders": [
+      "ISR",
+      "SYR"
+    ],
+    "area": 10452
   },
   {
     "iso2": "LR",
@@ -741,7 +1321,13 @@
     "name": "Liberia",
     "capital": "Monrovia",
     "region": "Afrique",
-    "subregion": "Western Africa"
+    "subregion": "Western Africa",
+    "borders": [
+      "GIN",
+      "CIV",
+      "SLE"
+    ],
+    "area": 111369
   },
   {
     "iso2": "LY",
@@ -749,7 +1335,16 @@
     "name": "Libye",
     "capital": "Tripoli",
     "region": "Afrique",
-    "subregion": "Northern Africa"
+    "subregion": "Northern Africa",
+    "borders": [
+      "DZA",
+      "TCD",
+      "EGY",
+      "NER",
+      "SDN",
+      "TUN"
+    ],
+    "area": 1759540
   },
   {
     "iso2": "LI",
@@ -757,7 +1352,12 @@
     "name": "Liechtenstein",
     "capital": "Vaduz",
     "region": "Europe",
-    "subregion": "Western Europe"
+    "subregion": "Western Europe",
+    "borders": [
+      "AUT",
+      "CHE"
+    ],
+    "area": 160
   },
   {
     "iso2": "LT",
@@ -765,7 +1365,14 @@
     "name": "Lituanie",
     "capital": "Vilnius",
     "region": "Europe",
-    "subregion": "Northern Europe"
+    "subregion": "Northern Europe",
+    "borders": [
+      "BLR",
+      "LVA",
+      "POL",
+      "RUS"
+    ],
+    "area": 65300
   },
   {
     "iso2": "LU",
@@ -773,7 +1380,13 @@
     "name": "Luxembourg",
     "capital": "Luxembourg",
     "region": "Europe",
-    "subregion": "Western Europe"
+    "subregion": "Western Europe",
+    "borders": [
+      "BEL",
+      "FRA",
+      "DEU"
+    ],
+    "area": 2586
   },
   {
     "iso2": "MK",
@@ -781,7 +1394,14 @@
     "name": "Macédoine du Nord",
     "capital": "Skopje",
     "region": "Europe",
-    "subregion": "Southeast Europe"
+    "subregion": "Southeast Europe",
+    "borders": [
+      "ALB",
+      "BGR",
+      "GRC",
+      "SRB"
+    ],
+    "area": 25713
   },
   {
     "iso2": "MG",
@@ -789,7 +1409,9 @@
     "name": "Madagascar",
     "capital": "Antananarivo",
     "region": "Afrique",
-    "subregion": "Eastern Africa"
+    "subregion": "Eastern Africa",
+    "borders": [],
+    "area": 587041
   },
   {
     "iso2": "MY",
@@ -797,7 +1419,13 @@
     "name": "Malaisie",
     "capital": "Kuala Lumpur",
     "region": "Asie",
-    "subregion": "South-Eastern Asia"
+    "subregion": "South-Eastern Asia",
+    "borders": [
+      "BRN",
+      "IDN",
+      "THA"
+    ],
+    "area": 330803
   },
   {
     "iso2": "MW",
@@ -805,7 +1433,13 @@
     "name": "Malawi",
     "capital": "Lilongwe",
     "region": "Afrique",
-    "subregion": "Eastern Africa"
+    "subregion": "Eastern Africa",
+    "borders": [
+      "MOZ",
+      "TZA",
+      "ZMB"
+    ],
+    "area": 118484
   },
   {
     "iso2": "MV",
@@ -813,7 +1447,9 @@
     "name": "Maldives",
     "capital": "Malé",
     "region": "Asie",
-    "subregion": "Southern Asia"
+    "subregion": "Southern Asia",
+    "borders": [],
+    "area": 300
   },
   {
     "iso2": "ML",
@@ -821,7 +1457,17 @@
     "name": "Mali",
     "capital": "Bamako",
     "region": "Afrique",
-    "subregion": "Western Africa"
+    "subregion": "Western Africa",
+    "borders": [
+      "DZA",
+      "BFA",
+      "GIN",
+      "CIV",
+      "MRT",
+      "NER",
+      "SEN"
+    ],
+    "area": 1240192
   },
   {
     "iso2": "MT",
@@ -829,7 +1475,9 @@
     "name": "Malte",
     "capital": "La Valette",
     "region": "Europe",
-    "subregion": "Southern Europe"
+    "subregion": "Southern Europe",
+    "borders": [],
+    "area": 316
   },
   {
     "iso2": "MA",
@@ -837,7 +1485,12 @@
     "name": "Maroc",
     "capital": "Rabat",
     "region": "Afrique",
-    "subregion": "Northern Africa"
+    "subregion": "Northern Africa",
+    "borders": [
+      "DZA",
+      "ESP"
+    ],
+    "area": 446550
   },
   {
     "iso2": "MR",
@@ -845,7 +1498,13 @@
     "name": "Mauritanie",
     "capital": "Nouakchott",
     "region": "Afrique",
-    "subregion": "Western Africa"
+    "subregion": "Western Africa",
+    "borders": [
+      "DZA",
+      "MLI",
+      "SEN"
+    ],
+    "area": 1030700
   },
   {
     "iso2": "MX",
@@ -853,7 +1512,13 @@
     "name": "Mexique",
     "capital": "Mexico",
     "region": "Amériques",
-    "subregion": "North America"
+    "subregion": "North America",
+    "borders": [
+      "BLZ",
+      "GTM",
+      "USA"
+    ],
+    "area": 1964375
   },
   {
     "iso2": "FM",
@@ -861,7 +1526,9 @@
     "name": "Micronésie",
     "capital": "Palikir",
     "region": "Océanie",
-    "subregion": "Micronesia"
+    "subregion": "Micronesia",
+    "borders": [],
+    "area": 702
   },
   {
     "iso2": "MD",
@@ -869,7 +1536,12 @@
     "name": "Moldavie",
     "capital": "Chișinău",
     "region": "Europe",
-    "subregion": "Eastern Europe"
+    "subregion": "Eastern Europe",
+    "borders": [
+      "ROU",
+      "UKR"
+    ],
+    "area": 33846
   },
   {
     "iso2": "MC",
@@ -877,7 +1549,11 @@
     "name": "Monaco",
     "capital": "Monaco",
     "region": "Europe",
-    "subregion": "Western Europe"
+    "subregion": "Western Europe",
+    "borders": [
+      "FRA"
+    ],
+    "area": 2.02
   },
   {
     "iso2": "MN",
@@ -885,7 +1561,12 @@
     "name": "Mongolie",
     "capital": "Ulan Bator",
     "region": "Asie",
-    "subregion": "Eastern Asia"
+    "subregion": "Eastern Asia",
+    "borders": [
+      "CHN",
+      "RUS"
+    ],
+    "area": 1564110
   },
   {
     "iso2": "ME",
@@ -893,7 +1574,14 @@
     "name": "Monténégro",
     "capital": "Podgorica",
     "region": "Europe",
-    "subregion": "Southeast Europe"
+    "subregion": "Southeast Europe",
+    "borders": [
+      "ALB",
+      "BIH",
+      "HRV",
+      "SRB"
+    ],
+    "area": 13812
   },
   {
     "iso2": "MZ",
@@ -901,7 +1589,16 @@
     "name": "Mozambique",
     "capital": "Maputo",
     "region": "Afrique",
-    "subregion": "Eastern Africa"
+    "subregion": "Eastern Africa",
+    "borders": [
+      "MWI",
+      "ZAF",
+      "SWZ",
+      "TZA",
+      "ZMB",
+      "ZWE"
+    ],
+    "area": 801590
   },
   {
     "iso2": "NA",
@@ -909,7 +1606,14 @@
     "name": "Namibie",
     "capital": "Windhoek",
     "region": "Afrique",
-    "subregion": "Southern Africa"
+    "subregion": "Southern Africa",
+    "borders": [
+      "AGO",
+      "BWA",
+      "ZAF",
+      "ZMB"
+    ],
+    "area": 825615
   },
   {
     "iso2": "NR",
@@ -917,7 +1621,9 @@
     "name": "Nauru",
     "capital": "Yaren",
     "region": "Océanie",
-    "subregion": "Micronesia"
+    "subregion": "Micronesia",
+    "borders": [],
+    "area": 21
   },
   {
     "iso2": "NI",
@@ -925,7 +1631,12 @@
     "name": "Nicaragua",
     "capital": "Managua",
     "region": "Amériques",
-    "subregion": "Central America"
+    "subregion": "Central America",
+    "borders": [
+      "CRI",
+      "HND"
+    ],
+    "area": 130373
   },
   {
     "iso2": "NE",
@@ -933,7 +1644,17 @@
     "name": "Niger",
     "capital": "Niamey",
     "region": "Afrique",
-    "subregion": "Western Africa"
+    "subregion": "Western Africa",
+    "borders": [
+      "DZA",
+      "BEN",
+      "BFA",
+      "TCD",
+      "LBY",
+      "MLI",
+      "NGA"
+    ],
+    "area": 1267000
   },
   {
     "iso2": "NG",
@@ -941,7 +1662,14 @@
     "name": "Nigéria",
     "capital": "Abuja",
     "region": "Afrique",
-    "subregion": "Western Africa"
+    "subregion": "Western Africa",
+    "borders": [
+      "BEN",
+      "CMR",
+      "TCD",
+      "NER"
+    ],
+    "area": 923768
   },
   {
     "iso2": "NO",
@@ -949,7 +1677,13 @@
     "name": "Norvège",
     "capital": "Oslo",
     "region": "Europe",
-    "subregion": "Northern Europe"
+    "subregion": "Northern Europe",
+    "borders": [
+      "FIN",
+      "SWE",
+      "RUS"
+    ],
+    "area": 323802
   },
   {
     "iso2": "NZ",
@@ -957,7 +1691,9 @@
     "name": "Nouvelle-Zélande",
     "capital": "Wellington",
     "region": "Océanie",
-    "subregion": "Australia and New Zealand"
+    "subregion": "Australia and New Zealand",
+    "borders": [],
+    "area": 270467
   },
   {
     "iso2": "NP",
@@ -965,7 +1701,12 @@
     "name": "Népal",
     "capital": "Kathmandu",
     "region": "Asie",
-    "subregion": "Southern Asia"
+    "subregion": "Southern Asia",
+    "borders": [
+      "CHN",
+      "IND"
+    ],
+    "area": 147181
   },
   {
     "iso2": "OM",
@@ -973,7 +1714,13 @@
     "name": "Oman",
     "capital": "Muscat",
     "region": "Asie",
-    "subregion": "Western Asia"
+    "subregion": "Western Asia",
+    "borders": [
+      "SAU",
+      "ARE",
+      "YEM"
+    ],
+    "area": 309500
   },
   {
     "iso2": "UG",
@@ -981,7 +1728,15 @@
     "name": "Ouganda",
     "capital": "Kampala",
     "region": "Afrique",
-    "subregion": "Eastern Africa"
+    "subregion": "Eastern Africa",
+    "borders": [
+      "COD",
+      "KEN",
+      "RWA",
+      "SSD",
+      "TZA"
+    ],
+    "area": 241550
   },
   {
     "iso2": "UZ",
@@ -989,7 +1744,15 @@
     "name": "Ouzbékistan",
     "capital": "Tashkent",
     "region": "Asie",
-    "subregion": "Central Asia"
+    "subregion": "Central Asia",
+    "borders": [
+      "AFG",
+      "KAZ",
+      "KGZ",
+      "TJK",
+      "TKM"
+    ],
+    "area": 447400
   },
   {
     "iso2": "PK",
@@ -997,7 +1760,14 @@
     "name": "Pakistan",
     "capital": "Islamabad",
     "region": "Asie",
-    "subregion": "Southern Asia"
+    "subregion": "Southern Asia",
+    "borders": [
+      "AFG",
+      "CHN",
+      "IND",
+      "IRN"
+    ],
+    "area": 881912
   },
   {
     "iso2": "PW",
@@ -1005,7 +1775,9 @@
     "name": "Palaos (Palau)",
     "capital": "Ngerulmud",
     "region": "Océanie",
-    "subregion": "Micronesia"
+    "subregion": "Micronesia",
+    "borders": [],
+    "area": 459
   },
   {
     "iso2": "PA",
@@ -1013,7 +1785,12 @@
     "name": "Panama",
     "capital": "Panama City",
     "region": "Amériques",
-    "subregion": "Central America"
+    "subregion": "Central America",
+    "borders": [
+      "COL",
+      "CRI"
+    ],
+    "area": 75417
   },
   {
     "iso2": "PG",
@@ -1021,7 +1798,11 @@
     "name": "Papouasie-Nouvelle-Guinée",
     "capital": "Port Moresby",
     "region": "Océanie",
-    "subregion": "Melanesia"
+    "subregion": "Melanesia",
+    "borders": [
+      "IDN"
+    ],
+    "area": 462840
   },
   {
     "iso2": "PY",
@@ -1029,7 +1810,13 @@
     "name": "Paraguay",
     "capital": "Asunción",
     "region": "Amériques",
-    "subregion": "South America"
+    "subregion": "South America",
+    "borders": [
+      "ARG",
+      "BOL",
+      "BRA"
+    ],
+    "area": 406752
   },
   {
     "iso2": "NL",
@@ -1037,7 +1824,12 @@
     "name": "Pays-Bas",
     "capital": "Amsterdam",
     "region": "Europe",
-    "subregion": "Western Europe"
+    "subregion": "Western Europe",
+    "borders": [
+      "BEL",
+      "DEU"
+    ],
+    "area": 41850
   },
   {
     "iso2": "PH",
@@ -1045,7 +1837,9 @@
     "name": "Philippines",
     "capital": "Manila",
     "region": "Asie",
-    "subregion": "South-Eastern Asia"
+    "subregion": "South-Eastern Asia",
+    "borders": [],
+    "area": 342353
   },
   {
     "iso2": "PL",
@@ -1053,7 +1847,17 @@
     "name": "Pologne",
     "capital": "Varsovie",
     "region": "Europe",
-    "subregion": "Central Europe"
+    "subregion": "Central Europe",
+    "borders": [
+      "BLR",
+      "CZE",
+      "DEU",
+      "LTU",
+      "RUS",
+      "SVK",
+      "UKR"
+    ],
+    "area": 312679
   },
   {
     "iso2": "PT",
@@ -1061,7 +1865,11 @@
     "name": "Portugal",
     "capital": "Lisbonne",
     "region": "Europe",
-    "subregion": "Southern Europe"
+    "subregion": "Southern Europe",
+    "borders": [
+      "ESP"
+    ],
+    "area": 92090
   },
   {
     "iso2": "PE",
@@ -1069,7 +1877,15 @@
     "name": "Pérou",
     "capital": "Lima",
     "region": "Amériques",
-    "subregion": "South America"
+    "subregion": "South America",
+    "borders": [
+      "BOL",
+      "BRA",
+      "CHL",
+      "COL",
+      "ECU"
+    ],
+    "area": 1285216
   },
   {
     "iso2": "QA",
@@ -1077,7 +1893,11 @@
     "name": "Qatar",
     "capital": "Doha",
     "region": "Asie",
-    "subregion": "Western Asia"
+    "subregion": "Western Asia",
+    "borders": [
+      "SAU"
+    ],
+    "area": 11586
   },
   {
     "iso2": "RO",
@@ -1085,7 +1905,15 @@
     "name": "Roumanie",
     "capital": "Bucarest",
     "region": "Europe",
-    "subregion": "Southeast Europe"
+    "subregion": "Southeast Europe",
+    "borders": [
+      "BGR",
+      "HUN",
+      "MDA",
+      "SRB",
+      "UKR"
+    ],
+    "area": 238391
   },
   {
     "iso2": "GB",
@@ -1093,7 +1921,11 @@
     "name": "Royaume-Uni",
     "capital": "Londres",
     "region": "Europe",
-    "subregion": "Northern Europe"
+    "subregion": "Northern Europe",
+    "borders": [
+      "IRL"
+    ],
+    "area": 242900
   },
   {
     "iso2": "RU",
@@ -1101,7 +1933,24 @@
     "name": "Russie",
     "capital": "Moscou",
     "region": "Europe",
-    "subregion": "Eastern Europe"
+    "subregion": "Eastern Europe",
+    "borders": [
+      "AZE",
+      "BLR",
+      "CHN",
+      "EST",
+      "FIN",
+      "GEO",
+      "KAZ",
+      "PRK",
+      "LVA",
+      "LTU",
+      "MNG",
+      "NOR",
+      "POL",
+      "UKR"
+    ],
+    "area": 17098242
   },
   {
     "iso2": "RW",
@@ -1109,7 +1958,14 @@
     "name": "Rwanda",
     "capital": "Kigali",
     "region": "Afrique",
-    "subregion": "Eastern Africa"
+    "subregion": "Eastern Africa",
+    "borders": [
+      "BDI",
+      "COD",
+      "TZA",
+      "UGA"
+    ],
+    "area": 26338
   },
   {
     "iso2": "CF",
@@ -1117,7 +1973,16 @@
     "name": "République centrafricaine",
     "capital": "Bangui",
     "region": "Afrique",
-    "subregion": "Middle Africa"
+    "subregion": "Middle Africa",
+    "borders": [
+      "CMR",
+      "TCD",
+      "COD",
+      "COG",
+      "SSD",
+      "SDN"
+    ],
+    "area": 622984
   },
   {
     "iso2": "DO",
@@ -1125,7 +1990,11 @@
     "name": "République dominicaine",
     "capital": "Santo Domingo",
     "region": "Amériques",
-    "subregion": "Caribbean"
+    "subregion": "Caribbean",
+    "borders": [
+      "HTI"
+    ],
+    "area": 48671
   },
   {
     "iso2": "KN",
@@ -1133,7 +2002,9 @@
     "name": "Saint-Christophe-et-Niévès",
     "capital": "Basseterre",
     "region": "Amériques",
-    "subregion": "Caribbean"
+    "subregion": "Caribbean",
+    "borders": [],
+    "area": 261
   },
   {
     "iso2": "SM",
@@ -1141,7 +2012,11 @@
     "name": "Saint-Marin",
     "capital": "City of San Marino",
     "region": "Europe",
-    "subregion": "Southern Europe"
+    "subregion": "Southern Europe",
+    "borders": [
+      "ITA"
+    ],
+    "area": 61
   },
   {
     "iso2": "VC",
@@ -1149,7 +2024,9 @@
     "name": "Saint-Vincent-et-les-Grenadines",
     "capital": "Kingstown",
     "region": "Amériques",
-    "subregion": "Caribbean"
+    "subregion": "Caribbean",
+    "borders": [],
+    "area": 389
   },
   {
     "iso2": "LC",
@@ -1157,7 +2034,9 @@
     "name": "Sainte-Lucie",
     "capital": "Castries",
     "region": "Amériques",
-    "subregion": "Caribbean"
+    "subregion": "Caribbean",
+    "borders": [],
+    "area": 616
   },
   {
     "iso2": "SV",
@@ -1165,7 +2044,12 @@
     "name": "Salvador",
     "capital": "San Salvador",
     "region": "Amériques",
-    "subregion": "Central America"
+    "subregion": "Central America",
+    "borders": [
+      "GTM",
+      "HND"
+    ],
+    "area": 21041
   },
   {
     "iso2": "WS",
@@ -1173,7 +2057,9 @@
     "name": "Samoa",
     "capital": "Apia",
     "region": "Océanie",
-    "subregion": "Polynesia"
+    "subregion": "Polynesia",
+    "borders": [],
+    "area": 2842
   },
   {
     "iso2": "RS",
@@ -1181,7 +2067,17 @@
     "name": "Serbie",
     "capital": "Belgrade",
     "region": "Europe",
-    "subregion": "Southeast Europe"
+    "subregion": "Southeast Europe",
+    "borders": [
+      "BIH",
+      "BGR",
+      "HRV",
+      "HUN",
+      "MKD",
+      "MNE",
+      "ROU"
+    ],
+    "area": 88361
   },
   {
     "iso2": "SC",
@@ -1189,7 +2085,9 @@
     "name": "Seychelles",
     "capital": "Victoria",
     "region": "Afrique",
-    "subregion": "Eastern Africa"
+    "subregion": "Eastern Africa",
+    "borders": [],
+    "area": 452
   },
   {
     "iso2": "SL",
@@ -1197,7 +2095,12 @@
     "name": "Sierra Leone",
     "capital": "Freetown",
     "region": "Afrique",
-    "subregion": "Western Africa"
+    "subregion": "Western Africa",
+    "borders": [
+      "GIN",
+      "LBR"
+    ],
+    "area": 71740
   },
   {
     "iso2": "SG",
@@ -1205,7 +2108,9 @@
     "name": "Singapour",
     "capital": "Singapour",
     "region": "Asie",
-    "subregion": "South-Eastern Asia"
+    "subregion": "South-Eastern Asia",
+    "borders": [],
+    "area": 710
   },
   {
     "iso2": "SK",
@@ -1213,7 +2118,15 @@
     "name": "Slovaquie",
     "capital": "Bratislava",
     "region": "Europe",
-    "subregion": "Central Europe"
+    "subregion": "Central Europe",
+    "borders": [
+      "AUT",
+      "CZE",
+      "HUN",
+      "POL",
+      "UKR"
+    ],
+    "area": 49037
   },
   {
     "iso2": "SI",
@@ -1221,7 +2134,14 @@
     "name": "Slovénie",
     "capital": "Ljubljana",
     "region": "Europe",
-    "subregion": "Central Europe"
+    "subregion": "Central Europe",
+    "borders": [
+      "AUT",
+      "HRV",
+      "ITA",
+      "HUN"
+    ],
+    "area": 20273
   },
   {
     "iso2": "SO",
@@ -1229,7 +2149,13 @@
     "name": "Somalie",
     "capital": "Mogadishu",
     "region": "Afrique",
-    "subregion": "Eastern Africa"
+    "subregion": "Eastern Africa",
+    "borders": [
+      "DJI",
+      "ETH",
+      "KEN"
+    ],
+    "area": 637657
   },
   {
     "iso2": "SD",
@@ -1237,7 +2163,17 @@
     "name": "Soudan",
     "capital": "Khartoum",
     "region": "Afrique",
-    "subregion": "Northern Africa"
+    "subregion": "Northern Africa",
+    "borders": [
+      "CAF",
+      "TCD",
+      "EGY",
+      "ERI",
+      "ETH",
+      "LBY",
+      "SSD"
+    ],
+    "area": 1886068
   },
   {
     "iso2": "SS",
@@ -1245,7 +2181,16 @@
     "name": "Soudan du Sud",
     "capital": "Juba",
     "region": "Afrique",
-    "subregion": "Middle Africa"
+    "subregion": "Middle Africa",
+    "borders": [
+      "CAF",
+      "COD",
+      "ETH",
+      "KEN",
+      "SDN",
+      "UGA"
+    ],
+    "area": 619745
   },
   {
     "iso2": "LK",
@@ -1253,7 +2198,11 @@
     "name": "Sri Lanka",
     "capital": "Colombo",
     "region": "Asie",
-    "subregion": "Southern Asia"
+    "subregion": "Southern Asia",
+    "borders": [
+      "IND"
+    ],
+    "area": 65610
   },
   {
     "iso2": "CH",
@@ -1261,7 +2210,15 @@
     "name": "Suisse",
     "capital": "Berne",
     "region": "Europe",
-    "subregion": "Western Europe"
+    "subregion": "Western Europe",
+    "borders": [
+      "AUT",
+      "FRA",
+      "ITA",
+      "LIE",
+      "DEU"
+    ],
+    "area": 41284
   },
   {
     "iso2": "SR",
@@ -1269,7 +2226,12 @@
     "name": "Surinam",
     "capital": "Paramaribo",
     "region": "Amériques",
-    "subregion": "South America"
+    "subregion": "South America",
+    "borders": [
+      "BRA",
+      "GUY"
+    ],
+    "area": 163820
   },
   {
     "iso2": "SE",
@@ -1277,7 +2239,12 @@
     "name": "Suède",
     "capital": "Stockholm",
     "region": "Europe",
-    "subregion": "Northern Europe"
+    "subregion": "Northern Europe",
+    "borders": [
+      "FIN",
+      "NOR"
+    ],
+    "area": 450295
   },
   {
     "iso2": "SY",
@@ -1285,7 +2252,15 @@
     "name": "Syrie",
     "capital": "Damas",
     "region": "Asie",
-    "subregion": "Western Asia"
+    "subregion": "Western Asia",
+    "borders": [
+      "IRQ",
+      "ISR",
+      "JOR",
+      "LBN",
+      "TUR"
+    ],
+    "area": 185180
   },
   {
     "iso2": "ST",
@@ -1293,7 +2268,9 @@
     "name": "São Tomé et Príncipe",
     "capital": "São Tomé",
     "region": "Afrique",
-    "subregion": "Middle Africa"
+    "subregion": "Middle Africa",
+    "borders": [],
+    "area": 964
   },
   {
     "iso2": "SN",
@@ -1301,7 +2278,15 @@
     "name": "Sénégal",
     "capital": "Dakar",
     "region": "Afrique",
-    "subregion": "Western Africa"
+    "subregion": "Western Africa",
+    "borders": [
+      "GMB",
+      "GIN",
+      "GNB",
+      "MLI",
+      "MRT"
+    ],
+    "area": 196722
   },
   {
     "iso2": "TJ",
@@ -1309,7 +2294,14 @@
     "name": "Tadjikistan",
     "capital": "Dushanbe",
     "region": "Asie",
-    "subregion": "Central Asia"
+    "subregion": "Central Asia",
+    "borders": [
+      "AFG",
+      "CHN",
+      "KGZ",
+      "UZB"
+    ],
+    "area": 143100
   },
   {
     "iso2": "TZ",
@@ -1317,7 +2309,18 @@
     "name": "Tanzanie",
     "capital": "Dodoma",
     "region": "Afrique",
-    "subregion": "Eastern Africa"
+    "subregion": "Eastern Africa",
+    "borders": [
+      "BDI",
+      "COD",
+      "KEN",
+      "MWI",
+      "MOZ",
+      "RWA",
+      "UGA",
+      "ZMB"
+    ],
+    "area": 945087
   },
   {
     "iso2": "TD",
@@ -1325,7 +2328,16 @@
     "name": "Tchad",
     "capital": "N'Djamena",
     "region": "Afrique",
-    "subregion": "Middle Africa"
+    "subregion": "Middle Africa",
+    "borders": [
+      "CMR",
+      "CAF",
+      "LBY",
+      "NER",
+      "NGA",
+      "SDN"
+    ],
+    "area": 1284000
   },
   {
     "iso2": "CZ",
@@ -1333,7 +2345,14 @@
     "name": "Tchéquie",
     "capital": "Prague",
     "region": "Europe",
-    "subregion": "Central Europe"
+    "subregion": "Central Europe",
+    "borders": [
+      "AUT",
+      "DEU",
+      "POL",
+      "SVK"
+    ],
+    "area": 78865
   },
   {
     "iso2": "TH",
@@ -1341,7 +2360,14 @@
     "name": "Thaïlande",
     "capital": "Bangkok",
     "region": "Asie",
-    "subregion": "South-Eastern Asia"
+    "subregion": "South-Eastern Asia",
+    "borders": [
+      "MMR",
+      "KHM",
+      "LAO",
+      "MYS"
+    ],
+    "area": 513120
   },
   {
     "iso2": "TL",
@@ -1349,7 +2375,11 @@
     "name": "Timor oriental",
     "capital": "Dili",
     "region": "Asie",
-    "subregion": "South-Eastern Asia"
+    "subregion": "South-Eastern Asia",
+    "borders": [
+      "IDN"
+    ],
+    "area": 14874
   },
   {
     "iso2": "TG",
@@ -1357,7 +2387,13 @@
     "name": "Togo",
     "capital": "Lomé",
     "region": "Afrique",
-    "subregion": "Western Africa"
+    "subregion": "Western Africa",
+    "borders": [
+      "BEN",
+      "BFA",
+      "GHA"
+    ],
+    "area": 56785
   },
   {
     "iso2": "TO",
@@ -1365,7 +2401,9 @@
     "name": "Tonga",
     "capital": "Nuku'alofa",
     "region": "Océanie",
-    "subregion": "Polynesia"
+    "subregion": "Polynesia",
+    "borders": [],
+    "area": 747
   },
   {
     "iso2": "TT",
@@ -1373,7 +2411,9 @@
     "name": "Trinité-et-Tobago",
     "capital": "Port of Spain",
     "region": "Amériques",
-    "subregion": "Caribbean"
+    "subregion": "Caribbean",
+    "borders": [],
+    "area": 5130
   },
   {
     "iso2": "TN",
@@ -1381,7 +2421,12 @@
     "name": "Tunisie",
     "capital": "Tunis",
     "region": "Afrique",
-    "subregion": "Northern Africa"
+    "subregion": "Northern Africa",
+    "borders": [
+      "DZA",
+      "LBY"
+    ],
+    "area": 163610
   },
   {
     "iso2": "TM",
@@ -1389,7 +2434,14 @@
     "name": "Turkménistan",
     "capital": "Ashgabat",
     "region": "Asie",
-    "subregion": "Central Asia"
+    "subregion": "Central Asia",
+    "borders": [
+      "AFG",
+      "IRN",
+      "KAZ",
+      "UZB"
+    ],
+    "area": 488100
   },
   {
     "iso2": "TR",
@@ -1397,7 +2449,18 @@
     "name": "Turquie",
     "capital": "Ankara",
     "region": "Asie",
-    "subregion": "Western Asia"
+    "subregion": "Western Asia",
+    "borders": [
+      "ARM",
+      "AZE",
+      "BGR",
+      "GEO",
+      "GRC",
+      "IRN",
+      "IRQ",
+      "SYR"
+    ],
+    "area": 783562
   },
   {
     "iso2": "TV",
@@ -1405,7 +2468,9 @@
     "name": "Tuvalu",
     "capital": "Funafuti",
     "region": "Océanie",
-    "subregion": "Polynesia"
+    "subregion": "Polynesia",
+    "borders": [],
+    "area": 26
   },
   {
     "iso2": "UA",
@@ -1413,7 +2478,17 @@
     "name": "Ukraine",
     "capital": "Kiev",
     "region": "Europe",
-    "subregion": "Eastern Europe"
+    "subregion": "Eastern Europe",
+    "borders": [
+      "BLR",
+      "HUN",
+      "MDA",
+      "POL",
+      "ROU",
+      "RUS",
+      "SVK"
+    ],
+    "area": 603500
   },
   {
     "iso2": "UY",
@@ -1421,7 +2496,12 @@
     "name": "Uruguay",
     "capital": "Montevideo",
     "region": "Amériques",
-    "subregion": "South America"
+    "subregion": "South America",
+    "borders": [
+      "ARG",
+      "BRA"
+    ],
+    "area": 181034
   },
   {
     "iso2": "VU",
@@ -1429,7 +2509,9 @@
     "name": "Vanuatu",
     "capital": "Port Vila",
     "region": "Océanie",
-    "subregion": "Melanesia"
+    "subregion": "Melanesia",
+    "borders": [],
+    "area": 12189
   },
   {
     "iso2": "VE",
@@ -1437,7 +2519,13 @@
     "name": "Venezuela",
     "capital": "Caracas",
     "region": "Amériques",
-    "subregion": "South America"
+    "subregion": "South America",
+    "borders": [
+      "BRA",
+      "COL",
+      "GUY"
+    ],
+    "area": 916445
   },
   {
     "iso2": "VN",
@@ -1445,7 +2533,13 @@
     "name": "Viêt Nam",
     "capital": "Hanoï",
     "region": "Asie",
-    "subregion": "South-Eastern Asia"
+    "subregion": "South-Eastern Asia",
+    "borders": [
+      "KHM",
+      "CHN",
+      "LAO"
+    ],
+    "area": 331212
   },
   {
     "iso2": "YE",
@@ -1453,7 +2547,12 @@
     "name": "Yémen",
     "capital": "Sana'a",
     "region": "Asie",
-    "subregion": "Western Asia"
+    "subregion": "Western Asia",
+    "borders": [
+      "OMN",
+      "SAU"
+    ],
+    "area": 527968
   },
   {
     "iso2": "ZM",
@@ -1461,7 +2560,18 @@
     "name": "Zambie",
     "capital": "Lusaka",
     "region": "Afrique",
-    "subregion": "Eastern Africa"
+    "subregion": "Eastern Africa",
+    "borders": [
+      "AGO",
+      "BWA",
+      "COD",
+      "MWI",
+      "MOZ",
+      "NAM",
+      "TZA",
+      "ZWE"
+    ],
+    "area": 752612
   },
   {
     "iso2": "ZW",
@@ -1469,7 +2579,14 @@
     "name": "Zimbabwe",
     "capital": "Harare",
     "region": "Afrique",
-    "subregion": "Eastern Africa"
+    "subregion": "Eastern Africa",
+    "borders": [
+      "BWA",
+      "MOZ",
+      "ZAF",
+      "ZMB"
+    ],
+    "area": 390757
   },
   {
     "iso2": "EG",
@@ -1477,7 +2594,13 @@
     "name": "Égypte",
     "capital": "Le Caire",
     "region": "Afrique",
-    "subregion": "Northern Africa"
+    "subregion": "Northern Africa",
+    "borders": [
+      "ISR",
+      "LBY",
+      "SDN"
+    ],
+    "area": 1002450
   },
   {
     "iso2": "AE",
@@ -1485,7 +2608,12 @@
     "name": "Émirats arabes unis",
     "capital": "Abu Dhabi",
     "region": "Asie",
-    "subregion": "Western Asia"
+    "subregion": "Western Asia",
+    "borders": [
+      "OMN",
+      "SAU"
+    ],
+    "area": 83600
   },
   {
     "iso2": "EC",
@@ -1493,7 +2621,12 @@
     "name": "Équateur",
     "capital": "Quito",
     "region": "Amériques",
-    "subregion": "South America"
+    "subregion": "South America",
+    "borders": [
+      "COL",
+      "PER"
+    ],
+    "area": 276841
   },
   {
     "iso2": "ER",
@@ -1501,7 +2634,13 @@
     "name": "Érythrée",
     "capital": "Asmara",
     "region": "Afrique",
-    "subregion": "Eastern Africa"
+    "subregion": "Eastern Africa",
+    "borders": [
+      "DJI",
+      "ETH",
+      "SDN"
+    ],
+    "area": 117600
   },
   {
     "iso2": "US",
@@ -1509,7 +2648,12 @@
     "name": "États-Unis",
     "capital": "Washington D.C.",
     "region": "Amériques",
-    "subregion": "North America"
+    "subregion": "North America",
+    "borders": [
+      "CAN",
+      "MEX"
+    ],
+    "area": 9372610
   },
   {
     "iso2": "ET",
@@ -1517,7 +2661,16 @@
     "name": "Éthiopie",
     "capital": "Addis-Abeba",
     "region": "Afrique",
-    "subregion": "Eastern Africa"
+    "subregion": "Eastern Africa",
+    "borders": [
+      "DJI",
+      "ERI",
+      "KEN",
+      "SOM",
+      "SSD",
+      "SDN"
+    ],
+    "area": 1104300
   },
   {
     "iso2": "MU",
@@ -1525,7 +2678,9 @@
     "name": "Île Maurice",
     "capital": "Port Louis",
     "region": "Afrique",
-    "subregion": "Eastern Africa"
+    "subregion": "Eastern Africa",
+    "borders": [],
+    "area": 2040
   },
   {
     "iso2": "MH",
@@ -1533,7 +2688,9 @@
     "name": "Îles Marshall",
     "capital": "Majuro",
     "region": "Océanie",
-    "subregion": "Micronesia"
+    "subregion": "Micronesia",
+    "borders": [],
+    "area": 181
   },
   {
     "iso2": "SB",
@@ -1541,7 +2698,9 @@
     "name": "Îles Salomon",
     "capital": "Honiara",
     "region": "Océanie",
-    "subregion": "Melanesia"
+    "subregion": "Melanesia",
+    "borders": [],
+    "area": 28896
   },
   {
     "iso2": "CV",
@@ -1549,6 +2708,8 @@
     "name": "Îles du Cap-Vert",
     "capital": "Praia",
     "region": "Afrique",
-    "subregion": "Western Africa"
+    "subregion": "Western Africa",
+    "borders": [],
+    "area": 4033
   }
 ]

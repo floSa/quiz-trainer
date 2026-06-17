@@ -89,8 +89,15 @@ def main():
                 "capital": capital,
                 "region": REGION_FR.get(c.get("region", ""), c.get("region", "")),
                 "subregion": c.get("subregion", ""),
+                "borders": c.get("borders", []),
+                "area": c.get("area"),
             }
         )
+
+    # On ne garde dans les frontières que les pays présents dans notre jeu.
+    kept = {c["iso3"] for c in out}
+    for c in out:
+        c["borders"] = [b for b in c["borders"] if b in kept]
 
     out.sort(key=lambda x: x["name"])
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
