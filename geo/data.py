@@ -51,6 +51,12 @@ def flag_url(iso2, width=320):
     return f"https://flagcdn.com/w{width}/{iso2.lower()}.png"
 
 
+def neighbors(country):
+    """Pays (de notre jeu) partageant une frontière terrestre avec celui-ci."""
+    idx = by_iso3()
+    return [idx[b] for b in country.get("borders", []) if b in idx]
+
+
 def map_scope(country):
     """Scope Plotly adapté pour situer ce pays sur la carte."""
     region = country.get("region", "")

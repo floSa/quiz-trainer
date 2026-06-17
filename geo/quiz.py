@@ -1,15 +1,20 @@
-"""Génération des questions : sélection pondérée d'un pays + choix de QCM."""
+"""Sélection pondérée des questions + construction des choix (QCM).
+
+La maîtrise est suivie par **compétence × pays**. Plusieurs jeux peuvent tester
+la même compétence (ex. drapeau→pays et pays→drapeau nourrissent `flag`).
+"""
 
 import random
 
 from . import srs, store
 
-# Compétences suivies (maîtrise par compétence × pays, ex. « flag:FRA »).
-# Plusieurs jeux peuvent tester la même compétence.
 SKILLS = {
     "locate": "Situer sur la carte",
     "flag": "Reconnaître le drapeau",
     "capital": "Connaître la capitale",
+    "region": "Connaître le continent",
+    "neighbors": "Connaître les voisins",
+    "size": "Comparer les superficies",
 }
 
 
@@ -42,5 +47,14 @@ def options(correct, candidates, k=3):
     random.shuffle(same)
     random.shuffle(others)
     opts = [correct] + (same + others)[:k]
+    random.shuffle(opts)
+    return opts
+
+
+def mcq_values(correct, values, k=3):
+    """QCM sur une liste de valeurs (chaînes) : correct + k autres, mélangés."""
+    pool = [v for v in dict.fromkeys(values) if v != correct]
+    random.shuffle(pool)
+    opts = [correct] + pool[:k]
     random.shuffle(opts)
     return opts
