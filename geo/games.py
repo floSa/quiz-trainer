@@ -57,7 +57,7 @@ def build_situate(cands, state, recent, country=None):
     opts = _country_opts(quiz.options(c, cands), lambda x: x["name"], kind="map")
     return _q(
         "locate", c["iso3"],
-        ("text", f"Sur quelle carte voit-on **{c['name']}** ?"),
+        ("text", f"Quelle carte montre ce pays : **{c['name']}** ?"),
         opts, c["iso3"], reveal=("map", c),
     )
 
@@ -75,7 +75,7 @@ def build_pick_flag(cands, state, recent, country=None):
     opts = _country_opts(quiz.options(c, cands), lambda x: x["name"], kind="flag")
     return _q(
         "flag", c["iso3"],
-        ("text", f"Quel est le drapeau de **{c['name']}** ?"),
+        ("text", f"**{c['name']}** : quel est son drapeau ?"),
         opts, c["iso3"], reveal=("flag", c),
     )
 
@@ -86,7 +86,7 @@ def build_capital(cands, state, recent, country=None):
     opts = _country_opts(quiz.options(c, cands), lambda x: x["capital"])
     return _q(
         "capital", c["iso3"],
-        ("text", f"Quelle est la capitale de **{c['name']}** ?"),
+        ("text", f"**{c['name']}** : quelle est sa capitale ?"),
         opts, c["iso3"],
     )
 
@@ -96,7 +96,7 @@ def build_capital_to_country(cands, state, recent, country=None):
     opts = _country_opts(quiz.options(c, cands), lambda x: x["name"])
     return _q(
         "capital", c["iso3"],
-        ("text", f"De quel pays **{c['capital']}** est-elle la capitale ?"),
+        ("text", f"**{c['capital']}** est la capitale de quel pays ?"),
         opts, c["iso3"],
     )
 
@@ -116,7 +116,7 @@ def build_region(cands, state, recent, country=None):
     opts = _value_opts(quiz.mcq_values(c["region"], data.regions()))
     return _q(
         "region", c["iso3"],
-        ("text", f"Sur quel continent se trouve **{c['name']}** ?"),
+        ("text", f"**{c['name']}** : sur quel continent ?"),
         opts, c["region"],
     )
 
@@ -133,29 +133,36 @@ def build_flag_to_region(cands, state, recent, country=None):
 def build_region_to_country(cands, state, recent, country=None):
     c = country or quiz.pick_country(cands, state, "region", recent)
     region = c["region"]
-    elsewhere = [x for x in cands if x["region"] != region]
+    # Distracteurs tirés de TOUS les pays : si on ne prenait que `cands`, un
+    # filtre sur une seule région ne laisserait aucun « ailleurs » → 1 option.
+    elsewhere = [x for x in data.load_countries() if x["region"] != region]
     random.shuffle(elsewhere)
     pool = [c] + elsewhere[:3]
     random.shuffle(pool)
     opts = _country_opts(pool, lambda x: x["name"])
     return _q(
         "region", c["iso3"],
-        ("text", f"Lequel de ces pays se trouve en **{region}** ?"),
+        ("text", f"Quel pays se trouve sur ce continent : **{region}** ?"),
         opts, c["iso3"],
     )
 
 
 # --- Compétence « neighbors » ---------------------------------------------- #
 def build_neighbor(cands, state, recent, country=None):
-    eligible = [x for x in cands if data.neighbors(x)]
-    if not eligible:
+    cands_iso = {x["iso3"] for x in cands}
+
+    def neighbors_in(x):  # voisins présents dans le filtre courant
+        return [n for n in data.neighbors(x) if n["iso3"] in cands_iso]
+
+    eligible = [x for x in cands if neighbors_in(x)]
+    if not eligible:  # ex. Océanie seule : aucune frontière intra-filtre
         return build_region(cands, state, recent)
-    if country and data.neighbors(country):
+    if country and neighbors_in(country):
         c = country
     else:
         c = quiz.pick_country(eligible, state, "neighbors", recent)
     nbrs = data.neighbors(c)
-    correct = random.choice(nbrs)
+    correct = random.choice(neighbors_in(c))  # bonne réponse dans le filtre
     excluded = {n["iso3"] for n in nbrs} | {c["iso3"]}
     non = [x for x in cands if x["iso3"] not in excluded]
     same = [x for x in non if x["region"] == c["region"]]
@@ -168,7 +175,7 @@ def build_neighbor(cands, state, recent, country=None):
     explain = "Voisins : " + ", ".join(n["name"] for n in nbrs)
     return _q(
         "neighbors", c["iso3"],
-        ("text", f"Quel pays partage une frontière avec **{c['name']}** ?"),
+        ("text", f"**{c['name']}** : lequel de ces pays est frontalier ?"),
         opts, correct["iso3"], explain=explain,
     )
 
@@ -187,7 +194,7 @@ def build_neighbor_count(cands, state, recent, country=None):
     explain = "Voisins : " + ", ".join(n["name"] for n in nbrs)
     return _q(
         "neighbors", c["iso3"],
-        ("text", f"Combien de pays ont une frontière terrestre avec **{c['name']}** ?"),
+        ("text", f"**{c['name']}** : combien de pays frontaliers ?"),
         _value_opts(nums), str(count), explain=explain,
     )
 
