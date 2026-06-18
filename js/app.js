@@ -28,6 +28,7 @@ async function init() {
   candidates = data.countriesIn(selectedRegions);
   buildSidebar();
   selectGame(gameKey);
+  data.loadFrance().catch(() => {}); // préchargement en tâche de fond
 }
 
 function loadZones() {
@@ -106,7 +107,18 @@ async function selectGame(key) {
   const g = games.GAMES.find((x) => x.key === key);
   $("g-title").textContent = g.title;
   $("g-sub").textContent = g.sub || "";
-  await setContext(g.context);
+  // on vide l'écran précédent tout de suite (sinon il reste affiché pendant
+  // le chargement async des données France → impression de blocage)
+  $("options").innerHTML = "";
+  $("options").hidden = true;
+  $("feedback").innerHTML = "";
+  $("prompt").innerHTML = g.context === "world" ? "" : "⏳ Chargement de la carte…";
+  try {
+    await setContext(g.context);
+  } catch (e) {
+    $("prompt").textContent = "⚠️ Impossible de charger les données : " + e.message;
+    return;
+  }
   newRound();
 }
 
