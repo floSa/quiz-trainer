@@ -1,11 +1,11 @@
-// Helpers Leaflet. Pas de tuiles : on dessine seulement les polygones des pays
-// sur un fond neutre (pas d'étiquettes → pas de triche, et hors-ligne).
-import * as data from "./data.js";
-
+// Helpers Leaflet. Pas de tuiles : on dessine les polygones (monde OU France)
+// sur un fond neutre. Couche interchangeable via setLayer().
 let map = null;
 let layer = null;
-const byIso = {}; // iso3 -> couche Leaflet du pays
-let clickHandler = null;
+let byId = {}; // id de feature -> couche
+let markers = [];
+let featureClick = null;
+let mapClick = null;
 
 const BASE = { color: "#aab6c2", weight: 0.6, fillColor: "#e9edf1", fillOpacity: 1 };
 const DIM = { color: "#cdd5dd", weight: 0.4, fillColor: "#f4f6f8", fillOpacity: 1 };
@@ -20,79 +20,97 @@ export function ensureMap(containerId) {
     attributionControl: false,
     worldCopyJump: true,
     minZoom: 1,
-    maxZoom: 7,
+    maxZoom: 8,
   });
   map.setView([25, 10], 2);
-  layer = L.geoJSON(data.geo(), {
+  map.on("click", (e) => mapClick && mapClick(e.latlng));
+  return map;
+}
+
+// Remplace la couche affichée (monde, régions FR, départements FR…).
+export function setLayer(geojson, { interactive = true } = {}) {
+  if (layer) layer.remove();
+  byId = {};
+  clearMarkers();
+  layer = L.geoJSON(geojson, {
+    interactive,
     style: () => BASE,
     onEachFeature: (f, l) => {
-      byIso[f.id] = l;
-      l.on("click", () => clickHandler && clickHandler(f.id));
+      byId[f.id] = l;
+      if (interactive) l.on("click", () => featureClick && featureClick(f.id));
     },
   }).addTo(map);
-  return map;
+  return layer;
 }
 
 export function invalidate() {
   if (map) setTimeout(() => map.invalidateSize(), 50);
 }
+export function onFeatureClick(fn) { featureClick = fn; }
+export function onMapClick(fn) { mapClick = fn; }
+export function resetBase() { if (layer) layer.setStyle(BASE); }
 
-export function resetBase() {
-  if (layer) layer.setStyle(BASE);
-}
-
-export function setClickHandler(fn) {
-  clickHandler = fn;
-}
-
-function fitTo(iso3, maxZoom = 6) {
-  const l = byIso[iso3];
+function fitTo(id, maxZoom = 6) {
+  const l = byId[id];
   if (l) map.fitBounds(l.getBounds(), { padding: [30, 30], maxZoom });
 }
 
-// Surligne un pays et zoome dessus (jeu « Carte »).
-export function highlight(iso3) {
+export function highlight(id) {
   resetBase();
-  if (byIso[iso3]) byIso[iso3].setStyle(HILITE);
-  fitTo(iso3);
+  if (byId[id]) byId[id].setStyle(HILITE);
+  fitTo(id);
 }
 
-// Prépare le jeu « Place le pays » : dim hors-zone, cadre sur la zone.
-export function focusZone(isoList) {
-  const set = new Set(isoList);
+export function focusIds(idList) {
+  const set = new Set(idList);
   layer.eachLayer((l) => l.setStyle(set.has(l.feature.id) ? BASE : DIM));
-  const inZone = isoList.map((i) => byIso[i]).filter(Boolean);
-  if (inZone.length) {
-    let b = inZone[0].getBounds();
-    inZone.slice(1).forEach((l) => (b = b.extend(l.getBounds())));
+  const inSet = idList.map((i) => byId[i]).filter(Boolean);
+  if (inSet.length) {
+    let b = inSet[0].getBounds();
+    inSet.slice(1).forEach((l) => (b = b.extend(l.getBounds())));
     map.fitBounds(b, { padding: [20, 20] });
   }
 }
 
-// Marque la correction sur la carte (vert = bon, rouge = clic erroné).
-export function markResult(correctIso, clickedIso) {
-  if (byIso[correctIso]) byIso[correctIso].setStyle(GOOD);
-  if (clickedIso && clickedIso !== correctIso && byIso[clickedIso])
-    byIso[clickedIso].setStyle(BAD);
-  fitTo(correctIso);
+export function fitAll() {
+  if (layer) map.fitBounds(layer.getBounds(), { padding: [15, 15] });
+}
+
+export function markResult(correctId, clickedId) {
+  if (byId[correctId]) byId[correctId].setStyle(GOOD);
+  if (clickedId && clickedId !== correctId && byId[clickedId]) byId[clickedId].setStyle(BAD);
+  fitTo(correctId);
+}
+
+// Marqueurs ponctuels (jeu « place la ville »).
+export function addMarker(lat, lng, color) {
+  const m = L.circleMarker([lat, lng], {
+    radius: 7,
+    color: "#fff",
+    weight: 2,
+    fillColor: color,
+    fillOpacity: 1,
+  }).addTo(map);
+  markers.push(m);
+  return m;
+}
+export function clearMarkers() {
+  markers.forEach((m) => m.remove());
+  markers = [];
+}
+export function panTo(lat, lng, zoom = 6) {
+  if (map) map.setView([lat, lng], zoom);
 }
 
 // Tableau de bord : colore chaque pays selon sa maîtrise (0→1).
-export function choropleth(masteryByIso) {
+export function choropleth(masteryById) {
   resetBase();
   layer.eachLayer((l) => {
-    const m = masteryByIso[l.feature.id] || 0;
-    l.setStyle({
-      color: "#fff",
-      weight: 0.4,
-      fillOpacity: 1,
-      fillColor: m <= 0 ? "#eef0f2" : mix(m),
-    });
+    const m = masteryById[l.feature.id] || 0;
+    l.setStyle({ color: "#fff", weight: 0.4, fillOpacity: 1, fillColor: m <= 0 ? "#eef0f2" : mix(m) });
   });
   map.setView([25, 10], 2);
 }
-
-// dégradé gris clair → vert
 function mix(m) {
   const from = [155, 212, 155];
   const to = [46, 125, 50];

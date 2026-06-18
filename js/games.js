@@ -272,17 +272,69 @@ export function buildSmart(cands, state, recent) {
   return CANON[chosen.skill](cands, state, recent, chosen.c);
 }
 
+// --- France ---------------------------------------------------------------- //
+export const FR_SKILLS = {
+  fr_region: "Régions de France",
+  fr_dept: "Départements",
+  fr_city: "Villes de France",
+};
+export const FR_TOTALS = { fr_region: 13, fr_dept: 96, fr_city: 153 };
+export const CITY_THRESHOLD_KM = 35; // tolérance de clic pour « place la ville »
+
+function pickWeighted(items, idOf, state, skill, recent) {
+  const rec = new Set(recent);
+  let pool = items.filter((x) => !rec.has(idOf(x)));
+  if (!pool.length) pool = items.slice();
+  const w = pool.map((x) => srs.weight(store.getItem(state, skill, idOf(x))));
+  return weightedPick(pool, w);
+}
+
+function buildFrAdmin(features, skill) {
+  return (cands, state, recent) => {
+    const f = pickWeighted(features(), (x) => x.id, state, skill, recent);
+    const label = f.properties.nom;
+    const kind = skill === "fr_region" ? "la région" : "le département";
+    return q({
+      skill,
+      item: f.id,
+      correct: f.id,
+      correctLabel: label,
+      stimulus: { kind: "text", value: `Place ${kind} : <b>${label}</b>` },
+      interaction: "mapclick",
+    });
+  };
+}
+
+export const buildFrRegion = buildFrAdmin(() => data.france().reg.features, "fr_region");
+export const buildFrDept = buildFrAdmin(() => data.france().dep.features, "fr_dept");
+
+export function buildFrCity(cands, state, recent) {
+  const c = pickWeighted(data.france().cities, (x) => x.name, state, "fr_city", recent);
+  return q({
+    skill: "fr_city",
+    item: c.name,
+    correct: c.name,
+    correctLabel: c.name,
+    stimulus: { kind: "text", value: `Place la ville : <b>${c.name}</b>` },
+    interaction: "rawclick",
+    city: c,
+  });
+}
+
 // --- catalogue des jeux (ordre du menu) ------------------------------------ //
 export const GAMES = [
-  { key: "revision", title: "🧠 Révision intelligente", sub: "Ce que tu maîtrises le moins", build: buildSmart },
-  { key: "carte", title: "🗺️ Carte", sub: "Le pays surligné → son nom", build: buildLocate },
-  { key: "place", title: "📍 Place le pays", sub: "Clique le bon pays sur la carte", build: buildPlace },
-  { key: "drapeaux", title: "🚩 Drapeaux", sub: "Le drapeau → le pays", build: buildFlag },
-  { key: "trouve_drapeau", title: "🎯 Trouve le drapeau", sub: "Clique le bon drapeau", build: buildPickFlag },
-  { key: "capitales", title: "🏛️ Capitales", sub: "Le pays → sa capitale", build: buildCapital },
-  { key: "capitale_pays", title: "🏙️ Capitale → pays", sub: "La capitale → le pays", build: buildCapitalToCountry },
-  { key: "drapeau_capitale", title: "🚩 Drapeau → capitale", sub: "Le drapeau → la capitale", build: buildFlagToCapital },
-  { key: "voisins", title: "🤝 Voisins", sub: "Trouve un pays frontalier", build: buildNeighbor },
-  { key: "nb_voisins", title: "🔢 Combien de voisins", sub: "Nombre de frontières", build: buildNeighborCount },
-  { key: "plus_grand", title: "📏 Le plus grand", sub: "La plus grande superficie", build: buildLargest },
+  { key: "revision", title: "🧠 Révision intelligente", sub: "Ce que tu maîtrises le moins", build: buildSmart, context: "world" },
+  { key: "carte", title: "🗺️ Carte", sub: "Le pays surligné → son nom", build: buildLocate, context: "world" },
+  { key: "place", title: "📍 Place le pays", sub: "Clique le bon pays sur la carte", build: buildPlace, context: "world" },
+  { key: "drapeaux", title: "🚩 Drapeaux", sub: "Le drapeau → le pays", build: buildFlag, context: "world" },
+  { key: "trouve_drapeau", title: "🎯 Trouve le drapeau", sub: "Clique le bon drapeau", build: buildPickFlag, context: "world" },
+  { key: "capitales", title: "🏛️ Capitales", sub: "Le pays → sa capitale", build: buildCapital, context: "world" },
+  { key: "capitale_pays", title: "🏙️ Capitale → pays", sub: "La capitale → le pays", build: buildCapitalToCountry, context: "world" },
+  { key: "drapeau_capitale", title: "🚩 Drapeau → capitale", sub: "Le drapeau → la capitale", build: buildFlagToCapital, context: "world" },
+  { key: "voisins", title: "🤝 Voisins", sub: "Trouve un pays frontalier", build: buildNeighbor, context: "world" },
+  { key: "nb_voisins", title: "🔢 Combien de voisins", sub: "Nombre de frontières", build: buildNeighborCount, context: "world" },
+  { key: "plus_grand", title: "📏 Le plus grand", sub: "La plus grande superficie", build: buildLargest, context: "world" },
+  { key: "fr_region", title: "🇫🇷 Régions de France", sub: "Place la région sur la carte", build: buildFrRegion, context: "france-regions" },
+  { key: "fr_dept", title: "🇫🇷 Départements", sub: "Place le département", build: buildFrDept, context: "france-departements" },
+  { key: "fr_city", title: "🇫🇷 Villes de France", sub: "Place la ville (> 50 000 hab.)", build: buildFrCity, context: "france-cities" },
 ];

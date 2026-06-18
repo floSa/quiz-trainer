@@ -4,6 +4,7 @@
 let _countries = null;
 let _geo = null;
 let _byIso = null;
+let _fr = null;
 
 export async function load() {
   if (_countries) return;
@@ -47,3 +48,19 @@ export function flagUrl(iso2, w = 320) {
 export function neighbors(c) {
   return (c.borders || []).map((b) => _byIso[b]).filter(Boolean);
 }
+
+// --- France (chargé à la demande) ---
+export async function loadFrance() {
+  if (_fr) return _fr;
+  const [reg, dep, cities] = await Promise.all([
+    fetch("data/france/regions.geojson").then((r) => r.json()),
+    fetch("data/france/departements.geojson").then((r) => r.json()),
+    fetch("data/france/cities.json").then((r) => r.json()),
+  ]);
+  _fr = { reg, dep, cities };
+  return _fr;
+}
+export function france() {
+  return _fr;
+}
+

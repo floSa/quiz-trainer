@@ -1,4 +1,5 @@
-// Orchestrateur : navigation, filtre par zone, cycle de jeu, tableau de bord.
+// Orchestrateur : navigation, filtre par zone, contextes de carte (monde /
+// France), cycle de jeu, tableau de bord.
 import * as data from "./data.js";
 import * as store from "./store.js";
 import * as games from "./games.js";
@@ -7,20 +8,22 @@ import * as mapMod from "./map.js";
 const ZONES_KEY = "quiztrainer.zones.v1";
 
 let state = store.load();
-let gameKey = games.GAMES[0].key; // « Révision intelligente »
+let gameKey = games.GAMES[0].key;
 let candidates = [];
 let selectedRegions = [];
-const recent = {}; // gameKey -> [iso3]
-const session = {}; // gameKey -> {asked, ok}
+let mapContext = null; // "world" | "france-regions" | "france-departements" | "france-cities"
+const recent = {};
+const session = {};
 let currentQ = null;
 let answered = false;
 
 const $ = (id) => document.getElementById(id);
 
-// --------------------------------------------------------------------------- //
 async function init() {
   await data.load();
   mapMod.ensureMap("map");
+  mapMod.onFeatureClick(onFeatureClick);
+  mapMod.onMapClick(onRawClick);
   selectedRegions = loadZones();
   candidates = data.countriesIn(selectedRegions);
   buildSidebar();
@@ -56,7 +59,6 @@ function buildSidebar() {
   const zl = $("zone-list");
   zl.innerHTML = "";
   data.regions().forEach((r) => {
-    const id = "zone-" + r;
     const wrap = document.createElement("label");
     wrap.className = "zone";
     wrap.innerHTML = `<input type="checkbox" value="${r}" ${selectedRegions.includes(r) ? "checked" : ""}> ${r}`;
@@ -68,8 +70,7 @@ function buildSidebar() {
     if (confirm("Effacer toute ta progression ?")) {
       store.reset();
       state = store.load();
-      if ($("dashboard").hidden) selectGame(gameKey);
-      else selectDashboard();
+      $("dashboard").hidden ? selectGame(gameKey) : selectDashboard();
     }
   };
 }
@@ -83,7 +84,21 @@ function onZoneChange() {
 }
 
 // --------------------------------------------------------------------------- //
-function selectGame(key) {
+async function setContext(ctx) {
+  if (ctx === mapContext) return;
+  if (ctx === "world") {
+    mapMod.setLayer(data.geo());
+  } else {
+    await data.loadFrance();
+    const fr = data.france();
+    if (ctx === "france-regions") mapMod.setLayer(fr.reg);
+    else if (ctx === "france-departements") mapMod.setLayer(fr.dep);
+    else mapMod.setLayer(fr.dep, { interactive: false }); // villes : fond + clic libre
+  }
+  mapContext = ctx;
+}
+
+async function selectGame(key) {
   gameKey = key;
   $("dashboard").hidden = true;
   $("game").hidden = false;
@@ -91,25 +106,14 @@ function selectGame(key) {
   const g = games.GAMES.find((x) => x.key === key);
   $("g-title").textContent = g.title;
   $("g-sub").textContent = g.sub || "";
+  await setContext(g.context);
   newRound();
 }
 
-function recentOf() {
-  return (recent[gameKey] = recent[gameKey] || []);
-}
-function sessionOf() {
-  return (session[gameKey] = session[gameKey] || { asked: 0, ok: 0 });
-}
+const recentOf = () => (recent[gameKey] = recent[gameKey] || []);
+const sessionOf = () => (session[gameKey] = session[gameKey] || { asked: 0, ok: 0 });
 
 function newRound() {
-  if (!candidates.length) {
-    $("prompt").textContent = "Coche au moins une région à gauche.";
-    $("stim").querySelectorAll(":not(#map)").forEach((e) => e.remove());
-    $("map").style.display = "none";
-    $("options").innerHTML = "";
-    $("feedback").innerHTML = "";
-    return;
-  }
   const g = games.GAMES.find((x) => x.key === gameKey);
   currentQ = g.build(candidates, state, recentOf());
   answered = false;
@@ -125,7 +129,7 @@ function renderStimulus(q) {
   const map = $("map");
   $("prompt").innerHTML = q.ask || (q.stimulus.kind === "text" ? q.stimulus.value : "");
 
-  const useMap = q.stimulus.kind === "map" || q.interaction === "mapclick";
+  const useMap = q.stimulus.kind === "map" || q.interaction === "mapclick" || q.interaction === "rawclick";
   map.style.display = useMap ? "block" : "none";
 
   let flag = $("flag-stim");
@@ -144,20 +148,16 @@ function renderStimulus(q) {
 
   if (useMap) {
     mapMod.invalidate();
-    if (q.stimulus.kind === "map") {
-      mapMod.setClickHandler(null);
-      mapMod.highlight(q.stimulus.value);
-    } else {
-      mapMod.setClickHandler(onMapClick);
-      mapMod.focusZone(candidates.map((c) => c.iso3));
-    }
+    if (q.stimulus.kind === "map") mapMod.highlight(q.stimulus.value); // monde : pays surligné
+    else if (mapContext === "world") mapMod.focusIds(candidates.map((c) => c.iso3)); // place le pays
+    else mapMod.fitAll(); // France : régions/départements/villes
   }
 }
 
 function renderOptions(q) {
   const box = $("options");
   box.innerHTML = "";
-  if (q.interaction === "mapclick") {
+  if (q.interaction !== "options") {
     box.hidden = true;
     return;
   }
@@ -180,30 +180,43 @@ function renderOptions(q) {
   });
 }
 
-function onMapClick(iso) {
-  answer(iso);
+// --------------------------------------------------------------------------- //
+function onFeatureClick(id) {
+  if (answered || !currentQ || currentQ.interaction !== "mapclick") return;
+  answer(id);
 }
 
-// --------------------------------------------------------------------------- //
+function onRawClick(latlng) {
+  if (answered || !currentQ || currentQ.interaction !== "rawclick") return;
+  const c = currentQ.city;
+  const d = haversine(latlng, c);
+  const correct = d <= games.CITY_THRESHOLD_KM;
+  grade(correct);
+  mapMod.addMarker(c.lat, c.lng, "#2e7d32");
+  if (!correct) mapMod.addMarker(latlng.lat, latlng.lng, "#e8453c");
+  mapMod.panTo(c.lat, c.lng, 6);
+  currentQ.explain = `${c.name} — ton clic était à ${Math.round(d)} km`;
+  showFeedback(correct);
+}
+
 function answer(chosenId) {
   if (answered) return;
-  answered = true;
   const correct = chosenId === currentQ.correct;
-  store.record(state, currentQ.skill, currentQ.item, correct);
+  grade(correct);
+  if (currentQ.interaction === "options") markOptions(chosenId);
+  else mapMod.markResult(currentQ.correct, chosenId);
+  showFeedback(correct);
+}
 
+function grade(correct) {
+  answered = true;
+  store.record(state, currentQ.skill, currentQ.item, correct);
   const r = recentOf();
   r.push(currentQ.item);
-  const cap = Math.max(1, Math.min(8, Math.floor(candidates.length / 3)));
-  if (r.length > cap) r.splice(0, r.length - cap);
-
+  if (r.length > 8) r.splice(0, r.length - 8);
   const s = sessionOf();
   s.asked++;
   if (correct) s.ok++;
-
-  markOptions(chosenId);
-  if (currentQ.interaction === "mapclick") mapMod.markResult(currentQ.correct, chosenId);
-
-  showFeedback(correct);
   renderSession();
 }
 
@@ -216,6 +229,7 @@ function markOptions(chosenId) {
 }
 
 function labelFor(id) {
+  if (currentQ.correctLabel && id === currentQ.correct) return currentQ.correctLabel;
   const o = (currentQ.options || []).find((o) => o.id === id);
   if (o) return o.label;
   const c = data.byIso3(id);
@@ -228,24 +242,34 @@ function showFeedback(correct) {
     ? `<span class="badge ok">✅ Bravo !</span>`
     : `<span class="badge ko">❌ Raté — <b>${labelFor(currentQ.correct)}</b></span>`;
   const pct = Math.round((store.getItem(state, currentQ.skill, currentQ.item).m || 0) * 100);
-  let sub = `Maîtrise « ${games.SKILLS[currentQ.skill]} » : ${pct} %`;
+  const skillName = games.SKILLS[currentQ.skill] || games.FR_SKILLS[currentQ.skill] || currentQ.skill;
+  let sub = `Maîtrise « ${skillName} » : ${pct} %`;
   if (currentQ.explain) sub += ` · ${currentQ.explain}`;
 
-  let revealHtml = "";
+  let reveal = "";
   if (currentQ.reveal && currentQ.reveal.kind === "flag") {
     const c = currentQ.reveal.value;
-    revealHtml = `<img class="reveal-flag" src="${data.flagUrl(c.iso2, 160)}" alt=""><span class="reveal-name">${c.name}</span>`;
+    reveal = `<img class="reveal-flag" src="${data.flagUrl(c.iso2, 160)}" alt=""><span class="reveal-name">${c.name}</span>`;
   }
 
   fb.innerHTML = `
     <div class="fb-row">${badge}<button id="next" class="next">Suivant ▶</button></div>
-    <div class="fb-sub">${revealHtml}${sub}</div>`;
+    <div class="fb-sub">${reveal}${sub}</div>`;
   $("next").onclick = newRound;
 }
 
 function renderSession() {
   const s = sessionOf();
   $("session").textContent = s.asked ? `Session : ${s.ok}/${s.asked} bonnes réponses` : "";
+}
+
+function haversine(a, b) {
+  const R = 6371;
+  const rad = (x) => (x * Math.PI) / 180;
+  const dLat = rad(b.lat - a.lat);
+  const dLng = rad(b.lng - a.lng);
+  const s = Math.sin(dLat / 2) ** 2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(s));
 }
 
 // --------------------------------------------------------------------------- //
@@ -275,29 +299,33 @@ function selectDashboard() {
     `<div class="row"><span>${label}</span><b>${Math.round(frac * 100)} %</b></div>
      <div class="track"><div class="fill" style="width:${Math.round(frac * 100)}%"></div></div>`;
 
-  const skillBars = skills
-    .map((s) => bar(games.SKILLS[s], mean(cs.map((c) => store.getItem(state, s, c.iso3).m || 0))))
-    .join("");
-  const regionBars = data
-    .regions()
-    .map((r) => {
-      const rc = data.countriesIn([r]);
-      return bar(r, mean(rc.flatMap((c) => skills.map((s) => store.getItem(state, s, c.iso3).m || 0))));
-    })
-    .join("");
+  const skillBars = skills.map((s) => bar(games.SKILLS[s], mean(cs.map((c) => store.getItem(state, s, c.iso3).m || 0)))).join("");
+  const regionBars = data.regions().map((r) => {
+    const rc = data.countriesIn([r]);
+    return bar(r, mean(rc.flatMap((c) => skills.map((s) => store.getItem(state, s, c.iso3).m || 0))));
+  }).join("");
+
+  const frBars = Object.keys(games.FR_SKILLS).map((s) => {
+    const totalFr = games.FR_TOTALS[s];
+    const sum = Object.keys(state.items)
+      .filter((k) => k.startsWith(s + ":"))
+      .reduce((a, k) => a + (state.items[k].m || 0), 0);
+    return bar(games.FR_SKILLS[s], totalFr ? sum / totalFr : 0);
+  }).join("");
 
   $("dashboard").innerHTML = `
     <h1>📊 Tableau de bord</h1>
     <p class="muted">Ton niveau mesure tes connaissances réelles — pas le score d'un quiz.</p>
     <div class="metrics">
-      <div class="metric"><div class="big">${Math.round(overall * 100)} %</div><div>Niveau global</div></div>
+      <div class="metric"><div class="big">${Math.round(overall * 100)} %</div><div>Niveau global (monde)</div></div>
       <div class="metric"><div class="big">${learned} / ${total}</div><div>Connaissances acquises</div></div>
       <div class="metric"><div class="big">${inProgress}</div><div>En cours</div></div>
       <div class="metric"><div class="big">${due}</div><div>À revoir</div></div>
     </div>
     <div class="cols">
-      <div><h3>Par compétence</h3>${skillBars}</div>
-      <div><h3>Par région</h3>${regionBars}</div>
+      <div><h3>Par compétence (monde)</h3>${skillBars}</div>
+      <div><h3>Par région (monde)</h3>${regionBars}</div>
+      <div><h3>🇫🇷 France</h3>${frBars}</div>
     </div>`;
 }
 
@@ -305,12 +333,10 @@ function mean(arr) {
   return arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
 }
 
-// --------------------------------------------------------------------------- //
 document.addEventListener("keydown", (e) => {
   if ($("game").hidden) return;
-  if (e.key === "Enter" && answered) {
-    newRound();
-  } else if (/^[1-9]$/.test(e.key) && !answered) {
+  if (e.key === "Enter" && answered) newRound();
+  else if (/^[1-9]$/.test(e.key) && !answered) {
     const btns = [...document.querySelectorAll("#options [data-id]")];
     const i = parseInt(e.key, 10) - 1;
     if (btns[i]) btns[i].click();
