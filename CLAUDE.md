@@ -1,76 +1,78 @@
 # Guide du dépôt (pour Claude)
 
-App Streamlit perso de révision de géographie (répétition espacée). Projet
-séparé d'Elivie. Commits sous l'identité **perso FloSa**
-(`florian.horellou@gmail.com`), remote via l'hôte SSH `github.com-perso`.
+App web perso de quiz géo (répétition espacée), dépôt distant **floSa/quiz-trainer**
+(cf. mémoire identités : commits perso FloSa, remote `github.com-perso`). Le
+périmètre s'élargira au-delà de la géo (d'où « quiz-trainer »).
 
-## Lancer / tester
+Stack : **HTML/CSS/JS statique + Leaflet** (CDN). Aucun build, aucun backend.
+Progression dans `localStorage`. Une 1ʳᵉ version Streamlit a été remplacée par
+cette app web (carte cliquable fluide).
+
+## Lancer
 
 ```bash
-source .venv/bin/activate
-streamlit run app.py
-python tests/test_builders.py   # logique, hors Streamlit (rapide)
-python tests/test_smoke.py      # AppTest sur les 14 pages
+python3 -m http.server 8531   # depuis la racine du projet → http://localhost:8531
 ```
+Toujours servir en http (les modules ES + `fetch` ne marchent pas en `file://`).
 
-Sur cette machine WSL : `python3-venv` est incomplet et pip « externally
-managed ». Recréer le venv avec `python3 -m venv .venv --without-pip` puis
-amorcer pip via `get-pip.py` (voir README § Environnement).
+## Architecture (js/, modules ES)
 
-## Architecture
+Flux : **data → srs/store → games → app/map → DOM**.
 
-Flux : **data → quiz → games → components → pages**.
+- `srs.js` — maîtrise `m∈[0,1]` + échéance. **Pur** (pas de DOM/stockage). Testable seul.
+- `store.js` — `load/save/getItem/record/reset` dans `localStorage`. Clé `"skill:iso3"`.
+- `data.js` — `load()` (fetch countries.json + world.geojson), `countries`,
+  `regions`, `countriesIn`, `flagUrl`, `neighbors`, `byIso3`, `geo`.
+- `games.js` — `SKILLS`, `pickCountry` (tirage pondéré), un `build*` par jeu,
+  `CANON` (compétence → générateur canonique, pour `buildSmart`), et `GAMES`
+  (catalogue ordonné pour le menu). Format **question** ci-dessous.
+- `map.js` — singleton Leaflet sans tuiles (fond neutre, polygones des pays) :
+  `ensureMap`, `highlight(iso3)` (zoom serré), `focusZone(isoList)`,
+  `setClickHandler`, `markResult`, `choropleth`.
+- `app.js` — navigation, filtre régions, cycle de manche (build → afficher →
+  corriger → feedback **en ligne** → suivant), tableau de bord.
 
-- `geo/data.py` — charge `data/countries.json` (pays = `{iso2, iso3, name,
-  capital, region, subregion, borders, area}`), expose `countries_in`,
-  `regions`, `flag_url`, `neighbors`, `map_scope`.
-- `geo/srs.py` — maîtrise `m∈[0,1]` + échéance. **Pur, sans I/O ni Streamlit.**
-  `review(item, correct)`, `weight(item)`, `is_learned`.
-- `geo/store.py` — `load/save/record` la progression dans
-  `progress/progress.json`. Clé d'item = `"<skill>:<iso3>"`.
-- `geo/quiz.py` — `SKILLS` (locate, flag, capital, region, neighbors, size),
-  `pick_country` (tirage pondéré), `options` (QCM pays), `mcq_values` (QCM
-  valeurs).
-- `geo/games.py` — un générateur `build_xxx(cands, state, recent, country=None)`
-  par jeu. Renvoie une **question** (voir format ci-dessous). `CANON` mappe une
-  compétence → son générateur canonique, utilisé par `build_smart` (révision).
-- `geo/components.py` — `play(page_key, build)` : machine à états d'une manche
-  (tirage → affichage → correction → maîtrise → suivant). Affichage piloté par
-  le format question, donc générique.
-- `pages/NN_*.py` — ~5 lignes : `set_page_config`, titre, `components.play(...)`.
+### Format « question » (contrat games ↔ app)
 
-### Format « question » (contrat entre games et components)
-
-```python
+```js
 {
-  "skill":   "capital",                 # clé de quiz.SKILLS, met à jour la maîtrise
-  "item":    "FRA",                      # iso3 dont la maîtrise est mise à jour
-  "prompt":  ("text", "...") | ("map", country) | ("flag", country),
-  "options": [{"id": str, "label": str, "kind": "text"|"flag"|"map",
-               "country": dict|None}, ...],  # toutes les options ont le même kind
-  "correct": "<id de la bonne option>",
-  "explain": str | None,                 # affiché après réponse
-  "reveal":  ("map"|"flag", country) | None,
+  skill, item,                 // item = iso3 dont la maîtrise est mise à jour
+  correct,                     // id de la bonne option (ou iso3 pour mapclick)
+  stimulus: {kind, value},     // kind: "text"(html) | "flag"(pays) | "map"(iso3)
+  ask,                         // (option.) question affichée pour stimulus flag/map
+  interaction: "options"|"mapclick",
+  optionKind: "text"|"flag"|null,
+  options: [{id, label, country}],
+  explain, reveal,             // (option.) reveal: {kind:"map"|"flag", value}
 }
 ```
-
-Correction : `chosen_id == correct`. La maîtrise de `(skill, item)` est mise à
-jour, puis sauvegardée.
+Correction : `chosenId === correct`. `app.answer()` met à jour `(skill, item)`.
 
 ## Ajouter un jeu
 
-1. Écrire `build_xxx(cands, state, recent, country=None)` dans `geo/games.py`
-   renvoyant une question (réutiliser `quiz.pick_country`, `quiz.options`,
-   `quiz.mcq_values`, `_country_opts`, `_value_opts`). Si la compétence est
-   nouvelle, l'ajouter à `quiz.SKILLS`.
-2. Créer `pages/NN_Nom.py` appelant `components.play("clé_unique", games.build_xxx)`.
-3. Ajouter le jeu (ou sa clé) aux tests : liste `BUILDERS` (test_builders) et,
-   si la mécanique d'affichage est inédite, `CYCLES` (test_smoke).
+1. `build*(cands, state, recent, country)` dans `games.js` renvoyant une question
+   (réutiliser `pickCountry`, `countryOptions`, `textOpts`, `valueOpts`). Nouvelle
+   compétence → l'ajouter à `SKILLS` (et à `CANON` si elle a une forme canonique
+   pour la révision intelligente).
+2. L'ajouter au catalogue `GAMES` (clé, title, sub, build).
+
+## Données
+
+Régénérer via `scripts/build_data.py` (pays) et `scripts/build_geo.py`
+(world.geojson, Natural Earth 50m réduit). Stdlib Python uniquement. Ne pas
+éditer les JSON à la main.
 
 ## Conventions
 
-- Code et libellés en **français**. Docstrings courtes et utiles.
-- `srs.py` reste pur (testable sans Streamlit). Toute l'I/O passe par `store`.
-- Pas d'`use_container_width` (déprécié) → `width="stretch"`.
-- Régénérer les données via `scripts/build_data.py` (ne pas éditer le JSON à la
-  main).
+- FR pour le code et les intitulés. Intitulés sans article : « Pays : question ? ».
+- `srs.js` reste pur. Toute persistance via `store.js`.
+- Carte sans tuiles (pas d'étiquettes → pas de triche, et hors-ligne hors drapeaux).
+
+## À faire / pistes
+
+- **Module France** : régions, départements, villes > 50 000 hab. (mêmes
+  mécaniques place-sur-carte, par zone) — données : france-geojson + communes.
+- Tests JS (la logique `srs`/`games` est pure → testable en node avec données injectées).
+- Quelques capitales restent en forme internationale (ex. « Tashkent » → « Tachkent ») :
+  compléter `CAPITAL_FR` dans `scripts/build_data.py`.
+- Carte des connaissances (choroplèthe) dans le tableau de bord (`map.choropleth` existe déjà).
