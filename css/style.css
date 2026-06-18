@@ -12,6 +12,7 @@
 
 * { box-sizing: border-box; }
 html, body { height: 100%; margin: 0; }
+[hidden] { display: none !important; } /* sinon .view{display:flex} écrase hidden */
 body {
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   background: var(--bg);
@@ -59,17 +60,21 @@ h3 { margin: 0 0 8px; font-size: 0.95rem; color: var(--muted); }
 
 /* ---------- Main / game ---------- */
 #main { flex: 1; min-width: 0; display: flex; }
-.view { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 18px 28px; }
-#game { overflow: hidden; } /* tout doit tenir sans scroll */
+.view {
+  flex: 1; min-height: 0; display: flex; flex-direction: column;
+  padding: 18px 28px; overflow-y: auto;
+}
+/* colonne de contenu centrée, large mais bornée */
+.ghead, .prompt, .stim, .options, .feedback, .session { width: 100%; max-width: 1100px; margin-inline: auto; }
 
-.ghead { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.ghead { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; justify-content: center; }
 #g-sub { color: var(--muted); font-size: 0.9rem; }
-.prompt { font-size: 1.35rem; margin: 10px 0 12px; min-height: 1.6rem; }
+.prompt { font-size: 1.4rem; margin: 10px 0 12px; min-height: 1.6rem; text-align: center; }
 .prompt b { color: #fff; }
 
 .stim { display: flex; justify-content: center; align-items: center; min-height: 0; }
 #map {
-  width: 100%; height: 48vh; border-radius: 12px;
+  width: 100%; height: 66vh; border-radius: 12px;
   background: var(--ocean); border: 1px solid var(--line);
 }
 .leaflet-container { background: var(--ocean); border-radius: 12px; }
@@ -118,6 +123,15 @@ h3 { margin: 0 0 8px; font-size: 0.95rem; color: var(--muted); }
 .row { display: flex; justify-content: space-between; font-size: 0.9rem; margin: 10px 0 4px; }
 .track { background: var(--panel2); border-radius: 6px; height: 8px; overflow: hidden; }
 .fill { background: var(--good); height: 100%; }
+
+/* Détail par connaissance */
+.detail details { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; margin: 8px 0; padding: 6px 12px; }
+.detail summary { cursor: pointer; font-weight: 600; padding: 4px 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 6px; }
+.chip { font-size: 0.8rem; padding: 3px 9px; border-radius: 12px; border: 1px solid var(--line); white-space: nowrap; }
+.chip.low { background: rgba(232,69,60,0.16); color: #ff8a82; }
+.chip.mid { background: rgba(230,170,40,0.16); color: #e7b34a; }
+.chip.good { background: rgba(46,125,50,0.20); color: #7bd88a; }
 
 @media (max-width: 720px) {
   #sidebar { width: 180px; flex-basis: 180px; }
