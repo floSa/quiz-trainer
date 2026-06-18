@@ -30,17 +30,15 @@ pas — les modules JS et `fetch` exigent http.)
 | 🎯 Trouve le drapeau | pays → clique le bon drapeau |
 | 🏛️ Capitales | pays → capitale |
 | 🏙️ Capitale → pays | capitale → pays |
-| 🚩 Drapeau → capitale | drapeau → capitale |
 | 🤝 Voisins | trouve un pays frontalier |
-| 🔢 Combien de voisins | nombre de frontières |
-| 📏 Le plus grand | plus grande superficie parmi 4 |
 | 🇫🇷 Régions de France | place la région sur la carte |
 | 🇫🇷 Départements | place le département sur la carte |
 | 🇫🇷 Villes de France | place la ville > 50 000 hab. (clic, tolérance 35 km) |
+| 🇺🇸 États américains | place l'état sur la carte (48 contigus, noms FR) |
 
 Filtre les **régions** (du monde) à réviser dans la barre latérale (les jeux de
 carte se cadrent alors sur la zone choisie). Les jeux 🇫🇷 portent sur la France
-métropolitaine.
+métropolitaine, le jeu 🇺🇸 sur les 48 états contigus.
 
 ## Comment ça marche
 
@@ -50,7 +48,8 @@ métropolitaine.
   élevée → dans plusieurs jours.
 - Le **tirage** est pondéré vers les connaissances faibles/en retard.
 - Le **niveau** (tableau de bord) agrège la maîtrise sur tous les pays et
-  compétences.
+  compétences. Un **détail par connaissance** liste chaque pays/département/état
+  déjà rencontré avec sa maîtrise % (du plus faible au plus sûr).
 
 ## Données
 
@@ -63,6 +62,8 @@ métropolitaine.
 - Drapeaux : [flagcdn.com](https://flagcdn.com) (en ligne).
 - France : régions/départements [france-geojson](https://github.com/gregoiredavid/france-geojson)
   + villes [GeoNames](https://www.geonames.org/).  → `python scripts/build_france.py`
+- États-Unis : [PublicaMundi/MappingAPI](https://github.com/PublicaMundi/MappingAPI)
+  (us-states), 48 états contigus, noms FR.  → `python scripts/build_usa.py`
 
 Les scripts n'utilisent que la bibliothèque standard de Python.
 
@@ -74,14 +75,15 @@ css/style.css
 js/
   srs.js      moteur de maîtrise (répétition espacée, pur)
   store.js    persistance localStorage
-  data.js     chargement pays + géométries
+  data.js     chargement pays + géométries (monde, France, US — à la demande)
   games.js    un générateur de question par jeu
-  map.js      helpers Leaflet (surlignage, clic, zoom, choroplèthe)
+  map.js      helpers Leaflet (couches monde/France/US, surlignage, clic, choroplèthe)
   app.js      navigation, filtre régions, cycle de jeu, tableau de bord
 data/
-  countries.json
-  world.geojson
-scripts/      build_data.py, build_geo.py
+  countries.json   world.geojson
+  france/          regions.geojson, departements.geojson, cities.json
+  usa/             states.geojson
+scripts/    build_data.py, build_geo.py, build_france.py, build_usa.py
 ```
 
 > Historique : une première version Streamlit (branche/historique git) a été

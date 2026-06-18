@@ -21,32 +21,40 @@ Flux : **data → srs/store → games → app/map → DOM**.
 
 - `srs.js` — maîtrise `m∈[0,1]` + échéance. **Pur** (pas de DOM/stockage). Testable seul.
 - `store.js` — `load/save/getItem/record/reset` dans `localStorage`. Clé `"skill:iso3"`.
-- `data.js` — `load()` (fetch countries.json + world.geojson), `countries`,
-  `regions`, `countriesIn`, `flagUrl`, `neighbors`, `byIso3`, `geo`.
-- `games.js` — `SKILLS`, `pickCountry` (tirage pondéré), un `build*` par jeu,
-  `CANON` (compétence → générateur canonique, pour `buildSmart`), et `GAMES`
-  (catalogue ordonné pour le menu). Format **question** ci-dessous.
-- `map.js` — singleton Leaflet sans tuiles (fond neutre, polygones des pays) :
-  `ensureMap`, `highlight(iso3)` (zoom serré), `focusZone(isoList)`,
-  `setClickHandler`, `markResult`, `choropleth`.
-- `app.js` — navigation, filtre régions, cycle de manche (build → afficher →
-  corriger → feedback **en ligne** → suivant), tableau de bord.
+- `data.js` — `load()` (countries.json + world.geojson), `countries`, `regions`,
+  `countriesIn`, `flagUrl`, `neighbors`, `byIso3`, `geo` ; et **à la demande**
+  `loadFrance`/`france`, `loadUsa`/`usa`.
+- `games.js` — `SKILLS` (monde), `FR_SKILLS`/`US_SKILLS` + `*_TOTALS`,
+  `pickCountry`/`pickWeighted` (tirage pondéré), un `build*` par jeu, `CANON`
+  (compétence monde → générateur, pour `buildSmart`), et `GAMES` (catalogue du
+  menu, chaque entrée a un `context`). Format **question** ci-dessous.
+- `map.js` — singleton Leaflet sans tuiles, **couche interchangeable** :
+  `ensureMap`, `setLayer(geojson,{interactive})` (monde/France/US), `highlight(id)`,
+  `focusIds(idList)`, `fitAll`, `resetBase`, `onFeatureClick`/`onMapClick`,
+  `markResult`, `addMarker`/`clearMarkers`/`panTo`, `choropleth`.
+- `app.js` — navigation (**jeton anti-désync** car async), filtre régions,
+  `setContext` (couche monde/France/US ; données préchargées au démarrage), cycle
+  de manche (build → afficher → corriger → feedback **en ligne** → suivant),
+  tableau de bord (dont **détail par item**).
 
 ### Format « question » (contrat games ↔ app)
 
 ```js
 {
-  skill, item,                 // item = iso3 dont la maîtrise est mise à jour
-  correct,                     // id de la bonne option (ou iso3 pour mapclick)
+  skill, item,                 // item = clé de maîtrise (iso3 / code dept / nom état…)
+  correct,                     // id de la bonne réponse
+  correctLabel,                // (option.) libellé lisible si id ≠ libellé (France/US)
   stimulus: {kind, value},     // kind: "text"(html) | "flag"(pays) | "map"(iso3)
   ask,                         // (option.) question affichée pour stimulus flag/map
-  interaction: "options"|"mapclick",
+  interaction: "options"|"mapclick"|"rawclick",  // rawclick = clic libre, correction à la distance
+  city,                        // (rawclick) {name,lat,lng}
   optionKind: "text"|"flag"|null,
   options: [{id, label, country}],
   explain, reveal,             // (option.) reveal: {kind:"map"|"flag", value}
 }
 ```
-Correction : `chosenId === correct`. `app.answer()` met à jour `(skill, item)`.
+Correction : `chosenId === correct` (ou distance ≤ `CITY_THRESHOLD_KM` pour
+`rawclick`). `app` met à jour la maîtrise de `(skill, item)`.
 
 ## Ajouter un jeu
 
@@ -68,13 +76,24 @@ Régénérer via `scripts/build_data.py` (pays) et `scripts/build_geo.py`
 - `srs.js` reste pur. Toute persistance via `store.js`.
 - Carte sans tuiles (pas d'étiquettes → pas de triche, et hors-ligne hors drapeaux).
 
-## Module France (fait)
+## Modules France & États-Unis (faits)
 
-Couche Leaflet interchangeable (`map.setLayer`). 3 jeux place-sur-carte :
-régions (13) / départements (96) via clic du polygone, villes >50k (153) via
-clic libre corrigé à la distance (seuil `CITY_THRESHOLD_KM`). Compétences
-`fr_region/fr_dept/fr_city`, section France au tableau de bord. Données :
-`scripts/build_france.py` (france-geojson + GeoNames), `data/france/`.
+Couche Leaflet interchangeable (`map.setLayer`). Jeux place-sur-carte :
+- **France** : régions (13) / départements (96) par clic du polygone, villes >50k
+  (153) par **clic libre** corrigé à la distance (`CITY_THRESHOLD_KM`). Compétences
+  `fr_region/fr_dept/fr_city`. Données `scripts/build_france.py` → `data/france/`.
+- **États-Unis** : 48 états contigus (noms FR) par clic du polygone, compétence
+  `us_state`, contexte `usa-states`. Données `scripts/build_usa.py` → `data/usa/`.
+
+Le tableau de bord agrège ces compétences (sections dédiées) + un **détail par
+item** (chaque pays/département/ville/état rencontré avec sa maîtrise %).
+
+## Pièges connus
+
+- `[hidden]{display:none!important}` est requis : `.view{display:flex}` écrasait
+  l'attribut `hidden` → le dashboard masqué occupait la moitié de l'écran.
+- `selectGame` est async (chargement France/US) → **jeton de navigation** pour
+  ignorer une sélection devenue obsolète (évite titre/contenu désynchronisés).
 
 ## À faire / pistes
 
