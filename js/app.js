@@ -16,6 +16,7 @@ const recent = {};
 const session = {};
 let currentQ = null;
 let answered = false;
+let navToken = 0; // anti-désync quand on change de jeu pendant un chargement
 
 const $ = (id) => document.getElementById(id);
 
@@ -85,12 +86,12 @@ function onZoneChange() {
 }
 
 // --------------------------------------------------------------------------- //
-async function setContext(ctx) {
+// Synchrone : les données France sont déjà chargées (préchargement / await amont).
+function setContext(ctx) {
   if (ctx === mapContext) return;
   if (ctx === "world") {
     mapMod.setLayer(data.geo());
   } else {
-    await data.loadFrance();
     const fr = data.france();
     if (ctx === "france-regions") mapMod.setLayer(fr.reg);
     else if (ctx === "france-departements") mapMod.setLayer(fr.dep);
@@ -100,6 +101,7 @@ async function setContext(ctx) {
 }
 
 async function selectGame(key) {
+  const token = ++navToken;
   gameKey = key;
   $("dashboard").hidden = true;
   $("game").hidden = false;
@@ -108,17 +110,22 @@ async function selectGame(key) {
   $("g-title").textContent = g.title;
   $("g-sub").textContent = g.sub || "";
   // on vide l'écran précédent tout de suite (sinon il reste affiché pendant
-  // le chargement async des données France → impression de blocage)
+  // le chargement des données France → impression de blocage)
   $("options").innerHTML = "";
   $("options").hidden = true;
   $("feedback").innerHTML = "";
   $("prompt").innerHTML = g.context === "world" ? "" : "⏳ Chargement de la carte…";
-  try {
-    await setContext(g.context);
-  } catch (e) {
-    $("prompt").textContent = "⚠️ Impossible de charger les données : " + e.message;
-    return;
+
+  if (g.context !== "world" && !data.france()) {
+    try {
+      await data.loadFrance();
+    } catch (e) {
+      if (token === navToken) $("prompt").textContent = "⚠️ Impossible de charger les données : " + e.message;
+      return;
+    }
   }
+  if (token !== navToken) return; // un clic plus récent a pris la main → on abandonne
+  setContext(g.context);
   newRound();
 }
 
