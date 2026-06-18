@@ -77,9 +77,10 @@ export function fitAll() {
 }
 
 export function markResult(correctId, clickedId) {
+  // On recolore sans rezoomer : la vue reste stable (toute la France / la zone),
+  // on voit donc la bonne réponse dans son contexte.
   if (byId[correctId]) byId[correctId].setStyle(GOOD);
   if (clickedId && clickedId !== correctId && byId[clickedId]) byId[clickedId].setStyle(BAD);
-  fitTo(correctId);
 }
 
 // Marqueurs ponctuels (jeu « place la ville »).

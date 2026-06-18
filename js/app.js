@@ -160,9 +160,16 @@ function renderStimulus(q) {
 
   if (useMap) {
     mapMod.invalidate();
-    if (q.stimulus.kind === "map") mapMod.highlight(q.stimulus.value); // monde : pays surligné
-    else if (mapContext === "world") mapMod.focusIds(candidates.map((c) => c.iso3)); // place le pays
-    else mapMod.fitAll(); // France : régions/départements/villes
+    if (q.stimulus.kind === "map") {
+      mapMod.highlight(q.stimulus.value); // monde : pays surligné
+    } else if (mapContext === "world") {
+      mapMod.focusIds(candidates.map((c) => c.iso3)); // place le pays
+    } else {
+      // France : on efface l'ancien surlignage/marqueurs et on recadre
+      mapMod.resetBase();
+      mapMod.clearMarkers();
+      mapMod.fitAll();
+    }
   }
 }
 
