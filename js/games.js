@@ -14,7 +14,6 @@ export const SKILLS = {
   flag: "Reconnaître le drapeau",
   capital: "Connaître la capitale",
   neighbors: "Connaître les voisins",
-  size: "Comparer les superficies",
 };
 
 // --- petits utilitaires aléatoires ---------------------------------------- //
@@ -152,27 +151,12 @@ export function buildCapitalToCountry(cands, state, recent, country) {
   });
 }
 
-export function buildFlagToCapital(cands, state, recent, country) {
-  const c = country || pickCountry(cands, state, "capital", recent);
-  return q({
-    skill: "capital",
-    item: c.iso3,
-    correct: c.iso3,
-    stimulus: { kind: "flag", value: c },
-    ask: "Quelle est la capitale de ce pays ?",
-    interaction: "options",
-    optionKind: "text",
-    options: textOpts(countryOptions(c, cands), (x) => x.capital),
-    explain: `${c.name} → ${c.capital}`,
-  });
-}
-
 // --- neighbors ------------------------------------------------------------- //
 export function buildNeighbor(cands, state, recent, country) {
   const candIso = new Set(cands.map((c) => c.iso3));
   const nin = (c) => data.neighbors(c).filter((n) => candIso.has(n.iso3));
   const eligible = cands.filter((c) => nin(c).length);
-  if (!eligible.length) return buildLargest(cands, state, recent);
+  if (!eligible.length) return buildCapital(cands, state, recent);
   const c = country && nin(country).length
     ? country
     : pickCountry(eligible, state, "neighbors", recent);
@@ -192,54 +176,6 @@ export function buildNeighbor(cands, state, recent, country) {
     optionKind: "text",
     options: textOpts(pool, (x) => x.name),
     explain: "Voisins : " + nbrs.map((n) => n.name).join(", "),
-  });
-}
-
-export function buildNeighborCount(cands, state, recent) {
-  const eligible = cands.filter((c) => data.neighbors(c).length);
-  if (!eligible.length) return buildLargest(cands, state, recent);
-  const c = pickCountry(eligible, state, "neighbors", recent);
-  const nbrs = data.neighbors(c);
-  const count = nbrs.length;
-  const set = new Set();
-  for (const d of [-2, -1, 1, 2, 3]) {
-    const v = Math.max(0, count + d);
-    if (v !== count) set.add(v);
-  }
-  const nums = shuffle([count, ...shuffle([...set]).slice(0, 3)]);
-  return q({
-    skill: "neighbors",
-    item: c.iso3,
-    correct: String(count),
-    stimulus: { kind: "text", value: `<b>${c.name}</b> : combien de pays frontaliers ?` },
-    interaction: "options",
-    optionKind: "text",
-    options: valueOpts(nums),
-    explain: "Voisins : " + nbrs.map((n) => n.name).join(", "),
-  });
-}
-
-// --- size ------------------------------------------------------------------ //
-export function buildLargest(cands, state, recent) {
-  const pool = cands.filter((c) => c.area);
-  const focus = pickCountry(pool, state, "size", recent);
-  const others = shuffle(pool.filter((c) => c.iso3 !== focus.iso3)).slice(0, 3);
-  const four = shuffle([focus, ...others]);
-  const correct = four.reduce((a, b) => (b.area > a.area ? b : a));
-  const explain = four
-    .slice()
-    .sort((a, b) => b.area - a.area)
-    .map((x) => `${x.name} : ${Math.round(x.area).toLocaleString("fr-FR")} km²`)
-    .join("  ·  ");
-  return q({
-    skill: "size",
-    item: correct.iso3,
-    correct: correct.iso3,
-    stimulus: { kind: "text", value: "Lequel est le <b>plus grand</b> pays (superficie) ?" },
-    interaction: "options",
-    optionKind: "text",
-    options: textOpts(four, (x) => x.name),
-    explain,
   });
 }
 
@@ -321,6 +257,22 @@ export function buildFrCity(cands, state, recent) {
   });
 }
 
+// --- États-Unis ------------------------------------------------------------ //
+export const US_SKILLS = { us_state: "États américains" };
+export const US_TOTAL = { us_state: 48 };
+
+export function buildUsState(cands, state, recent) {
+  const f = pickWeighted(data.usa().features, (x) => x.id, state, "us_state", recent);
+  return q({
+    skill: "us_state",
+    item: f.id,
+    correct: f.id,
+    correctLabel: f.properties.nom,
+    stimulus: { kind: "text", value: `Place l'état : <b>${f.properties.nom}</b>` },
+    interaction: "mapclick",
+  });
+}
+
 // --- catalogue des jeux (ordre du menu) ------------------------------------ //
 export const GAMES = [
   { key: "revision", title: "🧠 Révision intelligente", sub: "Ce que tu maîtrises le moins", build: buildSmart, context: "world" },
@@ -330,11 +282,9 @@ export const GAMES = [
   { key: "trouve_drapeau", title: "🎯 Trouve le drapeau", sub: "Clique le bon drapeau", build: buildPickFlag, context: "world" },
   { key: "capitales", title: "🏛️ Capitales", sub: "Le pays → sa capitale", build: buildCapital, context: "world" },
   { key: "capitale_pays", title: "🏙️ Capitale → pays", sub: "La capitale → le pays", build: buildCapitalToCountry, context: "world" },
-  { key: "drapeau_capitale", title: "🚩 Drapeau → capitale", sub: "Le drapeau → la capitale", build: buildFlagToCapital, context: "world" },
   { key: "voisins", title: "🤝 Voisins", sub: "Trouve un pays frontalier", build: buildNeighbor, context: "world" },
-  { key: "nb_voisins", title: "🔢 Combien de voisins", sub: "Nombre de frontières", build: buildNeighborCount, context: "world" },
-  { key: "plus_grand", title: "📏 Le plus grand", sub: "La plus grande superficie", build: buildLargest, context: "world" },
   { key: "fr_region", title: "🇫🇷 Régions de France", sub: "Place la région sur la carte", build: buildFrRegion, context: "france-regions" },
   { key: "fr_dept", title: "🇫🇷 Départements", sub: "Place le département", build: buildFrDept, context: "france-departements" },
   { key: "fr_city", title: "🇫🇷 Villes de France", sub: "Place la ville (> 50 000 hab.)", build: buildFrCity, context: "france-cities" },
+  { key: "us_state", title: "🇺🇸 États américains", sub: "Place l'état sur la carte", build: buildUsState, context: "usa-states" },
 ];

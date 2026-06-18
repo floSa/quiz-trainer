@@ -5,6 +5,7 @@ let _countries = null;
 let _geo = null;
 let _byIso = null;
 let _fr = null;
+let _usa = null;
 
 export async function load() {
   if (_countries) return;
@@ -62,5 +63,15 @@ export async function loadFrance() {
 }
 export function france() {
   return _fr;
+}
+
+// --- États-Unis (chargé à la demande) ---
+export async function loadUsa() {
+  if (_usa) return _usa;
+  _usa = await fetch("data/usa/states.geojson").then((r) => r.json());
+  return _usa;
+}
+export function usa() {
+  return _usa;
 }
 
