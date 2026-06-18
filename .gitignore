@@ -1,7 +1,4 @@
-# Progression locale de l'utilisateur
-progress/
-
-# Python
+# Outils Python (scripts de génération de données)
 __pycache__/
 *.py[cod]
 .venv/
