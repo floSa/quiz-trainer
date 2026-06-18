@@ -17,6 +17,9 @@ const session = {};
 let currentQ = null;
 let answered = false;
 let navToken = 0; // anti-désync quand on change de jeu pendant un chargement
+let advanceTimer = null; // enchaînement auto vers la question suivante
+const ADVANCE_OK = 850; // ms affichés quand c'est bon
+const ADVANCE_KO = 2100; // ms quand c'est raté (le temps de lire la bonne réponse)
 
 const $ = (id) => document.getElementById(id);
 
@@ -105,6 +108,7 @@ function setContext(ctx) {
 
 async function selectGame(key) {
   const token = ++navToken;
+  clearTimeout(advanceTimer);
   gameKey = key;
   $("dashboard").hidden = true;
   $("game").hidden = false;
@@ -137,6 +141,7 @@ const recentOf = () => (recent[gameKey] = recent[gameKey] || []);
 const sessionOf = () => (session[gameKey] = session[gameKey] || { asked: 0, ok: 0 });
 
 function newRound() {
+  clearTimeout(advanceTimer);
   const g = games.GAMES.find((x) => x.key === gameKey);
   currentQ = g.build(candidates, state, recentOf());
   answered = false;
@@ -283,9 +288,12 @@ function showFeedback(correct) {
   }
 
   fb.innerHTML = `
-    <div class="fb-row">${badge}<button id="next" class="next">Suivant ▶</button></div>
+    <div class="fb-row">${badge}</div>
     <div class="fb-sub">${reveal}${sub}</div>`;
-  $("next").onclick = newRound;
+  // enchaînement automatique ; Entrée ou un clic passe plus vite
+  fb.onclick = newRound;
+  clearTimeout(advanceTimer);
+  advanceTimer = setTimeout(newRound, correct ? ADVANCE_OK : ADVANCE_KO);
 }
 
 function renderSession() {
