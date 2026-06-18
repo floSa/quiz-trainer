@@ -34,9 +34,13 @@ pas — les modules JS et `fetch` exigent http.)
 | 🤝 Voisins | trouve un pays frontalier |
 | 🔢 Combien de voisins | nombre de frontières |
 | 📏 Le plus grand | plus grande superficie parmi 4 |
+| 🇫🇷 Régions de France | place la région sur la carte |
+| 🇫🇷 Départements | place le département sur la carte |
+| 🇫🇷 Villes de France | place la ville > 50 000 hab. (clic, tolérance 35 km) |
 
-Filtre les **régions** à réviser dans la barre latérale (les jeux de carte se
-cadrent alors sur la zone choisie).
+Filtre les **régions** (du monde) à réviser dans la barre latérale (les jeux de
+carte se cadrent alors sur la zone choisie). Les jeux 🇫🇷 portent sur la France
+métropolitaine.
 
 ## Comment ça marche
 
@@ -57,6 +61,8 @@ cadrent alors sur la zone choisie).
   via nvkelso, réduit aux 194 pays (clé ISO3, coordonnées arrondies).
   → `python scripts/build_geo.py`
 - Drapeaux : [flagcdn.com](https://flagcdn.com) (en ligne).
+- France : régions/départements [france-geojson](https://github.com/gregoiredavid/france-geojson)
+  + villes [GeoNames](https://www.geonames.org/).  → `python scripts/build_france.py`
 
 Les scripts n'utilisent que la bibliothèque standard de Python.
 

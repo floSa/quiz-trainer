@@ -68,10 +68,16 @@ Régénérer via `scripts/build_data.py` (pays) et `scripts/build_geo.py`
 - `srs.js` reste pur. Toute persistance via `store.js`.
 - Carte sans tuiles (pas d'étiquettes → pas de triche, et hors-ligne hors drapeaux).
 
+## Module France (fait)
+
+Couche Leaflet interchangeable (`map.setLayer`). 3 jeux place-sur-carte :
+régions (13) / départements (96) via clic du polygone, villes >50k (153) via
+clic libre corrigé à la distance (seuil `CITY_THRESHOLD_KM`). Compétences
+`fr_region/fr_dept/fr_city`, section France au tableau de bord. Données :
+`scripts/build_france.py` (france-geojson + GeoNames), `data/france/`.
+
 ## À faire / pistes
 
-- **Module France** : régions, départements, villes > 50 000 hab. (mêmes
-  mécaniques place-sur-carte, par zone) — données : france-geojson + communes.
 - Tests JS (la logique `srs`/`games` est pure → testable en node avec données injectées).
 - Quelques capitales restent en forme internationale (ex. « Tashkent » → « Tachkent ») :
   compléter `CAPITAL_FR` dans `scripts/build_data.py`.
