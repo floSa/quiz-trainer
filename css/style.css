@@ -64,8 +64,9 @@ h3 { margin: 0 0 8px; font-size: 0.95rem; color: var(--muted); }
   flex: 1; min-height: 0; display: flex; flex-direction: column;
   padding: 16px 28px; overflow-y: auto;
 }
-/* colonne de contenu centrée, large mais bornée */
-.ghead, .prompt, .stim, .options, .feedback, .session { width: 100%; max-width: 1100px; margin-inline: auto; }
+/* colonne de contenu UNIFORME : énoncé, carte/drapeau et réponses ont tous la
+   même largeur (fluide jusqu'à bien en dessous du demi-écran) */
+.ghead, .prompt, .stim, .options, .feedback, .session { width: 100%; max-width: 860px; margin-inline: auto; }
 /* titre / énoncé / réponses gardent leur taille ; la carte prend le reste */
 .ghead, .prompt, .options, .feedback, .session { flex: 0 0 auto; }
 
@@ -74,8 +75,10 @@ h3 { margin: 0 0 8px; font-size: 0.95rem; color: var(--muted); }
 .prompt { font-size: 1.4rem; margin: 8px 0; min-height: 1.6rem; text-align: center; }
 .prompt b { color: #fff; }
 
-/* la carte remplit l'espace vertical disponible (pas de hauteur fixe → pas de chevauchement) */
-.stim { flex: 1 1 auto; min-height: 220px; display: flex; flex-direction: column; }
+/* zone de stimulus : carte = remplit l'espace ; drapeau/texte = au contenu */
+.stim { display: flex; flex-direction: column; min-height: 0; }
+.mode-map .stim { flex: 1 1 auto; min-height: 240px; }
+.mode-flag .stim, .mode-text .stim { flex: 0 0 auto; }
 #map {
   flex: 1 1 auto; min-height: 0; width: 100%; border-radius: 12px;
   background: var(--ocean); border: 1px solid var(--line);
@@ -83,12 +86,14 @@ h3 { margin: 0 0 8px; font-size: 0.95rem; color: var(--muted); }
 .leaflet-container { background: var(--ocean); border-radius: 12px; }
 .flag-stim {
   margin: auto;                 /* centré dans la colonne .stim */
-  max-height: 100%; max-width: 90%; border-radius: 8px;
+  width: 100%; height: auto;    /* même largeur que la carte / les réponses */
+  max-height: 55vh; object-fit: contain; border-radius: 8px;
   box-shadow: 0 6px 24px rgba(0,0,0,0.5);
 }
 
 /* ---------- Options ---------- */
-.options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+/* réponses : autant de colonnes que la largeur le permet (2 → 1 en rétrécissant) */
+.options { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-top: 14px; }
 .opt {
   background: var(--panel2); color: var(--text); border: 1px solid var(--line);
   border-radius: 10px; padding: 14px; font-size: 1rem; transition: background 0.1s;
@@ -98,7 +103,7 @@ h3 { margin: 0 0 8px; font-size: 0.95rem; color: var(--muted); }
 .opt.bad, .opt-flag.bad { background: var(--accent); border-color: var(--accent); color: #fff; }
 .opt:disabled, .opt-flag:disabled { cursor: default; opacity: 0.95; }
 
-.options.flags { grid-template-columns: 1fr 1fr; }
+.options.flags { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
 .opt-flag { background: var(--panel2); border: 2px solid var(--line); border-radius: 10px; padding: 8px; }
 .opt-flag:hover:not(:disabled) { border-color: var(--muted); }
 .opt-flag img { width: 100%; display: block; border-radius: 4px; max-height: 16vh; object-fit: contain; }

@@ -160,6 +160,12 @@ function renderStimulus(q) {
   const useMap = q.stimulus.kind === "map" || q.interaction === "mapclick" || q.interaction === "rawclick";
   map.style.display = useMap ? "block" : "none";
 
+  // mode d'affichage du stimulus → comportement de la zone (.stim) en hauteur
+  const mode = useMap ? "mode-map" : q.stimulus.kind === "flag" ? "mode-flag" : "mode-text";
+  const gameEl = $("game");
+  gameEl.classList.remove("mode-map", "mode-flag", "mode-text");
+  gameEl.classList.add(mode);
+
   let flag = $("flag-stim");
   if (q.stimulus.kind === "flag") {
     if (!flag) {
