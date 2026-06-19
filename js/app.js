@@ -239,7 +239,7 @@ function answer(chosenId) {
   const correct = chosenId === currentQ.correct;
   grade(correct);
   if (currentQ.interaction === "options") markOptions(chosenId);
-  else mapMod.markResult(currentQ.correct, chosenId);
+  else mapMod.markResult(currentQ.correct, chosenId, correct);
   showFeedback(correct);
 }
 

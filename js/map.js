@@ -52,7 +52,7 @@ export function resetBase() { if (layer) layer.setStyle(BASE); }
 
 function fitTo(id, maxZoom = 6) {
   const l = byId[id];
-  if (l) map.fitBounds(l.getBounds(), { padding: [30, 30], maxZoom });
+  if (l) map.fitBounds(l.getBounds(), { padding: [30, 30], maxZoom, animate: false });
 }
 
 export function highlight(id) {
@@ -76,11 +76,13 @@ export function fitAll() {
   if (layer) map.fitBounds(layer.getBounds(), { padding: [15, 15] });
 }
 
-export function markResult(correctId, clickedId) {
-  // On recolore sans rezoomer : la vue reste stable (toute la France / la zone),
-  // on voit donc la bonne réponse dans son contexte.
+export function markResult(correctId, clickedId, wasCorrect) {
   if (byId[correctId]) byId[correctId].setStyle(GOOD);
   if (clickedId && clickedId !== correctId && byId[clickedId]) byId[clickedId].setStyle(BAD);
+  // Si on a bon, on ne bouge pas (la bonne réponse est sous le curseur). Si on
+  // a faux, on recadre sur la bonne réponse pour qu'elle soit visible même si
+  // on était zoomé ailleurs.
+  if (!wasCorrect) fitTo(correctId);
 }
 
 // Marqueurs ponctuels (jeu « place la ville »).
