@@ -11,6 +11,7 @@ Lancer :  python scripts/build_geo.py
 import json
 import os
 import urllib.request
+from collections import defaultdict
 
 SOURCE = (
     "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/"
@@ -41,22 +42,33 @@ def main():
         src = json.loads(resp.read())
     wanted = {c["iso3"] for c in json.load(open(COUNTRIES, encoding="utf-8"))}
 
-    by_iso = {}
+    # Natural Earth peut avoir PLUSIEURS entités pour un même pays (territoires,
+    # îles externes…). On FUSIONNE leurs polygones au lieu d'écraser : sinon une
+    # entité minuscule arrivée en dernier remplace le continent (ex. l'Australie
+    # écrasée par l'îlot Ashmore & Cartier à 123,6°E / -12,4°).
+    polys = defaultdict(list)  # iso3 -> liste de polygones [ [ring, …], … ]
     for f in src["features"]:
         iso = feature_iso3(f["properties"])
-        if iso in wanted:
-            by_iso[iso] = {
-                "type": "Feature",
-                "id": iso,
-                "properties": {},
-                "geometry": {
-                    "type": f["geometry"]["type"],
-                    "coordinates": round_coords(f["geometry"]["coordinates"]),
-                },
-            }
+        if iso not in wanted:
+            continue
+        g = f["geometry"]
+        if g["type"] == "Polygon":
+            polys[iso].append(g["coordinates"])
+        elif g["type"] == "MultiPolygon":
+            polys[iso].extend(g["coordinates"])
 
-    missing = sorted(wanted - set(by_iso))
+    missing = sorted(wanted - set(polys))
     assert not missing, f"Pays sans géométrie : {missing}"
+
+    by_iso = {
+        iso: {
+            "type": "Feature",
+            "id": iso,
+            "properties": {},
+            "geometry": {"type": "MultiPolygon", "coordinates": round_coords(plist)},
+        }
+        for iso, plist in polys.items()
+    }
 
     out = {"type": "FeatureCollection", "features": list(by_iso.values())}
     with open(OUT, "w", encoding="utf-8") as f:
