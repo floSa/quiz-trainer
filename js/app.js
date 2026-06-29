@@ -161,7 +161,7 @@ function renderStimulus(q) {
   const map = $("map");
   $("prompt").innerHTML = q.ask || (q.stimulus.kind === "text" ? q.stimulus.value : "");
 
-  const useMap = q.stimulus.kind === "map" || q.stimulus.kind === "river" || q.stimulus.kind === "region" || q.stimulus.kind === "shape" || q.interaction === "mapclick" || q.interaction === "rawclick";
+  const useMap = q.stimulus.kind === "map" || q.stimulus.kind === "river" || q.stimulus.kind === "region" || q.stimulus.kind === "shape" || q.stimulus.kind === "peak" || q.interaction === "mapclick" || q.interaction === "rawclick";
   map.style.display = useMap ? "block" : "none";
 
   // mode d'affichage du stimulus → comportement de la zone (.stim) en hauteur
@@ -197,6 +197,9 @@ function renderStimulus(q) {
     } else if (q.stimulus.kind === "region") {
       mapMod.resetBase(); // pays en fond + la zone (mer/désert/chaîne) surlignée
       mapMod.addRegion(q.stimulus.value.geometry);
+    } else if (q.stimulus.kind === "peak") {
+      mapMod.resetBase(); // pays en fond + un triangle rouge sur le sommet
+      mapMod.addPeakMarker(q.stimulus.value.lat, q.stimulus.value.lng);
     } else if (q.interaction === "rawclick") {
       // clic libre (villes FR, DOM-TOM) : on montre toute la couche affichée
       mapMod.resetBase();

@@ -324,7 +324,6 @@ export const WORLD_SKILLS = {
 };
 export const WORLD_TOTAL = { world_city: 616, river: 33, sea: 30, desert: 17, range: 26, peak: 24 };
 export const WORLD_CITY_THRESHOLD_KM = 150; // clic libre sur la carte du monde
-export const PEAK_THRESHOLD_KM = 250; // sommets : situer le pic sur le globe
 
 // Générateur générique « zone surlignée en rouge → son nom » (QCM).
 // Données = liste de { name, geometry } chargée à la demande (data.set(key)).
@@ -351,18 +350,21 @@ export const buildSea = buildHighlight("seas", "sea", "Quelle est cette mer / ce
 export const buildDesert = buildHighlight("deserts", "desert", "Quel est ce désert ? (en rouge)");
 export const buildRange = buildHighlight("ranges", "range", "Quelle est cette chaîne de montagnes ? (en rouge)");
 
-// Sommets : placer le pic sur la carte du monde (clic libre).
+// Sommets : un triangle rouge sur le pic → son nom (QCM).
 export function buildPeak(cands, state, recent) {
-  const p = pickWeighted(data.set("peaks"), (x) => x.name, state, "peak", recent);
+  const peaks = data.set("peaks");
+  const p = pickWeighted(peaks, (x) => x.name, state, "peak", recent);
+  const others = shuffle(peaks.filter((x) => x.name !== p.name)).slice(0, 3);
+  const opts = shuffle([p, ...others]).map((x) => ({ id: x.name, label: x.name }));
   return q({
     skill: "peak",
     item: p.name,
     correct: p.name,
-    correctLabel: p.name,
-    stimulus: { kind: "text", value: `Place ce sommet : <b>${p.name}</b>` },
-    interaction: "rawclick",
-    city: p,
-    threshold: PEAK_THRESHOLD_KM,
+    stimulus: { kind: "peak", value: p },
+    ask: "Quel est ce sommet ? (au triangle rouge)",
+    interaction: "options",
+    optionKind: "text",
+    options: opts,
   });
 }
 

@@ -151,6 +151,20 @@ export function addRegion(geometry, color = "#e8453c") {
   return l;
 }
 
+// Triangle rouge à l'emplacement d'un sommet (jeu « quel est ce sommet ? »).
+export function addPeakMarker(lat, lng, zoom = 3) {
+  const icon = L.divIcon({
+    className: "peak-marker",
+    html: '<div style="width:0;height:0;border-left:9px solid transparent;border-right:9px solid transparent;border-bottom:16px solid #e8453c;filter:drop-shadow(0 1px 1px rgba(0,0,0,.6))"></div>',
+    iconSize: [18, 16],
+    iconAnchor: [9, 8],
+  });
+  const m = L.marker([lat, lng], { icon, interactive: false }).addTo(map);
+  markers.push(m); // nettoyé par clearMarkers()
+  map.setView([lat, lng], zoom, { animate: false });
+  return m;
+}
+
 // Marqueurs ponctuels (jeu « place la ville »).
 export function addMarker(lat, lng, color) {
   const m = L.circleMarker([lat, lng], {
