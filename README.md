@@ -36,6 +36,7 @@ pas — les modules JS et `fetch` exigent http.)
 | 🌊 Fleuves | fleuve surligné en rouge → son nom (33 grands fleuves) |
 | 🌊 Mers & océans | zone surlignée → son nom (30 mers/océans) |
 | 🏜️ Déserts | désert surligné → son nom (17 grands déserts) |
+| ⛰️ Chaînes de montagnes | chaîne surlignée → son nom (26 grandes chaînes) |
 | 🇫🇷 Régions de France | place la région sur la carte |
 | 🇫🇷 Départements | place le département sur la carte |
 | 🇫🇷 Villes de France | place la ville > 50 000 hab. (clic, tolérance 35 km) |
