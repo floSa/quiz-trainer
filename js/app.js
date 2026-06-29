@@ -385,7 +385,7 @@ function selectDashboard() {
     if (skill === "fr_region") return frReg[id] || id;
     if (skill === "fr_dept") return frDep[id] || id;
     if (skill === "us_state") return usMap[id] || id;
-    if (skill === "fr_city" || skill === "fr_domtom" || skill === "world_city") return id;
+    if (skill === "fr_city" || skill === "fr_domtom" || skill === "world_city" || skill === "fr_monument") return id;
     const c = data.byIso3(id);
     return c ? c.name : id;
   };

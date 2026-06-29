@@ -215,10 +215,12 @@ export const FR_SKILLS = {
   fr_city: "Villes de France",
   fr_arr: "Arrondissements de Paris",
   fr_domtom: "DOM-TOM",
+  fr_monument: "Monuments de France",
 };
-export const FR_TOTALS = { fr_region: 13, fr_dept: 96, fr_city: 122, fr_arr: 20, fr_domtom: 10 }; // fr_city = nb dans cities.json (sans arrondissements)
+export const FR_TOTALS = { fr_region: 13, fr_dept: 96, fr_city: 122, fr_arr: 20, fr_domtom: 10, fr_monument: 100 }; // fr_city = nb dans cities.json (sans arrondissements)
 export const CITY_THRESHOLD_KM = 35; // tolérance de clic pour « place la ville »
 export const DOMTOM_THRESHOLD_KM = 600; // large : on veut situer le territoire sur le globe
+export const MONUMENT_THRESHOLD_KM = 15; // monuments : clic plus précis sur la carte FR
 
 function pickWeighted(items, idOf, state, skill, recent) {
   const rec = new Set(recent);
@@ -263,6 +265,21 @@ export function buildFrCity(cands, state, recent) {
     stimulus: { kind: "text", value: `Place la ville : <b>${c.name}</b>` },
     interaction: "rawclick",
     city: c,
+  });
+}
+
+// Monuments : placer le monument sur la carte de France (clic libre).
+export function buildFrMonument(cands, state, recent) {
+  const m = pickWeighted(data.france().monuments, (x) => x.name, state, "fr_monument", recent);
+  return q({
+    skill: "fr_monument",
+    item: m.name,
+    correct: m.name,
+    correctLabel: m.name,
+    stimulus: { kind: "text", value: `Place ce monument : <b>${m.name}</b>` },
+    interaction: "rawclick",
+    city: m,
+    threshold: MONUMENT_THRESHOLD_KM,
   });
 }
 
@@ -331,6 +348,7 @@ export const GAMES = [
   { key: "fr_region", title: "🇫🇷 Régions de France", sub: "Place la région sur la carte", build: buildFrRegion, context: "france-regions" },
   { key: "fr_dept", title: "🇫🇷 Départements", sub: "Place le département", build: buildFrDept, context: "france-departements" },
   { key: "fr_city", title: "🇫🇷 Villes de France", sub: "Place la ville (> 50 000 hab.)", build: buildFrCity, context: "france-cities" },
+  { key: "fr_monument", title: "🏛️ Monuments de France", sub: "Place le monument sur la carte", build: buildFrMonument, context: "france-cities" },
   { key: "fr_arr", title: "🇫🇷 Arrondissements de Paris", sub: "Place l'arrondissement sur le plan", build: buildFrArr, context: "paris-arrondissements" },
   { key: "fr_domtom", title: "🌴 DOM-TOM", sub: "Place le territoire sur le globe", build: buildFrDomtom, context: "world" },
   { key: "us_state", title: "🇺🇸 États américains", sub: "Place l'état sur la carte", build: buildUsState, context: "usa-states" },

@@ -35,6 +35,7 @@ pas — les modules JS et `fetch` exigent http.)
 | 🇫🇷 Régions de France | place la région sur la carte |
 | 🇫🇷 Départements | place le département sur la carte |
 | 🇫🇷 Villes de France | place la ville > 50 000 hab. (clic, tolérance 35 km) |
+| 🏛️ Monuments de France | place le monument (~100 célèbres) sur la carte (clic, tolérance 15 km) |
 | 🇫🇷 Arrondissements de Paris | place l'arrondissement (1er → 20e) sur le plan |
 | 🌴 DOM-TOM | place le territoire d'outre-mer sur le globe (clic, tolérance 600 km) |
 | 🇺🇸 États américains | place l'état sur la carte (48 contigus, noms FR) |
