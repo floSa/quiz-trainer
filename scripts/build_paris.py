@@ -1,7 +1,7 @@
 """Génère data/france/paris.geojson : les 20 arrondissements de Paris.
 
   id           = numéro d'arrondissement (1..20, en chaîne)
-  properties.nom = ordinal lisible : « 1er », « 2e », … « 20e »
+  properties.nom = ordinal + quartier officiel : « 1er (Louvre) », « 19e (Buttes-Chaumont) »
 
 Source : opendata.paris.fr (jeu « arrondissements »), licence ODbL.
 
@@ -38,10 +38,12 @@ def main():
     feats = []
     for f in g["features"]:
         n = int(f["properties"]["c_ar"])
+        quartier = (f["properties"].get("l_aroff") or "").strip()
+        label = f"{ordinal(n)} ({quartier})" if quartier else ordinal(n)
         feats.append({
             "type": "Feature",
             "id": str(n),
-            "properties": {"nom": ordinal(n)},
+            "properties": {"nom": label},
             "geometry": {
                 "type": f["geometry"]["type"],
                 "coordinates": round_coords(f["geometry"]["coordinates"]),
