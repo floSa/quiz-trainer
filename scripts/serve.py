@@ -8,7 +8,6 @@ Lancer :  python scripts/serve.py [port]      # port par défaut : 8531
 
 import http.server
 import os
-import socketserver
 import sys
 
 PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 8531
@@ -22,7 +21,12 @@ class NoCacheHandler(http.server.SimpleHTTPRequestHandler):
         self.send_header("Pragma", "no-cache")
         super().end_headers()
 
+    def log_message(self, *args):
+        pass  # silencieux
 
-with socketserver.TCPServer(("0.0.0.0", PORT), NoCacheHandler) as httpd:
+
+# ThreadingHTTPServer : l'app charge plusieurs fichiers en parallèle, un serveur
+# mono-thread se bloquerait.
+with http.server.ThreadingHTTPServer(("0.0.0.0", PORT), NoCacheHandler) as httpd:
     print(f"Dev (sans cache) -> http://localhost:{PORT}")
     httpd.serve_forever()
