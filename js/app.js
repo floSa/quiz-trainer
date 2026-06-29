@@ -101,6 +101,7 @@ function setContext(ctx) {
     const fr = data.france();
     if (ctx === "france-regions") mapMod.setLayer(fr.reg);
     else if (ctx === "france-departements") mapMod.setLayer(fr.dep);
+    else if (ctx === "paris-arrondissements") mapMod.setLayer(fr.paris);
     else mapMod.setLayer(fr.dep, { interactive: false }); // villes : fond + clic libre
   }
   mapContext = ctx;
@@ -367,13 +368,15 @@ function selectDashboard() {
   const usBars = placeBars(games.US_SKILLS, games.US_TOTAL);
 
   // libellés lisibles par item, pour le détail
-  const frReg = {}, frDep = {}, usMap = {};
+  const frReg = {}, frDep = {}, frArr = {}, usMap = {};
   if (data.france()) {
     data.france().reg.features.forEach((f) => (frReg[f.id] = f.properties.nom));
     data.france().dep.features.forEach((f) => (frDep[f.id] = f.properties.nom));
+    data.france().paris.features.forEach((f) => (frArr[f.id] = f.properties.nom));
   }
   if (data.usa()) data.usa().features.forEach((f) => (usMap[f.id] = f.properties.nom));
   const itemLabel = (skill, id) => {
+    if (skill === "fr_arr") return frArr[id] || id;
     if (skill === "fr_region") return frReg[id] || id;
     if (skill === "fr_dept") return frDep[id] || id;
     if (skill === "us_state") return usMap[id] || id;

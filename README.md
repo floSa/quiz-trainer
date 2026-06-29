@@ -34,6 +34,7 @@ pas — les modules JS et `fetch` exigent http.)
 | 🇫🇷 Régions de France | place la région sur la carte |
 | 🇫🇷 Départements | place le département sur la carte |
 | 🇫🇷 Villes de France | place la ville > 50 000 hab. (clic, tolérance 35 km) |
+| 🇫🇷 Arrondissements de Paris | place l'arrondissement (1er → 20e) sur le plan |
 | 🇺🇸 États américains | place l'état sur la carte (48 contigus, noms FR) |
 
 Filtre les **régions** (du monde) à réviser dans la barre latérale (les jeux de

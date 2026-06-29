@@ -213,8 +213,9 @@ export const FR_SKILLS = {
   fr_region: "Régions de France",
   fr_dept: "Départements",
   fr_city: "Villes de France",
+  fr_arr: "Arrondissements de Paris",
 };
-export const FR_TOTALS = { fr_region: 13, fr_dept: 96, fr_city: 122 }; // fr_city = nb dans cities.json (sans arrondissements)
+export const FR_TOTALS = { fr_region: 13, fr_dept: 96, fr_city: 122, fr_arr: 20 }; // fr_city = nb dans cities.json (sans arrondissements)
 export const CITY_THRESHOLD_KM = 35; // tolérance de clic pour « place la ville »
 
 function pickWeighted(items, idOf, state, skill, recent) {
@@ -225,17 +226,22 @@ function pickWeighted(items, idOf, state, skill, recent) {
   return weightedPick(pool, w);
 }
 
+const FR_ADMIN_KIND = {
+  fr_region: "la région",
+  fr_dept: "le département",
+  fr_arr: "l'arrondissement",
+};
+
 function buildFrAdmin(features, skill) {
   return (cands, state, recent) => {
     const f = pickWeighted(features(), (x) => x.id, state, skill, recent);
     const label = f.properties.nom;
-    const kind = skill === "fr_region" ? "la région" : "le département";
     return q({
       skill,
       item: f.id,
       correct: f.id,
       correctLabel: label,
-      stimulus: { kind: "text", value: `Place ${kind} : <b>${label}</b>` },
+      stimulus: { kind: "text", value: `Place ${FR_ADMIN_KIND[skill]} : <b>${label}</b>` },
       interaction: "mapclick",
     });
   };
@@ -243,6 +249,7 @@ function buildFrAdmin(features, skill) {
 
 export const buildFrRegion = buildFrAdmin(() => data.france().reg.features, "fr_region");
 export const buildFrDept = buildFrAdmin(() => data.france().dep.features, "fr_dept");
+export const buildFrArr = buildFrAdmin(() => data.france().paris.features, "fr_arr");
 
 export function buildFrCity(cands, state, recent) {
   const c = pickWeighted(data.france().cities, (x) => x.name, state, "fr_city", recent);
@@ -286,5 +293,6 @@ export const GAMES = [
   { key: "fr_region", title: "🇫🇷 Régions de France", sub: "Place la région sur la carte", build: buildFrRegion, context: "france-regions" },
   { key: "fr_dept", title: "🇫🇷 Départements", sub: "Place le département", build: buildFrDept, context: "france-departements" },
   { key: "fr_city", title: "🇫🇷 Villes de France", sub: "Place la ville (> 50 000 hab.)", build: buildFrCity, context: "france-cities" },
+  { key: "fr_arr", title: "🇫🇷 Arrondissements de Paris", sub: "Place l'arrondissement sur le plan", build: buildFrArr, context: "paris-arrondissements" },
   { key: "us_state", title: "🇺🇸 États américains", sub: "Place l'état sur la carte", build: buildUsState, context: "usa-states" },
 ];

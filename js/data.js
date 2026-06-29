@@ -53,12 +53,13 @@ export function neighbors(c) {
 // --- France (chargé à la demande) ---
 export async function loadFrance() {
   if (_fr) return _fr;
-  const [reg, dep, cities] = await Promise.all([
+  const [reg, dep, cities, paris] = await Promise.all([
     fetch("data/france/regions.geojson").then((r) => r.json()),
     fetch("data/france/departements.geojson").then((r) => r.json()),
     fetch("data/france/cities.json").then((r) => r.json()),
+    fetch("data/france/paris.geojson").then((r) => r.json()),
   ]);
-  _fr = { reg, dep, cities };
+  _fr = { reg, dep, cities, paris };
   return _fr;
 }
 export function france() {

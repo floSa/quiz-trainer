@@ -21,7 +21,7 @@ export function ensureMap(containerId) {
     attributionControl: false,
     worldCopyJump: true,
     minZoom: 1,
-    maxZoom: 8,
+    maxZoom: 14, // assez profond pour le plan de Paris (sans tuiles → pur vectoriel)
     // zoom fractionnaire : sinon fitBounds arrondit le zoom à l'entier inférieur
     // et la carte ne remplit que ~50 % du cadre (jusqu'à 2× de vide).
     zoomSnap: 0,
@@ -64,7 +64,9 @@ function fitTo(id, maxZoom = 6) {
 }
 
 // Recadre pour montrer tous les polygones donnés (ex. bonne réponse + choix).
-function fitToIds(ids, maxZoom = 6) {
+// maxZoom élevé : pour des entités proches (arrondissements voisins) on veut
+// rester zoomé, pas dézoomer à l'échelle d'un pays.
+function fitToIds(ids, maxZoom = 10) {
   const ls = ids.map((i) => byId[i]).filter(Boolean);
   if (!ls.length) return;
   let b = ls[0].getBounds();
