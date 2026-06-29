@@ -318,8 +318,9 @@ export const WORLD_SKILLS = {
   world_city: "Grandes villes du monde",
   river: "Fleuves",
   sea: "Mers & océans",
+  desert: "Déserts",
 };
-export const WORLD_TOTAL = { world_city: 616, river: 33, sea: 30 };
+export const WORLD_TOTAL = { world_city: 616, river: 33, sea: 30, desert: 17 };
 export const WORLD_CITY_THRESHOLD_KM = 150; // clic libre sur la carte du monde
 
 // Générateur générique « zone surlignée en rouge → son nom » (QCM).
@@ -344,6 +345,7 @@ function buildHighlight(key, skill, ask) {
 }
 
 export const buildSea = buildHighlight("seas", "sea", "Quelle est cette mer / cet océan ? (en rouge)");
+export const buildDesert = buildHighlight("deserts", "desert", "Quel est ce désert ? (en rouge)");
 
 // Fleuves : un fleuve surligné en rouge sur le planisphère → son nom (QCM).
 export function buildRiver(cands, state, recent) {
@@ -408,6 +410,7 @@ export const GAMES = [
   { key: "world_city", title: "🌍 Grandes villes du monde", sub: "Place la ville sur la carte", build: buildWorldCity, context: "world" },
   { key: "river", title: "🌊 Fleuves", sub: "Le fleuve surligné → son nom", build: buildRiver, context: "world" },
   { key: "sea", title: "🌊 Mers & océans", sub: "La zone surlignée → son nom", build: buildSea, context: "world", needs: ["seas"] },
+  { key: "desert", title: "🏜️ Déserts", sub: "Le désert surligné → son nom", build: buildDesert, context: "world", needs: ["deserts"] },
   { key: "fr_region", title: "🇫🇷 Régions de France", sub: "Place la région sur la carte", build: buildFrRegion, context: "france-regions" },
   { key: "fr_dept", title: "🇫🇷 Départements", sub: "Place le département", build: buildFrDept, context: "france-departements" },
   { key: "fr_city", title: "🇫🇷 Villes de France", sub: "Place la ville (> 50 000 hab.)", build: buildFrCity, context: "france-cities" },
