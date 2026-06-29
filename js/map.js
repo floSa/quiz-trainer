@@ -115,6 +115,18 @@ export function markResult(correctId, clickedId, wasCorrect) {
   }
 }
 
+// Trace un fleuve (GeoJSON MultiLineString) en surbrillance et cadre dessus.
+export function addRiver(geometry, color = "#e8453c") {
+  const l = L.geoJSON(geometry, {
+    style: { color, weight: 3, opacity: 0.95, lineCap: "round", lineJoin: "round" },
+  }).addTo(map);
+  markers.push(l); // nettoyé par clearMarkers()
+  try {
+    map.fitBounds(l.getBounds(), { padding: [30, 30], maxZoom: 7, animate: false });
+  } catch (e) {}
+  return l;
+}
+
 // Marqueurs ponctuels (jeu « place la ville »).
 export function addMarker(lat, lng, color) {
   const m = L.circleMarker([lat, lng], {

@@ -158,7 +158,7 @@ function renderStimulus(q) {
   const map = $("map");
   $("prompt").innerHTML = q.ask || (q.stimulus.kind === "text" ? q.stimulus.value : "");
 
-  const useMap = q.stimulus.kind === "map" || q.interaction === "mapclick" || q.interaction === "rawclick";
+  const useMap = q.stimulus.kind === "map" || q.stimulus.kind === "river" || q.interaction === "mapclick" || q.interaction === "rawclick";
   map.style.display = useMap ? "block" : "none";
 
   // mode d'affichage du stimulus → comportement de la zone (.stim) en hauteur
@@ -186,6 +186,9 @@ function renderStimulus(q) {
     mapMod.clearMarkers(); // efface marqueurs + lignes de correction de la manche précédente
     if (q.stimulus.kind === "map") {
       mapMod.highlight(q.stimulus.value); // monde : pays surligné
+    } else if (q.stimulus.kind === "river") {
+      mapMod.resetBase(); // pays en fond + le fleuve tracé en rouge par-dessus
+      mapMod.addRiver(q.stimulus.value.geometry);
     } else if (q.interaction === "rawclick") {
       // clic libre (villes FR, DOM-TOM) : on montre toute la couche affichée
       mapMod.resetBase();
@@ -385,7 +388,7 @@ function selectDashboard() {
     if (skill === "fr_region") return frReg[id] || id;
     if (skill === "fr_dept") return frDep[id] || id;
     if (skill === "us_state") return usMap[id] || id;
-    if (skill === "fr_city" || skill === "fr_domtom" || skill === "world_city" || skill === "fr_monument") return id;
+    if (skill === "fr_city" || skill === "fr_domtom" || skill === "world_city" || skill === "fr_monument" || skill === "river") return id;
     const c = data.byIso3(id);
     return c ? c.name : id;
   };
@@ -421,7 +424,7 @@ function selectDashboard() {
       <div><h3>Par région (monde)</h3>${regionBars}</div>
       <div><h3>🇫🇷 France</h3>${frBars}</div>
       <div><h3>🇺🇸 États-Unis</h3>${usBars}</div>
-      <div><h3>🌍 Villes du monde</h3>${worldBars}</div>
+      <div><h3>🌍 Monde (villes &amp; fleuves)</h3>${worldBars}</div>
     </div>
     ${detail ? `<h3 style="margin-top:22px">Détail par connaissance</h3>
     <p class="muted">Ta maîtrise pour chaque item déjà rencontré (du plus faible au plus sûr).</p>

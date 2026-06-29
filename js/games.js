@@ -298,10 +298,28 @@ export function buildFrDomtom(cands, state, recent) {
   });
 }
 
-// --- Grandes villes du monde ----------------------------------------------- //
-export const WORLD_SKILLS = { world_city: "Grandes villes du monde" };
-export const WORLD_TOTAL = { world_city: 616 }; // = nb dans cities_world.json
+// --- Monde : grandes villes + fleuves -------------------------------------- //
+export const WORLD_SKILLS = { world_city: "Grandes villes du monde", river: "Fleuves" };
+export const WORLD_TOTAL = { world_city: 616, river: 33 }; // = nb dans cities_world.json / rivers.json
 export const WORLD_CITY_THRESHOLD_KM = 150; // clic libre sur la carte du monde
+
+// Fleuves : un fleuve surligné en rouge sur le planisphère → son nom (QCM).
+export function buildRiver(cands, state, recent) {
+  const rivers = data.rivers();
+  const r = pickWeighted(rivers, (x) => x.name, state, "river", recent);
+  const others = shuffle(rivers.filter((x) => x.name !== r.name)).slice(0, 3);
+  const opts = shuffle([r, ...others]).map((x) => ({ id: x.name, label: x.name }));
+  return q({
+    skill: "river",
+    item: r.name,
+    correct: r.name,
+    stimulus: { kind: "river", value: r },
+    ask: "Quel est ce fleuve ? (en rouge)",
+    interaction: "options",
+    optionKind: "text",
+    options: opts,
+  });
+}
 
 export function buildWorldCity(cands, state, recent) {
   const idOf = (x) => `${x.name} (${x.country})`;
@@ -345,6 +363,7 @@ export const GAMES = [
   { key: "capitale_pays", title: "🏙️ Capitale → pays", sub: "La capitale → le pays", build: buildCapitalToCountry, context: "world" },
   { key: "voisins", title: "🤝 Voisins", sub: "Trouve un pays frontalier", build: buildNeighbor, context: "world" },
   { key: "world_city", title: "🌍 Grandes villes du monde", sub: "Place la ville sur la carte", build: buildWorldCity, context: "world" },
+  { key: "river", title: "🌊 Fleuves", sub: "Le fleuve surligné → son nom", build: buildRiver, context: "world" },
   { key: "fr_region", title: "🇫🇷 Régions de France", sub: "Place la région sur la carte", build: buildFrRegion, context: "france-regions" },
   { key: "fr_dept", title: "🇫🇷 Départements", sub: "Place le département", build: buildFrDept, context: "france-departements" },
   { key: "fr_city", title: "🇫🇷 Villes de France", sub: "Place la ville (> 50 000 hab.)", build: buildFrCity, context: "france-cities" },

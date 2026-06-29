@@ -32,6 +32,7 @@ pas — les modules JS et `fetch` exigent http.)
 | 🏙️ Capitale → pays | capitale → pays |
 | 🤝 Voisins | trouve un pays frontalier |
 | 🌍 Grandes villes du monde | place la ville (1 à 10 par pays selon sa taille) sur la carte |
+| 🌊 Fleuves | fleuve surligné en rouge → son nom (33 grands fleuves) |
 | 🇫🇷 Régions de France | place la région sur la carte |
 | 🇫🇷 Départements | place le département sur la carte |
 | 🇫🇷 Villes de France | place la ville > 50 000 hab. (clic, tolérance 35 km) |
@@ -68,6 +69,15 @@ métropolitaine, le jeu 🇺🇸 sur les 48 états contigus.
   + villes [GeoNames](https://www.geonames.org/).  → `python scripts/build_france.py`
 - États-Unis : [PublicaMundi/MappingAPI](https://github.com/PublicaMundi/MappingAPI)
   (us-states), 48 états contigus, noms FR.  → `python scripts/build_usa.py`
+- Arrondissements de Paris : [opendata.paris.fr](https://opendata.paris.fr) (ODbL).
+  → `python scripts/build_paris.py`
+- DOM-TOM : liste curatée (5 DROM + collectivités).  → `python scripts/build_domtom.py`
+- Grandes villes du monde : [GeoNames](https://www.geonames.org/) (villes +
+  `countryInfo` pour la population), 1 à 10 villes/pays.  → `python scripts/build_cities_world.py`
+- Monuments de France : [Wikidata](https://www.wikidata.org) (SPARQL), ~100
+  monuments triés par notoriété.  → `python scripts/build_monuments.py`
+- Fleuves : [Natural Earth 50m](https://www.naturalearthdata.com/) rivers, 33
+  grands fleuves (segments agrégés, noms FR).  → `python scripts/build_rivers.py`
 
 Les scripts n'utilisent que la bibliothèque standard de Python.
 

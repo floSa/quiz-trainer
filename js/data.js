@@ -7,22 +7,28 @@ let _byIso = null;
 let _fr = null;
 let _usa = null;
 let _citiesWorld = null;
+let _rivers = null;
 
 export async function load() {
   if (_countries) return;
-  const [c, g, cw] = await Promise.all([
+  const [c, g, cw, rv] = await Promise.all([
     fetch("data/countries.json").then((r) => r.json()),
     fetch("data/world.geojson").then((r) => r.json()),
     fetch("data/cities_world.json").then((r) => r.json()),
+    fetch("data/rivers.json").then((r) => r.json()),
   ]);
   _countries = c.slice().sort((a, b) => a.name.localeCompare(b.name, "fr"));
   _geo = g;
   _byIso = Object.fromEntries(c.map((x) => [x.iso3, x]));
   _citiesWorld = cw;
+  _rivers = rv;
 }
 
 export function citiesWorld() {
   return _citiesWorld;
+}
+export function rivers() {
+  return _rivers;
 }
 
 export function countries() {
