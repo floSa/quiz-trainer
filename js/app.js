@@ -142,7 +142,7 @@ async function selectGame(key) {
 }
 
 const recentOf = () => (recent[gameKey] = recent[gameKey] || []);
-const sessionOf = () => (session[gameKey] = session[gameKey] || { asked: 0, ok: 0 });
+const sessionOf = () => (session[gameKey] = session[gameKey] || { asked: 0, ok: 0, streak: 0, best: 0 });
 
 function newRound() {
   clearTimeout(advanceTimer);
@@ -278,7 +278,13 @@ function grade(correct) {
   if (r.length > 8) r.splice(0, r.length - 8);
   const s = sessionOf();
   s.asked++;
-  if (correct) s.ok++;
+  if (correct) {
+    s.ok++;
+    s.streak++;
+    if (s.streak > s.best) s.best = s.streak;
+  } else {
+    s.streak = 0;
+  }
   renderSession();
 }
 
@@ -328,7 +334,11 @@ function showFeedback(correct) {
 
 function renderSession() {
   const s = sessionOf();
-  $("session").textContent = s.asked ? `Session : ${s.ok}/${s.asked} bonnes réponses` : "";
+  if (!s.asked) { $("session").textContent = ""; return; }
+  let txt = `Session : ${s.ok}/${s.asked} bonnes réponses`;
+  if (s.streak >= 3) txt += ` · 🔥 série : ${s.streak}`;
+  if (s.best >= 5) txt += ` · record : ${s.best}`;
+  $("session").textContent = txt;
 }
 
 function haversine(a, b) {
