@@ -7,6 +7,7 @@ let markers = [];
 let featureClick = null;
 let mapClick = null;
 
+const OCEAN = "#a9d2ea"; // doit coller à --ocean (CSS) : sert au fondu silhouette
 // Terres claires sur océan bleu (cf. --ocean en CSS). Coastline bleu-gris.
 const BASE = { color: "#7e96a9", weight: 0.7, fillColor: "#e8efe2", fillOpacity: 1 };
 const DIM = { color: "#bcc9bf", weight: 0.4, fillColor: "#eef2ea", fillOpacity: 1 };
@@ -85,6 +86,17 @@ export function highlight(id) {
   resetBase();
   if (byId[id]) byId[id].setStyle(HILITE);
   fitTo(id);
+}
+
+// Silhouette : on ne montre QUE le pays cible (les autres fondus dans l'océan,
+// donc invisibles) et on zoome dessus → reconnaître la forme sans les voisins.
+export function silhouette(id) {
+  if (!layer) return;
+  layer.eachLayer((l) => {
+    if (l.feature.id === id) l.setStyle({ color: "#5a6b7a", weight: 1.4, fillColor: "#e8efe2", fillOpacity: 1 });
+    else l.setStyle({ color: OCEAN, weight: 0, fillColor: OCEAN, fillOpacity: 1 });
+  });
+  fitTo(id, 9);
 }
 
 export function focusIds(idList) {

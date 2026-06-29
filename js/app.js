@@ -158,7 +158,7 @@ function renderStimulus(q) {
   const map = $("map");
   $("prompt").innerHTML = q.ask || (q.stimulus.kind === "text" ? q.stimulus.value : "");
 
-  const useMap = q.stimulus.kind === "map" || q.stimulus.kind === "river" || q.interaction === "mapclick" || q.interaction === "rawclick";
+  const useMap = q.stimulus.kind === "map" || q.stimulus.kind === "river" || q.stimulus.kind === "shape" || q.interaction === "mapclick" || q.interaction === "rawclick";
   map.style.display = useMap ? "block" : "none";
 
   // mode d'affichage du stimulus → comportement de la zone (.stim) en hauteur
@@ -186,6 +186,8 @@ function renderStimulus(q) {
     mapMod.clearMarkers(); // efface marqueurs + lignes de correction de la manche précédente
     if (q.stimulus.kind === "map") {
       mapMod.highlight(q.stimulus.value); // monde : pays surligné
+    } else if (q.stimulus.kind === "shape") {
+      mapMod.silhouette(q.stimulus.value); // forme seule, voisins masqués
     } else if (q.stimulus.kind === "river") {
       mapMod.resetBase(); // pays en fond + le fleuve tracé en rouge par-dessus
       mapMod.addRiver(q.stimulus.value.geometry);

@@ -83,6 +83,21 @@ export function buildLocate(cands, state, recent, country) {
   });
 }
 
+// Silhouette : forme du pays seule (sans les voisins) → son nom.
+export function buildSilhouette(cands, state, recent, country) {
+  const c = country || pickCountry(cands, state, "locate", recent);
+  return q({
+    skill: "locate",
+    item: c.iso3,
+    correct: c.iso3,
+    stimulus: { kind: "shape", value: c.iso3 },
+    ask: "Quel est ce pays ? (forme seule)",
+    interaction: "options",
+    optionKind: "text",
+    options: textOpts(countryOptions(c, cands), (x) => x.name),
+  });
+}
+
 export function buildPlace(cands, state, recent, country) {
   const c = country || pickCountry(cands, state, "locate", recent);
   return q({
@@ -357,6 +372,7 @@ export const GAMES = [
   { key: "revision", title: "🧠 Révision intelligente", sub: "Ce que tu maîtrises le moins", build: buildSmart, context: "world" },
   { key: "carte", title: "🗺️ Carte", sub: "Le pays surligné → son nom", build: buildLocate, context: "world" },
   { key: "place", title: "📍 Place le pays", sub: "Clique le bon pays sur la carte", build: buildPlace, context: "world" },
+  { key: "silhouette", title: "🕵️ Silhouette", sub: "La forme seule → le pays", build: buildSilhouette, context: "world" },
   { key: "drapeaux", title: "🚩 Drapeaux", sub: "Le drapeau → le pays", build: buildFlag, context: "world" },
   { key: "trouve_drapeau", title: "🎯 Trouve le drapeau", sub: "Clique le bon drapeau", build: buildPickFlag, context: "world" },
   { key: "capitales", title: "🏛️ Capitales", sub: "Le pays → sa capitale", build: buildCapital, context: "world" },

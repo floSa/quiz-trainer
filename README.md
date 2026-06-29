@@ -26,6 +26,7 @@ pas — les modules JS et `fetch` exigent http.)
 | 🧠 **Révision intelligente** | pose ce qu'on maîtrise le moins (tous types) |
 | 🗺️ Carte | pays surligné → son nom |
 | 📍 **Place le pays** | clique le bon pays sur la carte |
+| 🕵️ Silhouette | la forme du pays seule (sans les voisins) → son nom |
 | 🚩 Drapeaux | drapeau → pays |
 | 🎯 Trouve le drapeau | pays → clique le bon drapeau |
 | 🏛️ Capitales | pays → capitale |
