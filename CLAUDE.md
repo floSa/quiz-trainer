@@ -95,9 +95,14 @@ item** (chaque pays/département/ville/état rencontré avec sa maîtrise %).
 - `selectGame` est async (chargement France/US) → **jeton de navigation** pour
   ignorer une sélection devenue obsolète (évite titre/contenu désynchronisés).
 
+## Tests
+
+`node tests/run.mjs` (ou `npm test`) : harnais sans dépendance pour `srs.js`
+(logique pure, déterministe via le paramètre `now`). `package.json` a
+`"type": "module"` pour que node importe les `.js` en ESM.
+
 ## À faire / pistes
 
-- Tests JS (la logique `srs`/`games` est pure → testable en node avec données injectées).
 - Quelques capitales restent en forme internationale (ex. « Tashkent » → « Tachkent ») :
   compléter `CAPITAL_FR` dans `scripts/build_data.py`.
-- Carte des connaissances (choroplèthe) dans le tableau de bord (`map.choropleth` existe déjà).
+- Tests sur les générateurs `games` (injecter des données factices).

@@ -90,6 +90,14 @@ métropolitaine, le jeu 🇺🇸 sur les 48 états contigus.
 
 Les scripts n'utilisent que la bibliothèque standard de Python.
 
+## Tests
+
+```bash
+node tests/run.mjs    # ou : npm test
+```
+
+Harnais sans dépendance pour le moteur de maîtrise `srs.js` (logique pure).
+
 ## Structure
 
 ```

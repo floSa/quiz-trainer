@@ -1,0 +1,11 @@
+{
+  "name": "quiz-trainer",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "App web de quiz géo (répétition espacée). HTML/CSS/JS statique.",
+  "scripts": {
+    "test": "node tests/run.mjs",
+    "serve": "python scripts/serve.py"
+  }
+}
