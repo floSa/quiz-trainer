@@ -186,6 +186,10 @@ function renderStimulus(q) {
     mapMod.clearMarkers(); // efface marqueurs + lignes de correction de la manche précédente
     if (q.stimulus.kind === "map") {
       mapMod.highlight(q.stimulus.value); // monde : pays surligné
+    } else if (q.interaction === "rawclick") {
+      // clic libre (villes FR, DOM-TOM) : on montre toute la couche affichée
+      mapMod.resetBase();
+      mapMod.fitAll();
     } else if (mapContext === "world") {
       mapMod.focusIds(candidates.map((c) => c.iso3)); // place le pays
     } else {
@@ -232,7 +236,7 @@ function onRawClick(latlng) {
   if (answered || !currentQ || currentQ.interaction !== "rawclick") return;
   const c = currentQ.city;
   const d = haversine(latlng, c);
-  const correct = d <= games.CITY_THRESHOLD_KM;
+  const correct = d <= (currentQ.threshold || games.CITY_THRESHOLD_KM);
   grade(correct);
   mapMod.addMarker(c.lat, c.lng, "#2e7d32");
   if (correct) {
@@ -380,7 +384,7 @@ function selectDashboard() {
     if (skill === "fr_region") return frReg[id] || id;
     if (skill === "fr_dept") return frDep[id] || id;
     if (skill === "us_state") return usMap[id] || id;
-    if (skill === "fr_city") return id;
+    if (skill === "fr_city" || skill === "fr_domtom") return id;
     const c = data.byIso3(id);
     return c ? c.name : id;
   };

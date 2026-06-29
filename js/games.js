@@ -214,9 +214,11 @@ export const FR_SKILLS = {
   fr_dept: "Départements",
   fr_city: "Villes de France",
   fr_arr: "Arrondissements de Paris",
+  fr_domtom: "DOM-TOM",
 };
-export const FR_TOTALS = { fr_region: 13, fr_dept: 96, fr_city: 122, fr_arr: 20 }; // fr_city = nb dans cities.json (sans arrondissements)
+export const FR_TOTALS = { fr_region: 13, fr_dept: 96, fr_city: 122, fr_arr: 20, fr_domtom: 10 }; // fr_city = nb dans cities.json (sans arrondissements)
 export const CITY_THRESHOLD_KM = 35; // tolérance de clic pour « place la ville »
+export const DOMTOM_THRESHOLD_KM = 600; // large : on veut situer le territoire sur le globe
 
 function pickWeighted(items, idOf, state, skill, recent) {
   const rec = new Set(recent);
@@ -264,6 +266,21 @@ export function buildFrCity(cands, state, recent) {
   });
 }
 
+// DOM-TOM : placer le territoire sur la carte du monde (clic libre, tolérance large).
+export function buildFrDomtom(cands, state, recent) {
+  const t = pickWeighted(data.france().domtom, (x) => x.name, state, "fr_domtom", recent);
+  return q({
+    skill: "fr_domtom",
+    item: t.name,
+    correct: t.name,
+    correctLabel: t.name,
+    stimulus: { kind: "text", value: `Place ce territoire d'outre-mer : <b>${t.name}</b>` },
+    interaction: "rawclick",
+    city: t,
+    threshold: DOMTOM_THRESHOLD_KM,
+  });
+}
+
 // --- États-Unis ------------------------------------------------------------ //
 export const US_SKILLS = { us_state: "États américains" };
 export const US_TOTAL = { us_state: 48 };
@@ -294,5 +311,6 @@ export const GAMES = [
   { key: "fr_dept", title: "🇫🇷 Départements", sub: "Place le département", build: buildFrDept, context: "france-departements" },
   { key: "fr_city", title: "🇫🇷 Villes de France", sub: "Place la ville (> 50 000 hab.)", build: buildFrCity, context: "france-cities" },
   { key: "fr_arr", title: "🇫🇷 Arrondissements de Paris", sub: "Place l'arrondissement sur le plan", build: buildFrArr, context: "paris-arrondissements" },
+  { key: "fr_domtom", title: "🌴 DOM-TOM", sub: "Place le territoire sur le globe", build: buildFrDomtom, context: "world" },
   { key: "us_state", title: "🇺🇸 États américains", sub: "Place l'état sur la carte", build: buildUsState, context: "usa-states" },
 ];
