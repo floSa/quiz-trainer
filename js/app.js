@@ -418,6 +418,10 @@ function selectDashboard() {
     return `<details><summary>${allSkills[skill]} — ${learnedN}/${rows.length} acquis</summary><div class="chips">${chips}</div></details>`;
   }).join("");
 
+  // maîtrise moyenne par pays (toutes compétences monde) pour la carte
+  const masteryById = {};
+  cs.forEach((c) => (masteryById[c.iso3] = mean(skills.map((s) => store.getItem(state, s, c.iso3).m || 0))));
+
   $("dashboard").innerHTML = `
     <h1>📊 Tableau de bord</h1>
     <p class="muted">Ton niveau mesure tes connaissances réelles — pas le score d'un quiz. Les questions ratées reviennent plus souvent.</p>
@@ -434,9 +438,15 @@ function selectDashboard() {
       <div><h3>🇺🇸 États-Unis</h3>${usBars}</div>
       <div><h3>🌍 Monde (villes, reliefs, eaux)</h3>${worldBars}</div>
     </div>
+    <h3 style="margin-top:22px">🗺️ Carte des connaissances</h3>
+    <p class="muted">Chaque pays coloré selon ta maîtrise moyenne (compétences monde).</p>
+    <div class="legend"><span class="swatch"></span> non rencontré <span class="scale"></span> faible → maîtrisé</div>
+    <div id="dash-map"></div>
     ${detail ? `<h3 style="margin-top:22px">Détail par connaissance</h3>
     <p class="muted">Ta maîtrise pour chaque item déjà rencontré (du plus faible au plus sûr).</p>
     <div class="detail">${detail}</div>` : ""}`;
+
+  mapMod.choroplethMap("dash-map", data.geo(), masteryById);
 }
 
 function mean(arr) {

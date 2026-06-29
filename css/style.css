@@ -133,6 +133,13 @@ h3 { margin: 0 0 8px; font-size: 0.95rem; color: var(--muted); }
 .track { background: var(--panel2); border-radius: 6px; height: 8px; overflow: hidden; }
 .fill { background: var(--good); height: 100%; }
 
+/* Carte des connaissances */
+/* flex:none → ne pas se faire écraser par le flex-column du dashboard */
+#dash-map { flex: none; height: 340px; width: 100%; border-radius: 12px; background: var(--ocean); border: 1px solid var(--line); }
+.legend { display: flex; align-items: center; gap: 10px; margin: 8px 0 4px; font-size: 0.8rem; color: var(--muted); flex-wrap: wrap; }
+.legend .scale { width: 120px; height: 10px; border-radius: 5px; background: linear-gradient(90deg, #9bd49b, #2e7d32); }
+.legend .swatch { width: 12px; height: 12px; border-radius: 3px; background: #39414e; display: inline-block; vertical-align: middle; }
+
 /* Détail par connaissance */
 .detail details { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; margin: 8px 0; padding: 6px 12px; }
 .detail summary { cursor: pointer; font-weight: 600; padding: 4px 0; }

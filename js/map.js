@@ -186,3 +186,25 @@ function mix(m) {
   const c = from.map((f, i) => Math.round(f + (to[i] - f) * m));
   return `rgb(${c[0]},${c[1]},${c[2]})`;
 }
+
+// Carte des connaissances du tableau de bord : instance Leaflet DÉDIÉE (le
+// conteneur est recréé à chaque rendu du dashboard, donc on repart à neuf).
+let dashMap = null;
+export function choroplethMap(containerId, geojson, masteryById) {
+  if (dashMap) { dashMap.remove(); dashMap = null; }
+  dashMap = L.map(containerId, {
+    zoomControl: false, attributionControl: false, dragging: true,
+    scrollWheelZoom: false, minZoom: 1, maxZoom: 6, zoomSnap: 0,
+  });
+  const layer = L.geoJSON(geojson, {
+    interactive: false,
+    style: (f) => {
+      const m = masteryById[f.id] || 0;
+      return { color: "#1b2027", weight: 0.4, fillOpacity: 1, fillColor: m <= 0 ? "#39414e" : mix(m) };
+    },
+  }).addTo(dashMap);
+  setTimeout(() => {
+    dashMap.invalidateSize(false);
+    try { dashMap.fitBounds(layer.getBounds(), { padding: [6, 6] }); } catch (e) {}
+  }, 60);
+}
