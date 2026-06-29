@@ -296,7 +296,7 @@ function showFeedback(correct) {
     ? `<span class="badge ok">✅ Bravo !</span>`
     : `<span class="badge ko">❌ Raté — <b>${labelFor(currentQ.correct)}</b></span>`;
   const pct = Math.round((store.getItem(state, currentQ.skill, currentQ.item).m || 0) * 100);
-  const skillName = games.SKILLS[currentQ.skill] || games.FR_SKILLS[currentQ.skill] || games.US_SKILLS[currentQ.skill] || currentQ.skill;
+  const skillName = games.SKILLS[currentQ.skill] || games.FR_SKILLS[currentQ.skill] || games.US_SKILLS[currentQ.skill] || games.WORLD_SKILLS[currentQ.skill] || currentQ.skill;
   let sub = `Maîtrise « ${skillName} » : ${pct} %`;
   if (currentQ.explain) sub += ` · ${currentQ.explain}`;
 
