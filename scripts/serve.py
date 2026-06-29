@@ -24,5 +24,5 @@ class NoCacheHandler(http.server.SimpleHTTPRequestHandler):
 
 
 with socketserver.TCPServer(("0.0.0.0", PORT), NoCacheHandler) as httpd:
-    print(f"Dev (sans cache) → http://localhost:{PORT}")
+    print(f"Dev (sans cache) -> http://localhost:{PORT}")
     httpd.serve_forever()
