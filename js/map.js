@@ -139,6 +139,18 @@ export function addRiver(geometry, color = "#e8453c") {
   return l;
 }
 
+// Trace une zone (GeoJSON polygone : mer, désert, chaîne) en surbrillance.
+export function addRegion(geometry, color = "#e8453c") {
+  const l = L.geoJSON(geometry, {
+    style: { color, weight: 1.2, opacity: 0.9, fillColor: color, fillOpacity: 0.4 },
+  }).addTo(map);
+  markers.push(l); // nettoyé par clearMarkers()
+  try {
+    map.fitBounds(l.getBounds(), { padding: [25, 25], maxZoom: 6, animate: false });
+  } catch (e) {}
+  return l;
+}
+
 // Marqueurs ponctuels (jeu « place la ville »).
 export function addMarker(lat, lng, color) {
   const m = L.circleMarker([lat, lng], {

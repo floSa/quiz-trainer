@@ -34,6 +34,7 @@ pas — les modules JS et `fetch` exigent http.)
 | 🤝 Voisins | trouve un pays frontalier |
 | 🌍 Grandes villes du monde | place la ville (1 à 10 par pays selon sa taille) sur la carte |
 | 🌊 Fleuves | fleuve surligné en rouge → son nom (33 grands fleuves) |
+| 🌊 Mers & océans | zone surlignée → son nom (30 mers/océans) |
 | 🇫🇷 Régions de France | place la région sur la carte |
 | 🇫🇷 Départements | place le département sur la carte |
 | 🇫🇷 Villes de France | place la ville > 50 000 hab. (clic, tolérance 35 km) |

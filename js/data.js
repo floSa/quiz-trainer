@@ -91,3 +91,22 @@ export function usa() {
   return _usa;
 }
 
+// --- Jeux de données « monde physique » (chargés à la demande, par clé) ---
+const SETS = {
+  seas: "data/seas.json",
+  deserts: "data/deserts.json",
+  ranges: "data/ranges.json",
+  peaks: "data/peaks.json",
+};
+const _sets = {};
+export async function loadSets(keys) {
+  await Promise.all(
+    keys.map(async (k) => {
+      if (!_sets[k]) _sets[k] = await fetch(SETS[k]).then((r) => r.json());
+    })
+  );
+}
+export function set(k) {
+  return _sets[k];
+}
+

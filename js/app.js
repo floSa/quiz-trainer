@@ -34,6 +34,8 @@ async function init() {
   selectGame(gameKey);
   data.loadFrance().catch(() => {}); // préchargement en tâche de fond
   data.loadUsa().catch(() => {});
+  const sets = [...new Set(games.GAMES.flatMap((g) => g.needs || []))];
+  if (sets.length) data.loadSets(sets).catch(() => {}); // jeux de données monde physique
 }
 
 function loadZones() {
@@ -124,10 +126,11 @@ async function selectGame(key) {
   $("feedback").innerHTML = "";
   $("prompt").innerHTML = g.context === "world" ? "" : "⏳ Chargement de la carte…";
 
-  if (g.context !== "world") {
+  if (g.context !== "world" || g.needs) {
     try {
       if (g.context.startsWith("usa")) await data.loadUsa();
-      else await data.loadFrance();
+      else if (g.context !== "world") await data.loadFrance();
+      if (g.needs) await data.loadSets(g.needs);
     } catch (e) {
       if (token === navToken) $("prompt").textContent = "⚠️ Impossible de charger les données : " + e.message;
       return;
@@ -158,7 +161,7 @@ function renderStimulus(q) {
   const map = $("map");
   $("prompt").innerHTML = q.ask || (q.stimulus.kind === "text" ? q.stimulus.value : "");
 
-  const useMap = q.stimulus.kind === "map" || q.stimulus.kind === "river" || q.stimulus.kind === "shape" || q.interaction === "mapclick" || q.interaction === "rawclick";
+  const useMap = q.stimulus.kind === "map" || q.stimulus.kind === "river" || q.stimulus.kind === "region" || q.stimulus.kind === "shape" || q.interaction === "mapclick" || q.interaction === "rawclick";
   map.style.display = useMap ? "block" : "none";
 
   // mode d'affichage du stimulus → comportement de la zone (.stim) en hauteur
@@ -191,6 +194,9 @@ function renderStimulus(q) {
     } else if (q.stimulus.kind === "river") {
       mapMod.resetBase(); // pays en fond + le fleuve tracé en rouge par-dessus
       mapMod.addRiver(q.stimulus.value.geometry);
+    } else if (q.stimulus.kind === "region") {
+      mapMod.resetBase(); // pays en fond + la zone (mer/désert/chaîne) surlignée
+      mapMod.addRegion(q.stimulus.value.geometry);
     } else if (q.interaction === "rawclick") {
       // clic libre (villes FR, DOM-TOM) : on montre toute la couche affichée
       mapMod.resetBase();
@@ -390,7 +396,7 @@ function selectDashboard() {
     if (skill === "fr_region") return frReg[id] || id;
     if (skill === "fr_dept") return frDep[id] || id;
     if (skill === "us_state") return usMap[id] || id;
-    if (skill === "fr_city" || skill === "fr_domtom" || skill === "world_city" || skill === "fr_monument" || skill === "river") return id;
+    if (["fr_city", "fr_domtom", "world_city", "fr_monument", "river", "sea", "desert", "range", "peak"].includes(skill)) return id;
     const c = data.byIso3(id);
     return c ? c.name : id;
   };
@@ -426,7 +432,7 @@ function selectDashboard() {
       <div><h3>Par région (monde)</h3>${regionBars}</div>
       <div><h3>🇫🇷 France</h3>${frBars}</div>
       <div><h3>🇺🇸 États-Unis</h3>${usBars}</div>
-      <div><h3>🌍 Monde (villes &amp; fleuves)</h3>${worldBars}</div>
+      <div><h3>🌍 Monde (villes, reliefs, eaux)</h3>${worldBars}</div>
     </div>
     ${detail ? `<h3 style="margin-top:22px">Détail par connaissance</h3>
     <p class="muted">Ta maîtrise pour chaque item déjà rencontré (du plus faible au plus sûr).</p>

@@ -313,10 +313,37 @@ export function buildFrDomtom(cands, state, recent) {
   });
 }
 
-// --- Monde : grandes villes + fleuves -------------------------------------- //
-export const WORLD_SKILLS = { world_city: "Grandes villes du monde", river: "Fleuves" };
-export const WORLD_TOTAL = { world_city: 616, river: 33 }; // = nb dans cities_world.json / rivers.json
+// --- Monde : villes, fleuves, géographie physique -------------------------- //
+export const WORLD_SKILLS = {
+  world_city: "Grandes villes du monde",
+  river: "Fleuves",
+  sea: "Mers & océans",
+};
+export const WORLD_TOTAL = { world_city: 616, river: 33, sea: 30 };
 export const WORLD_CITY_THRESHOLD_KM = 150; // clic libre sur la carte du monde
+
+// Générateur générique « zone surlignée en rouge → son nom » (QCM).
+// Données = liste de { name, geometry } chargée à la demande (data.set(key)).
+function buildHighlight(key, skill, ask) {
+  return (cands, state, recent) => {
+    const items = data.set(key) || [];
+    const it = pickWeighted(items, (x) => x.name, state, skill, recent);
+    const others = shuffle(items.filter((x) => x.name !== it.name)).slice(0, 3);
+    const opts = shuffle([it, ...others]).map((x) => ({ id: x.name, label: x.name }));
+    return q({
+      skill,
+      item: it.name,
+      correct: it.name,
+      stimulus: { kind: "region", value: it },
+      ask,
+      interaction: "options",
+      optionKind: "text",
+      options: opts,
+    });
+  };
+}
+
+export const buildSea = buildHighlight("seas", "sea", "Quelle est cette mer / cet océan ? (en rouge)");
 
 // Fleuves : un fleuve surligné en rouge sur le planisphère → son nom (QCM).
 export function buildRiver(cands, state, recent) {
@@ -380,6 +407,7 @@ export const GAMES = [
   { key: "voisins", title: "🤝 Voisins", sub: "Trouve un pays frontalier", build: buildNeighbor, context: "world" },
   { key: "world_city", title: "🌍 Grandes villes du monde", sub: "Place la ville sur la carte", build: buildWorldCity, context: "world" },
   { key: "river", title: "🌊 Fleuves", sub: "Le fleuve surligné → son nom", build: buildRiver, context: "world" },
+  { key: "sea", title: "🌊 Mers & océans", sub: "La zone surlignée → son nom", build: buildSea, context: "world", needs: ["seas"] },
   { key: "fr_region", title: "🇫🇷 Régions de France", sub: "Place la région sur la carte", build: buildFrRegion, context: "france-regions" },
   { key: "fr_dept", title: "🇫🇷 Départements", sub: "Place le département", build: buildFrDept, context: "france-departements" },
   { key: "fr_city", title: "🇫🇷 Villes de France", sub: "Place la ville (> 50 000 hab.)", build: buildFrCity, context: "france-cities" },
