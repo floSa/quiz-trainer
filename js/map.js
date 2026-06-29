@@ -7,11 +7,12 @@ let markers = [];
 let featureClick = null;
 let mapClick = null;
 
-const BASE = { color: "#aab6c2", weight: 0.6, fillColor: "#e9edf1", fillOpacity: 1 };
-const DIM = { color: "#cdd5dd", weight: 0.4, fillColor: "#f4f6f8", fillOpacity: 1 };
-const HILITE = { color: "#fff", weight: 1, fillColor: "#e8453c", fillOpacity: 1 };
-const GOOD = { color: "#fff", weight: 1, fillColor: "#2e7d32", fillOpacity: 1 };
-const BAD = { color: "#fff", weight: 1, fillColor: "#e8453c", fillOpacity: 1 };
+// Terres claires sur océan bleu (cf. --ocean en CSS). Coastline bleu-gris.
+const BASE = { color: "#7e96a9", weight: 0.7, fillColor: "#e8efe2", fillOpacity: 1 };
+const DIM = { color: "#bcc9bf", weight: 0.4, fillColor: "#eef2ea", fillOpacity: 1 };
+const HILITE = { color: "#fff", weight: 1.2, fillColor: "#e8453c", fillOpacity: 1 };
+const GOOD = { color: "#fff", weight: 1.2, fillColor: "#2e7d32", fillOpacity: 1 };
+const BAD = { color: "#fff", weight: 1.2, fillColor: "#e8453c", fillOpacity: 1 };
 
 export function ensureMap(containerId) {
   if (map) return map;
@@ -110,7 +111,7 @@ export function choropleth(masteryById) {
   resetBase();
   layer.eachLayer((l) => {
     const m = masteryById[l.feature.id] || 0;
-    l.setStyle({ color: "#fff", weight: 0.4, fillOpacity: 1, fillColor: m <= 0 ? "#eef0f2" : mix(m) });
+    l.setStyle({ color: "#fff", weight: 0.4, fillOpacity: 1, fillColor: m <= 0 ? "#e8efe2" : mix(m) });
   });
   map.setView([25, 10], 2);
 }
