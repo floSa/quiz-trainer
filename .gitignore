@@ -7,3 +7,6 @@ env/
 
 # Divers
 .DS_Store
+
+# Guide de dépôt local (non publié)
+CLAUDE.md
