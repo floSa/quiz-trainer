@@ -31,6 +31,7 @@ pas — les modules JS et `fetch` exigent http.)
 | 🏛️ Capitales | pays → capitale |
 | 🏙️ Capitale → pays | capitale → pays |
 | 🤝 Voisins | trouve un pays frontalier |
+| 🌍 Grandes villes du monde | place la ville (1 à 10 par pays selon sa taille) sur la carte |
 | 🇫🇷 Régions de France | place la région sur la carte |
 | 🇫🇷 Départements | place le département sur la carte |
 | 🇫🇷 Villes de France | place la ville > 50 000 hab. (clic, tolérance 35 km) |

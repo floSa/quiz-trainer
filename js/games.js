@@ -281,6 +281,26 @@ export function buildFrDomtom(cands, state, recent) {
   });
 }
 
+// --- Grandes villes du monde ----------------------------------------------- //
+export const WORLD_SKILLS = { world_city: "Grandes villes du monde" };
+export const WORLD_TOTAL = { world_city: 616 }; // = nb dans cities_world.json
+export const WORLD_CITY_THRESHOLD_KM = 150; // clic libre sur la carte du monde
+
+export function buildWorldCity(cands, state, recent) {
+  const idOf = (x) => `${x.name} (${x.country})`;
+  const c = pickWeighted(data.citiesWorld(), idOf, state, "world_city", recent);
+  return q({
+    skill: "world_city",
+    item: idOf(c),
+    correct: idOf(c),
+    correctLabel: idOf(c),
+    stimulus: { kind: "text", value: `Place la ville : <b>${c.name}</b> <span style="color:#9aa4b2">(${c.country})</span>` },
+    interaction: "rawclick",
+    city: c,
+    threshold: WORLD_CITY_THRESHOLD_KM,
+  });
+}
+
 // --- États-Unis ------------------------------------------------------------ //
 export const US_SKILLS = { us_state: "États américains" };
 export const US_TOTAL = { us_state: 48 };
@@ -307,6 +327,7 @@ export const GAMES = [
   { key: "capitales", title: "🏛️ Capitales", sub: "Le pays → sa capitale", build: buildCapital, context: "world" },
   { key: "capitale_pays", title: "🏙️ Capitale → pays", sub: "La capitale → le pays", build: buildCapitalToCountry, context: "world" },
   { key: "voisins", title: "🤝 Voisins", sub: "Trouve un pays frontalier", build: buildNeighbor, context: "world" },
+  { key: "world_city", title: "🌍 Grandes villes du monde", sub: "Place la ville sur la carte", build: buildWorldCity, context: "world" },
   { key: "fr_region", title: "🇫🇷 Régions de France", sub: "Place la région sur la carte", build: buildFrRegion, context: "france-regions" },
   { key: "fr_dept", title: "🇫🇷 Départements", sub: "Place le département", build: buildFrDept, context: "france-departements" },
   { key: "fr_city", title: "🇫🇷 Villes de France", sub: "Place la ville (> 50 000 hab.)", build: buildFrCity, context: "france-cities" },

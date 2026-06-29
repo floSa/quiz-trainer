@@ -6,16 +6,23 @@ let _geo = null;
 let _byIso = null;
 let _fr = null;
 let _usa = null;
+let _citiesWorld = null;
 
 export async function load() {
   if (_countries) return;
-  const [c, g] = await Promise.all([
+  const [c, g, cw] = await Promise.all([
     fetch("data/countries.json").then((r) => r.json()),
     fetch("data/world.geojson").then((r) => r.json()),
+    fetch("data/cities_world.json").then((r) => r.json()),
   ]);
   _countries = c.slice().sort((a, b) => a.name.localeCompare(b.name, "fr"));
   _geo = g;
   _byIso = Object.fromEntries(c.map((x) => [x.iso3, x]));
+  _citiesWorld = cw;
+}
+
+export function citiesWorld() {
+  return _citiesWorld;
 }
 
 export function countries() {

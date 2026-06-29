@@ -370,6 +370,7 @@ function selectDashboard() {
     Object.keys(sk).map((s) => bar(sk[s], tot[s] ? itemsSum(s) / tot[s] : 0)).join("");
   const frBars = placeBars(games.FR_SKILLS, games.FR_TOTALS);
   const usBars = placeBars(games.US_SKILLS, games.US_TOTAL);
+  const worldBars = placeBars(games.WORLD_SKILLS, games.WORLD_TOTAL);
 
   // libellés lisibles par item, pour le détail
   const frReg = {}, frDep = {}, frArr = {}, usMap = {};
@@ -384,13 +385,13 @@ function selectDashboard() {
     if (skill === "fr_region") return frReg[id] || id;
     if (skill === "fr_dept") return frDep[id] || id;
     if (skill === "us_state") return usMap[id] || id;
-    if (skill === "fr_city" || skill === "fr_domtom") return id;
+    if (skill === "fr_city" || skill === "fr_domtom" || skill === "world_city") return id;
     const c = data.byIso3(id);
     return c ? c.name : id;
   };
 
   // détail par connaissance : chaque item déjà rencontré, du plus faible au plus sûr
-  const allSkills = { ...games.SKILLS, ...games.FR_SKILLS, ...games.US_SKILLS };
+  const allSkills = { ...games.SKILLS, ...games.WORLD_SKILLS, ...games.FR_SKILLS, ...games.US_SKILLS };
   const detail = Object.keys(allSkills).map((skill) => {
     const prefix = skill + ":";
     const rows = Object.keys(state.items)
@@ -420,6 +421,7 @@ function selectDashboard() {
       <div><h3>Par région (monde)</h3>${regionBars}</div>
       <div><h3>🇫🇷 France</h3>${frBars}</div>
       <div><h3>🇺🇸 États-Unis</h3>${usBars}</div>
+      <div><h3>🌍 Villes du monde</h3>${worldBars}</div>
     </div>
     ${detail ? `<h3 style="margin-top:22px">Détail par connaissance</h3>
     <p class="muted">Ta maîtrise pour chaque item déjà rencontré (du plus faible au plus sûr).</p>
