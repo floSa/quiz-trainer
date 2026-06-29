@@ -60,17 +60,26 @@ def build_admin(url, out_name):
 def build_cities():
     z = zipfile.ZipFile(io.BytesIO(fetch(CITIES)))
     rows = z.read("cities15000.txt").decode("utf-8").splitlines()
-    cities = []
+    best = {}  # nom -> meilleure entrée (plus peuplée), pour dédoublonner
     for line in rows:
         c = line.split("\t")
-        if c[8] == "FR" and c[14].isdigit() and int(c[14]) >= MIN_POP:
-            cities.append({
-                "name": c[1],
+        name = c[1]
+        # On écarte les arrondissements / sections de ville (Paris 13e, Lyon 03,
+        # Marseille 08, « Paris 15 Vaugirard »…) : code GeoNames PPLX, ou nom
+        # contenant un chiffre — aucune commune FR >50k n'a de chiffre.
+        if c[8] != "FR" or c[7] == "PPLX" or any(ch.isdigit() for ch in name):
+            continue
+        if not c[14].isdigit() or int(c[14]) < MIN_POP:
+            continue
+        pop = int(c[14])
+        if name not in best or pop > best[name]["pop"]:
+            best[name] = {
+                "name": name,
                 "lat": round(float(c[4]), 4),
                 "lng": round(float(c[5]), 4),
-                "pop": int(c[14]),
-            })
-    cities.sort(key=lambda x: -x["pop"])
+                "pop": pop,
+            }
+    cities = sorted(best.values(), key=lambda x: -x["pop"])
     path = os.path.join(OUT, "cities.json")
     with open(path, "w", encoding="utf-8") as fh:
         json.dump(cities, fh, ensure_ascii=False, separators=(",", ":"))

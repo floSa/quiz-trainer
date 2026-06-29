@@ -214,7 +214,7 @@ export const FR_SKILLS = {
   fr_dept: "Départements",
   fr_city: "Villes de France",
 };
-export const FR_TOTALS = { fr_region: 13, fr_dept: 96, fr_city: 153 };
+export const FR_TOTALS = { fr_region: 13, fr_dept: 96, fr_city: 122 }; // fr_city = nb dans cities.json (sans arrondissements)
 export const CITY_THRESHOLD_KM = 35; // tolérance de clic pour « place la ville »
 
 function pickWeighted(items, idOf, state, skill, recent) {
