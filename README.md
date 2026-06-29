@@ -37,6 +37,7 @@ pas — les modules JS et `fetch` exigent http.)
 | 🌊 Mers & océans | zone surlignée → son nom (30 mers/océans) |
 | 🏜️ Déserts | désert surligné → son nom (17 grands déserts) |
 | ⛰️ Chaînes de montagnes | chaîne surlignée → son nom (26 grandes chaînes) |
+| 🏔️ Sommets du monde | place le sommet (24 pics célèbres) sur la carte (clic, tolérance 250 km) |
 | 🇫🇷 Régions de France | place la région sur la carte |
 | 🇫🇷 Départements | place le département sur la carte |
 | 🇫🇷 Villes de France | place la ville > 50 000 hab. (clic, tolérance 35 km) |
@@ -82,6 +83,10 @@ métropolitaine, le jeu 🇺🇸 sur les 48 états contigus.
   monuments triés par notoriété.  → `python scripts/build_monuments.py`
 - Fleuves : [Natural Earth 50m](https://www.naturalearthdata.com/) rivers, 33
   grands fleuves (segments agrégés, noms FR).  → `python scripts/build_rivers.py`
+- Mers & océans : Natural Earth marine polys (noms FR).  → `python scripts/build_seas.py`
+- Déserts / chaînes : Natural Earth geography regions (noms FR).
+  → `python scripts/build_deserts.py`, `python scripts/build_ranges.py`
+- Sommets : liste curatée (24 pics).  → `python scripts/build_peaks.py`
 
 Les scripts n'utilisent que la bibliothèque standard de Python.
 
