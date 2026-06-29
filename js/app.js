@@ -182,14 +182,14 @@ function renderStimulus(q) {
 
   if (useMap) {
     mapMod.invalidate();
+    mapMod.clearMarkers(); // efface marqueurs + lignes de correction de la manche précédente
     if (q.stimulus.kind === "map") {
       mapMod.highlight(q.stimulus.value); // monde : pays surligné
     } else if (mapContext === "world") {
       mapMod.focusIds(candidates.map((c) => c.iso3)); // place le pays
     } else {
-      // France : on efface l'ancien surlignage/marqueurs et on recadre
+      // France : on efface l'ancien surlignage et on recadre
       mapMod.resetBase();
-      mapMod.clearMarkers();
       mapMod.fitAll();
     }
   }
@@ -234,8 +234,13 @@ function onRawClick(latlng) {
   const correct = d <= games.CITY_THRESHOLD_KM;
   grade(correct);
   mapMod.addMarker(c.lat, c.lng, "#2e7d32");
-  if (!correct) mapMod.addMarker(latlng.lat, latlng.lng, "#e8453c");
-  mapMod.panTo(c.lat, c.lng, 6);
+  if (correct) {
+    mapMod.panTo(c.lat, c.lng, 6);
+  } else {
+    // montrer le clic ET la ville cherchée ensemble, même si on était zoomé loin
+    mapMod.addMarker(latlng.lat, latlng.lng, "#e8453c");
+    mapMod.fitPoints([{ lat: c.lat, lng: c.lng }, latlng]);
+  }
   currentQ.explain = `${c.name} — ton clic était à ${Math.round(d)} km`;
   showFeedback(correct);
 }
@@ -298,8 +303,11 @@ function showFeedback(correct) {
     <div class="fb-sub">${reveal}${sub}</div>`;
   // enchaînement automatique ; Entrée ou un clic passe plus vite
   fb.onclick = newRound;
+  const onMap = currentQ.stimulus.kind === "map" || currentQ.interaction === "mapclick" || currentQ.interaction === "rawclick";
+  let delay = correct ? ADVANCE_OK : ADVANCE_KO;
+  if (onMap && !correct) delay += 1000; // +1 s sur carte : le temps de situer l'erreur
   clearTimeout(advanceTimer);
-  advanceTimer = setTimeout(newRound, correct ? ADVANCE_OK : ADVANCE_KO);
+  advanceTimer = setTimeout(newRound, delay);
 }
 
 function renderSession() {

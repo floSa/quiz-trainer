@@ -22,6 +22,10 @@ export function ensureMap(containerId) {
     worldCopyJump: true,
     minZoom: 1,
     maxZoom: 8,
+    // zoom fractionnaire : sinon fitBounds arrondit le zoom à l'entier inférieur
+    // et la carte ne remplit que ~50 % du cadre (jusqu'à 2× de vide).
+    zoomSnap: 0,
+    zoomDelta: 0.5,
   });
   map.setView([25, 10], 2);
   map.on("click", (e) => mapClick && mapClick(e.latlng));
@@ -44,8 +48,11 @@ export function setLayer(geojson, { interactive = true } = {}) {
   return layer;
 }
 
+// Synchrone et AVANT tout cadrage : sinon Leaflet calcule fitBounds contre une
+// taille de conteneur périmée (carte qui vient de passer de display:none à
+// block) → vue trop dézoomée / surlignage hors cadre.
 export function invalidate() {
-  if (map) setTimeout(() => map.invalidateSize(), 50);
+  if (map) map.invalidateSize(false);
 }
 export function onFeatureClick(fn) { featureClick = fn; }
 export function onMapClick(fn) { mapClick = fn; }
@@ -54,6 +61,22 @@ export function resetBase() { if (layer) layer.setStyle(BASE); }
 function fitTo(id, maxZoom = 6) {
   const l = byId[id];
   if (l) map.fitBounds(l.getBounds(), { padding: [30, 30], maxZoom, animate: false });
+}
+
+// Recadre pour montrer tous les polygones donnés (ex. bonne réponse + choix).
+function fitToIds(ids, maxZoom = 6) {
+  const ls = ids.map((i) => byId[i]).filter(Boolean);
+  if (!ls.length) return;
+  let b = ls[0].getBounds();
+  ls.slice(1).forEach((l) => (b = b.extend(l.getBounds())));
+  map.fitBounds(b, { padding: [45, 45], maxZoom, animate: false });
+}
+
+// Recadre pour montrer tous les points donnés (ex. ville cherchée + clic).
+export function fitPoints(latlngs, maxZoom = 7) {
+  if (!latlngs || !latlngs.length) return;
+  const b = L.latLngBounds(latlngs.map((p) => [p.lat, p.lng]));
+  map.fitBounds(b, { padding: [70, 70], maxZoom, animate: false });
 }
 
 export function highlight(id) {
@@ -69,21 +92,25 @@ export function focusIds(idList) {
   if (inSet.length) {
     let b = inSet[0].getBounds();
     inSet.slice(1).forEach((l) => (b = b.extend(l.getBounds())));
-    map.fitBounds(b, { padding: [20, 20] });
+    map.fitBounds(b, { padding: [8, 8] });
   }
 }
 
 export function fitAll() {
-  if (layer) map.fitBounds(layer.getBounds(), { padding: [15, 15] });
+  if (layer) map.fitBounds(layer.getBounds(), { padding: [8, 8] });
 }
 
 export function markResult(correctId, clickedId, wasCorrect) {
   if (byId[correctId]) byId[correctId].setStyle(GOOD);
   if (clickedId && clickedId !== correctId && byId[clickedId]) byId[clickedId].setStyle(BAD);
-  // Si on a bon, on ne bouge pas (la bonne réponse est sous le curseur). Si on
-  // a faux, on recadre sur la bonne réponse pour qu'elle soit visible même si
-  // on était zoomé ailleurs.
-  if (!wasCorrect) fitTo(correctId);
+  if (wasCorrect) return; // bonne réponse sous le curseur : on ne bouge pas
+  // Faux : on montre LE CHOIX et LA BONNE RÉPONSE ensemble pour situer l'erreur,
+  // même si on était zoomé loin.
+  if (clickedId && clickedId !== correctId && byId[clickedId] && byId[correctId]) {
+    fitToIds([correctId, clickedId]);
+  } else {
+    fitTo(correctId);
+  }
 }
 
 // Marqueurs ponctuels (jeu « place la ville »).
