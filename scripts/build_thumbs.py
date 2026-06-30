@@ -191,7 +191,7 @@ BLOCKS = {
 WINDOWS = {
     "Europe": (-25, 45, 33, 72),
     "Afrique": (-19, 52, -37, 38),
-    "Asie": (25, 150, -11, 80),
+    "Asie": (25, 147, -11, 58),  # lat plafonnée : sinon l'Arctique (Mercator) tasse le continent
     "Amérique du Nord": (-170, -52, 7, 74),
     "Amérique du Sud": (-82, -34, -56, 13),
     "Océanie": (110, 179, -48, 0),
@@ -259,7 +259,8 @@ US_WINDOW = (-125, -66.5, 24, 49.5)
 
 def build_arr():
     paris = json.load(open(os.path.join(DATA, "france", "paris.geojson"), encoding="utf-8"))
-    build_polys("arr", paris["features"], PARIS_WINDOW, eps_grey=0.004, eps_red=0.0015, min_island=0.002)
+    # Paris est minuscule → simplification très fine (sinon contours en escalier).
+    build_polys("arr", paris["features"], PARIS_WINDOW, eps_grey=0.0012, eps_red=0.0005, min_island=0.001)
 
 def build_usa():
     usa = json.load(open(os.path.join(DATA, "usa", "states.geojson"), encoding="utf-8"))
@@ -297,7 +298,10 @@ def build_world_points(group, items, half_lng, half_lat):
 def build_world_features(group, items, kind):  # kind : "zone" (polygone) | "river" (ligne)
     paths, boxes = _world_grey()
     for it in items:
-        w = _window_around(bbox(it["geometry"]))
+        # zones (mers/déserts/chaînes) un peu plus larges → un poil dézoomées
+        w = _window_around(bbox(it["geometry"]),
+                           pad_frac=0.2 if kind == "river" else 0.35,
+                           pad_min=2.0 if kind == "river" else 4.0)
         greys = [paths[i] for i in paths if _hits(boxes[i], w)]
         if kind == "river":
             content = svg(w, greys, red_line=line_path(it["geometry"], eps=0.1))
