@@ -4,6 +4,7 @@ import * as data from "./data.js";
 import * as store from "./store.js";
 import * as games from "./games.js";
 import * as mapMod from "./map.js";
+import * as learn from "./learn.js";
 
 const ZONES_KEY = "quiztrainer.zones.v1";
 
@@ -58,8 +59,14 @@ function buildSidebar() {
     b.onclick = () => selectGame(g.key);
     nav.appendChild(b);
   });
+  const lrn = document.createElement("button");
+  lrn.className = "nav-item nav-dash";
+  lrn.innerHTML = `<span class="nav-title">📚 Apprendre</span><span class="nav-sub">Tableaux de référence</span>`;
+  lrn.onclick = selectLearn;
+  nav.appendChild(lrn);
+
   const dash = document.createElement("button");
-  dash.className = "nav-item nav-dash";
+  dash.className = "nav-item";
   dash.innerHTML = `<span class="nav-title">📊 Tableau de bord</span>`;
   dash.onclick = selectDashboard;
   nav.appendChild(dash);
@@ -114,6 +121,7 @@ async function selectGame(key) {
   clearTimeout(advanceTimer);
   gameKey = key;
   $("dashboard").hidden = true;
+  $("learn").hidden = true;
   $("game").hidden = false;
   document.querySelectorAll(".nav-item").forEach((b) => b.classList.toggle("active", b.dataset.game === key));
   const g = games.GAMES.find((x) => x.key === key);
@@ -354,8 +362,26 @@ function haversine(a, b) {
 }
 
 // --------------------------------------------------------------------------- //
+async function selectLearn() {
+  const token = ++navToken;
+  clearTimeout(advanceTimer);
+  $("game").hidden = true;
+  $("dashboard").hidden = true;
+  document.querySelectorAll(".nav-item").forEach((b) => b.classList.remove("active"));
+  const lrn = $("learn");
+  lrn.hidden = false;
+  lrn.innerHTML = `<h1>📚 Apprendre</h1><p class="muted">⏳ Chargement des données…</p>`;
+  try {
+    const sets = [...new Set(games.GAMES.flatMap((g) => g.needs || []))];
+    await Promise.all([data.loadFrance(), data.loadUsa(), data.loadSets(sets)]);
+  } catch (e) {}
+  if (token !== navToken) return; // une autre navigation a pris la main
+  learn.render(lrn);
+}
+
 function selectDashboard() {
   $("game").hidden = true;
+  $("learn").hidden = true;
   $("dashboard").hidden = false;
   document.querySelectorAll(".nav-item").forEach((b) => b.classList.remove("active"));
   const cs = data.countries();
