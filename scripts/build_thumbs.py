@@ -209,10 +209,22 @@ def build_departments():
     dep = json.load(open(os.path.join(DATA, "france", "departements.geojson"), encoding="utf-8"))
     build_polys("dept", dep["features"], FR_WINDOW, eps_grey=0.1, eps_red=0.03, min_island=0.08)
 
+def france_base():
+    dep = json.load(open(os.path.join(DATA, "france", "departements.geojson"), encoding="utf-8"))
+    return [d for d in (geom_path(f["geometry"], True, 0.1, 0.08) for f in dep["features"]) if d]
+
+def build_monuments():
+    base = france_base()
+    mons = json.load(open(os.path.join(DATA, "france", "monuments.json"), encoding="utf-8"))
+    for m in mons:
+        write_svg("monument", m["slug"], svg(FR_WINDOW, base, "", (m["lng"], m["lat"])))
+    print(f"monument : {len(mons)} miniatures")
+
 # --- point d'entrée (groupes sélectionnables en argument) -------------------
 BUILDERS = {
     "countries": build_countries,
     "dept": build_departments,
+    "monument": build_monuments,
 }
 
 def main():

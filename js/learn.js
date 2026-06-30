@@ -93,10 +93,27 @@ function sectionDept() {
   return `<table class="l-table">${rows}</tbody></table>`;
 }
 
+// --- section : Monuments de France ----------------------------------------- //
+function sectionMonuments() {
+  const mons = data.france().monuments || [];
+  let rows = `<thead><tr><th>Photo</th><th>Monument</th><th>Localisation</th></tr></thead><tbody>`;
+  for (const m of mons) {
+    const photo = m.img
+      ? `<img class="l-photo" loading="lazy" src="data/thumbs/monument-photo/${m.img}" alt="">`
+      : `<div class="l-photo l-noimg">📷</div>`;
+    rows += `<tr>
+      <td>${photo}</td>
+      <td class="l-name">${m.name}</td>
+      <td>${thumb("monument", m.slug)}</td></tr>`;
+  }
+  return `<table class="l-table">${rows}</tbody></table>`;
+}
+
 // --- catalogue des sections (s'étoffera) ----------------------------------- //
 const SECTIONS = [
   { key: "pays", label: "🌍 Pays", build: sectionPays },
   { key: "dept", label: "🇫🇷 Départements", build: sectionDept },
+  { key: "monument", label: "🏛️ Monuments", build: sectionMonuments },
 ];
 
 let current = SECTIONS[0].key;
