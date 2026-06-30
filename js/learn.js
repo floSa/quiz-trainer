@@ -76,9 +76,27 @@ function sectionPays() {
   return `<table class="l-table">${rows}</tbody></table>`;
 }
 
+// --- section : Départements ------------------------------------------------ //
+function sectionDept() {
+  const fr = data.france();
+  const pref = fr.prefectures || {};
+  // ordre officiel : 01…19, 2A, 2B, 21…95 (Corse intercalée)
+  const key = (id) => (id === "2A" ? 20.1 : id === "2B" ? 20.2 : parseInt(id, 10));
+  const feats = [...fr.dep.features].sort((a, b) => key(a.id) - key(b.id));
+  let rows = `<thead><tr><th>Localisation</th><th>Département</th><th>Préfecture</th></tr></thead><tbody>`;
+  for (const f of feats) {
+    rows += `<tr>
+      <td>${thumb("dept", f.id)}</td>
+      <td class="l-name">${f.id} · ${f.properties.nom}</td>
+      <td>${pref[f.id] || "—"}</td></tr>`;
+  }
+  return `<table class="l-table">${rows}</tbody></table>`;
+}
+
 // --- catalogue des sections (s'étoffera) ----------------------------------- //
 const SECTIONS = [
   { key: "pays", label: "🌍 Pays", build: sectionPays },
+  { key: "dept", label: "🇫🇷 Départements", build: sectionDept },
 ];
 
 let current = SECTIONS[0].key;

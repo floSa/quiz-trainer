@@ -11,6 +11,7 @@ Lancer :  python scripts/build_thumbs.py
 import json
 import math
 import os
+import sys
 import unicodedata
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -63,20 +64,20 @@ def douglas_peucker(points, eps):
             stack.append((idx, j))
     return [points[k] for k in range(n) if keep[k]]
 
-def ring_path(ring, skip_small):
+def ring_path(ring, skip_small, eps, min_island):
     if len(ring) < 4:
         return ""
     xs = [p[0] for p in ring]
     ys = [p[1] for p in ring]
-    if skip_small and (max(xs) - min(xs)) < MIN_ISLAND and (max(ys) - min(ys)) < MIN_ISLAND:
+    if skip_small and (max(xs) - min(xs)) < min_island and (max(ys) - min(ys)) < min_island:
         return ""  # îlot de contexte → ignoré
-    simp = douglas_peucker([(p[0], p[1]) for p in ring], EPS)
+    simp = douglas_peucker([(p[0], p[1]) for p in ring], eps)
     if len(simp) < 3:
         return ""
     pts, last = [], None
     for lng, lat in simp:
         x, y = project(lng, lat)
-        p = (round(x, 3), round(y, 3))
+        p = (round(x, 4), round(y, 4))
         if p != last:
             pts.append(p)
             last = p
@@ -84,10 +85,10 @@ def ring_path(ring, skip_small):
         return ""
     return "M" + " ".join(f"{x},{y}" for x, y in pts) + "Z"
 
-def geom_path(geom, skip_small=True):
+def geom_path(geom, skip_small=True, eps=EPS, min_island=MIN_ISLAND):
     t = geom["type"]
     polys = [geom["coordinates"]] if t == "Polygon" else geom["coordinates"] if t == "MultiPolygon" else []
-    out = [ring_path(ring, skip_small) for poly in polys for ring in poly]
+    out = [ring_path(ring, skip_small, eps, min_island) for poly in polys for ring in poly]
     return " ".join(d for d in out if d)
 
 def centroid(geom):
@@ -187,8 +188,40 @@ def build_countries():
             n += 1
     print(f"countries : {n} miniatures")
 
+# --- générique : groupe de polygones (départements, arr., états US) ---------
+# eps_grey > eps_red : le contexte (gris, répété partout) est plus grossier que
+# la cible (détaillée) → fichiers nettement plus légers.
+def build_polys(group, features, window, eps_grey, eps_red, min_island):
+    grey = {f["id"]: geom_path(f["geometry"], True, eps_grey, min_island) for f in features}
+    red = {f["id"]: geom_path(f["geometry"], False, eps_red, min_island / 3) for f in features}
+    n = 0
+    for f in features:
+        tid = f["id"]
+        greys = [grey[i] for i in grey if i != tid and grey[i]]
+        dot = None if red[tid] else centroid(f["geometry"])
+        write_svg(group, str(tid), svg(window, greys, red[tid], dot))
+        n += 1
+    print(f"{group} : {n} miniatures")
+
+FR_WINDOW = (-5.2, 9.7, 41.3, 51.1)
+
+def build_departments():
+    dep = json.load(open(os.path.join(DATA, "france", "departements.geojson"), encoding="utf-8"))
+    build_polys("dept", dep["features"], FR_WINDOW, eps_grey=0.1, eps_red=0.03, min_island=0.08)
+
+# --- point d'entrée (groupes sélectionnables en argument) -------------------
+BUILDERS = {
+    "countries": build_countries,
+    "dept": build_departments,
+}
+
 def main():
-    build_countries()
+    groups = sys.argv[1:] or list(BUILDERS)
+    for g in groups:
+        if g in BUILDERS:
+            BUILDERS[g]()
+        else:
+            print(f"groupe inconnu : {g}")
 
 if __name__ == "__main__":
     main()
