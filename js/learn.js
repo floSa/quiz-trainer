@@ -6,6 +6,9 @@ import * as data from "./data.js";
 // --- helpers de rendu ------------------------------------------------------ //
 const flag = (iso2) => `<img class="l-flag" loading="lazy" src="${data.flagUrl(iso2, 80)}" alt="">`;
 const thumb = (group, id) => `<img class="l-thumb" loading="lazy" src="data/thumbs/${group}/${id}.svg" alt="">`;
+// slug identique à scripts/build_thumbs.py (un tiret par caractère non alphanum.)
+const slugify = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "")
+  .split("").map((c) => /[a-zA-Z0-9]/.test(c) ? c : "-").join("").replace(/^-+|-+$/g, "").toLowerCase();
 
 // Centroïde du plus grand polygone (= masse continentale principale), pour le
 // tri ; évite que les territoires lointains (Guyane…) faussent la position.
@@ -109,11 +112,37 @@ function sectionMonuments() {
   return `<table class="l-table">${rows}</tbody></table>`;
 }
 
+// --- petits tableaux « localisation + nom » -------------------------------- //
+function table2(headLoc, headName, rows) {
+  return `<table class="l-table"><thead><tr><th>${headLoc}</th><th>${headName}</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function sectionArr() {
+  const feats = [...data.france().paris.features].sort((a, b) => parseInt(a.id) - parseInt(b.id));
+  const rows = feats.map((f) => `<tr><td>${thumb("arr", f.id)}</td><td class="l-name">${f.properties.nom}</td></tr>`).join("");
+  return table2("Localisation", "Arrondissement", rows);
+}
+
+function sectionUsa() {
+  const feats = [...data.usa().features].sort((a, b) => a.properties.nom.localeCompare(b.properties.nom, "fr"));
+  const rows = feats.map((f) => `<tr><td>${thumb("usa", f.id)}</td><td class="l-name">${f.properties.nom}</td></tr>`).join("");
+  return table2("Localisation", "État", rows);
+}
+
+function sectionDomtom() {
+  const rows = (data.france().domtom || []).map((d) =>
+    `<tr><td>${thumb("domtom", slugify(d.name))}</td><td class="l-name">${d.name}</td></tr>`).join("");
+  return table2("Localisation", "Territoire", rows);
+}
+
 // --- catalogue des sections (s'étoffera) ----------------------------------- //
 const SECTIONS = [
   { key: "pays", label: "🌍 Pays", build: sectionPays },
   { key: "dept", label: "🇫🇷 Départements", build: sectionDept },
   { key: "monument", label: "🏛️ Monuments", build: sectionMonuments },
+  { key: "arr", label: "🇫🇷 Arrondissements", build: sectionArr },
+  { key: "domtom", label: "🌴 DOM-TOM", build: sectionDomtom },
+  { key: "usa", label: "🇺🇸 États US", build: sectionUsa },
 ];
 
 let current = SECTIONS[0].key;

@@ -104,6 +104,19 @@ def centroid(geom):
     ys = [p[1] for p in pts]
     return ((min(xs) + max(xs)) / 2, (min(ys) + max(ys)) / 2)
 
+def bbox(geom):
+    pts = []
+    def walk(x):
+        if x and isinstance(x[0], (int, float)):
+            pts.append(x)
+        else:
+            for y in x:
+                walk(y)
+    walk(geom["coordinates"])
+    xs = [p[0] for p in pts]
+    ys = [p[1] for p in pts]
+    return (min(xs), max(xs), min(ys), max(ys))
+
 # --- rendu SVG --------------------------------------------------------------
 def viewbox(window):
     lon0, lon1, lat0, lat1 = window
@@ -220,11 +233,48 @@ def build_monuments():
         write_svg("monument", m["slug"], svg(FR_WINDOW, base, "", (m["lng"], m["lat"])))
     print(f"monument : {len(mons)} miniatures")
 
+PARIS_WINDOW = (2.21, 2.48, 48.80, 48.91)
+US_WINDOW = (-125, -66.5, 24, 49.5)
+
+def build_arr():
+    paris = json.load(open(os.path.join(DATA, "france", "paris.geojson"), encoding="utf-8"))
+    build_polys("arr", paris["features"], PARIS_WINDOW, eps_grey=0.004, eps_red=0.0015, min_island=0.002)
+
+def build_usa():
+    usa = json.load(open(os.path.join(DATA, "usa", "states.geojson"), encoding="utf-8"))
+    build_polys("usa", usa["features"], US_WINDOW, eps_grey=0.2, eps_red=0.07, min_island=0.25)
+
+# Points dispersés sur le globe (DOM-TOM, sommets) : fenêtre régionale autour de
+# chaque point + pays voisins en gris (filtrés par bbox pour rester légers).
+def build_world_points(group, items, half_lng, half_lat):
+    geo = json.load(open(os.path.join(DATA, "world.geojson"), encoding="utf-8"))
+    paths, boxes = {}, {}
+    for f in geo["features"]:
+        d = geom_path(f["geometry"], skip_small=True, eps=0.3, min_island=1.0)
+        if d:
+            paths[f["id"]] = d
+            boxes[f["id"]] = bbox(f["geometry"])
+    def hits(b, w):
+        return not (b[1] < w[0] or b[0] > w[1] or b[3] < w[2] or b[2] > w[3])
+    for it in items:
+        lng, lat = it["lng"], it["lat"]
+        w = (lng - half_lng, lng + half_lng, max(-84, lat - half_lat), min(84, lat + half_lat))
+        greys = [paths[i] for i in paths if hits(boxes[i], w)]
+        write_svg(group, slug(it["name"]), svg(w, greys, "", (lng, lat)))
+    print(f"{group} : {len(items)} miniatures")
+
+def build_domtom():
+    dt = json.load(open(os.path.join(DATA, "france", "domtom.json"), encoding="utf-8"))
+    build_world_points("domtom", dt, half_lng=20, half_lat=14)
+
 # --- point d'entrée (groupes sélectionnables en argument) -------------------
 BUILDERS = {
     "countries": build_countries,
     "dept": build_departments,
     "monument": build_monuments,
+    "arr": build_arr,
+    "usa": build_usa,
+    "domtom": build_domtom,
 }
 
 def main():
