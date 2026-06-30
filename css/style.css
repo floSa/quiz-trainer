@@ -168,6 +168,21 @@ h3 { margin: 0 0 8px; font-size: 0.95rem; color: var(--muted); }
 .l-thumb { width: 96px; height: 64px; object-fit: contain; background: var(--ocean); border-radius: 6px; display: block; }
 .l-photo { width: 120px; height: 80px; object-fit: cover; border-radius: 6px; display: block; background: var(--panel2); }
 .l-noimg { display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--muted); }
+.l-thumb, .l-photo { cursor: zoom-in; }
+
+/* volets repliables (blocs continentaux, régions…) */
+.l-group { margin-bottom: 10px; }
+.l-group > summary { cursor: pointer; list-style: none; font-weight: 700; font-size: 1rem; padding: 10px 12px; background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; display: flex; align-items: center; gap: 10px; }
+.l-group > summary::-webkit-details-marker { display: none; }
+.l-group > summary::before { content: "▸"; color: var(--muted); transition: transform 0.15s; }
+.l-group[open] > summary::before { transform: rotate(90deg); }
+.l-count { margin-left: auto; color: var(--muted); font-size: 0.8rem; font-weight: 400; }
+.l-group .l-table { margin: 4px 0 6px; }
+
+/* aperçu agrandi (lightbox) */
+.l-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.82); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 24px; cursor: zoom-out; }
+.l-overlay.show { display: flex; }
+.l-overlay img { max-width: 92vw; max-height: 92vh; border-radius: 12px; background: var(--ocean); box-shadow: 0 10px 50px rgba(0,0,0,0.6); }
 
 @media (max-width: 720px) {
   #sidebar { width: 180px; flex-basis: 180px; }

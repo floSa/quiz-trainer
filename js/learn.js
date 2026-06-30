@@ -54,29 +54,33 @@ function sectionPays() {
     if (b) (groups[b] = groups[b] || []).push(c);
   }
 
-  let rows = `<thead><tr><th>Drapeau</th><th>Pays</th><th>Capitale</th><th>Localisation</th><th>Grandes villes</th></tr></thead><tbody>`;
-  for (const block of BLOCK_ORDER) {
+  const head = `<thead><tr><th>Drapeau</th><th>Pays</th><th>Capitale</th><th>Localisation</th><th>Grandes villes</th></tr></thead>`;
+  return BLOCK_ORDER.map((block) => {
     const list = (groups[block] || []).filter((c) => geoById[c.iso3]);
     const cen = Object.fromEntries(list.map((c) => [c.iso3, mainCentroid(geoById[c.iso3].geometry)]));
-    // Pacifique : les longitudes < -25° (au-delà de l'antiméridien) sont
-    // ramenées au-dessus de 180° pour un vrai ordre ouest→est en Océanie.
+    // Pacifique : longitudes < -25° (au-delà de l'antiméridien) ramenées > 180°
     const lng = (iso) => (cen[iso].lng < -25 ? cen[iso].lng + 360 : cen[iso].lng);
     list.sort((a, b) => WEST_EAST.has(block)
       ? lng(a.iso3) - lng(b.iso3)               // ouest → est
       : cen[b.iso3].lat - cen[a.iso3].lat);     // nord → sud
     const sens = WEST_EAST.has(block) ? "ouest → est" : "nord → sud";
-    rows += `<tr class="l-block"><td colspan="5">${block} <span class="l-sens">${sens}</span></td></tr>`;
-    for (const c of list) {
+    const rows = list.map((c) => {
       const v = (cities[c.iso3] || []).slice(0, 6).join(", ");
-      rows += `<tr>
+      return `<tr>
         <td>${flag(c.iso2)}</td>
         <td class="l-name">${c.name}</td>
         <td>${c.capital || "—"}</td>
         <td>${thumb("countries", c.iso3)}</td>
         <td class="l-cities">${v || "—"}</td></tr>`;
-    }
-  }
-  return `<table class="l-table">${rows}</tbody></table>`;
+    }).join("");
+    return group(`${block} <span class="l-sens">${sens}</span>`, list.length,
+      `<table class="l-table">${head}<tbody>${rows}</tbody></table>`);
+  }).join("");
+}
+
+// volet repliable (details/summary)
+function group(title, count, inner) {
+  return `<details class="l-group" open><summary>${title}<span class="l-count">${count}</span></summary>${inner}</details>`;
 }
 
 // --- section : Départements ------------------------------------------------ //
@@ -160,13 +164,31 @@ const SECTIONS = [
 
 let current = SECTIONS[0].key;
 
+// --- aperçu agrandi au clic sur une miniature (lightbox) ------------------- //
+let overlay = null;
+function openLightbox(src) {
+  if (!overlay) {
+    overlay = document.createElement("div");
+    overlay.className = "l-overlay";
+    overlay.innerHTML = `<img alt="">`;
+    overlay.onclick = () => overlay.classList.remove("show");
+    document.body.appendChild(overlay);
+  }
+  overlay.querySelector("img").src = src;
+  overlay.classList.add("show");
+}
+
 export function render(root) {
   const sec = SECTIONS.find((s) => s.key === current) || SECTIONS[0];
   root.innerHTML = `
     <h1>📚 Apprendre</h1>
-    <p class="muted">Tableaux de référence pour réviser avant de jouer.</p>
+    <p class="muted">Tableaux de référence pour réviser avant de jouer. Clique une vignette pour l'agrandir.</p>
     <div class="l-subnav">${SECTIONS.map((s) =>
       `<button class="l-chip ${s.key === current ? "active" : ""}" data-sec="${s.key}">${s.label}</button>`).join("")}</div>
     <div class="l-content">${sec.build()}</div>`;
   root.querySelectorAll(".l-chip").forEach((b) => (b.onclick = () => { current = b.dataset.sec; render(root); root.scrollTop = 0; }));
+  root.querySelector(".l-content").addEventListener("click", (e) => {
+    const img = e.target.closest("img.l-thumb, img.l-photo");
+    if (img && img.src) openLightbox(img.src);
+  });
 }
