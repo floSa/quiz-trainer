@@ -91,6 +91,23 @@ def geom_path(geom, skip_small=True, eps=EPS, min_island=MIN_ISLAND):
     out = [ring_path(ring, skip_small, eps, min_island) for poly in polys for ring in poly]
     return " ".join(d for d in out if d)
 
+def line_path(geom, eps=0.1):
+    t = geom["type"]
+    lines = [geom["coordinates"]] if t == "LineString" else geom["coordinates"] if t == "MultiLineString" else []
+    out = []
+    for line in lines:
+        simp = douglas_peucker([(p[0], p[1]) for p in line], eps)
+        pts, last = [], None
+        for lng, lat in simp:
+            x, y = project(lng, lat)
+            p = (round(x, 4), round(y, 4))
+            if p != last:
+                pts.append(p)
+                last = p
+        if len(pts) >= 2:
+            out.append("M" + " ".join(f"{x},{y}" for x, y in pts))
+    return " ".join(out)
+
 def centroid(geom):
     pts = []
     def walk(x):
@@ -127,7 +144,7 @@ def viewbox(window):
     w, h = x1 - x0, ybot - ytop
     return (x0, ytop, w, h)
 
-def svg(window, grey_paths, red_path, red_dot=None):
+def svg(window, grey_paths, red_path=None, red_dot=None, red_line=None, red_zone=None):
     x, y, w, h = viewbox(window)
     sw = max(w, h) / 400
     parts = [
@@ -137,8 +154,12 @@ def svg(window, grey_paths, red_path, red_dot=None):
     ]
     for d in grey_paths:
         parts.append(f'<path d="{d}" fill="{LAND}"/>')
-    if red_path:
+    if red_path:  # pays / entité administrative : rempli plein
         parts.append(f'<path d="{red_path}" fill="{RED}"/>')
+    if red_zone:  # zone (mer, désert, chaîne) : polygone rouge translucide
+        parts.append(f'<path d="{red_zone}" fill="{RED}" fill-opacity="0.5" stroke="{RED}" stroke-width="{sw:.4f}"/>')
+    if red_line:  # fleuve : trait rouge épais
+        parts.append(f'<path d="{red_line}" fill="none" stroke="{RED}" stroke-width="{sw * 3.5:.4f}" stroke-linecap="round"/>')
     if red_dot:  # cible minuscule (micro-État) ou point (sommet) : pastille rouge
         cx, cy = project(red_dot[0], red_dot[1])
         parts.append(f'<circle cx="{cx:.3f}" cy="{cy:.3f}" r="{max(w, h) / 55:.3f}" fill="{RED}" stroke="#fff" stroke-width="{sw:.4f}"/>')
@@ -244,9 +265,9 @@ def build_usa():
     usa = json.load(open(os.path.join(DATA, "usa", "states.geojson"), encoding="utf-8"))
     build_polys("usa", usa["features"], US_WINDOW, eps_grey=0.2, eps_red=0.07, min_island=0.25)
 
-# Points dispersés sur le globe (DOM-TOM, sommets) : fenêtre régionale autour de
-# chaque point + pays voisins en gris (filtrés par bbox pour rester légers).
-def build_world_points(group, items, half_lng, half_lat):
+# Entités sur fond mondial (DOM-TOM, sommets, fleuves, mers, déserts, chaînes) :
+# fenêtre régionale + pays voisins en gris (filtrés par bbox pour rester légers).
+def _world_grey():
     geo = json.load(open(os.path.join(DATA, "world.geojson"), encoding="utf-8"))
     paths, boxes = {}, {}
     for f in geo["features"]:
@@ -254,18 +275,57 @@ def build_world_points(group, items, half_lng, half_lat):
         if d:
             paths[f["id"]] = d
             boxes[f["id"]] = bbox(f["geometry"])
-    def hits(b, w):
-        return not (b[1] < w[0] or b[0] > w[1] or b[3] < w[2] or b[2] > w[3])
+    return paths, boxes
+
+def _hits(b, w):
+    return not (b[1] < w[0] or b[0] > w[1] or b[3] < w[2] or b[2] > w[3])
+
+def _window_around(b, pad_frac=0.2, pad_min=2.0):
+    plng = max((b[1] - b[0]) * pad_frac, pad_min)
+    plat = max((b[3] - b[2]) * pad_frac, pad_min)
+    return (b[0] - plng, b[1] + plng, max(-84, b[2] - plat), min(84, b[3] + plat))
+
+def build_world_points(group, items, half_lng, half_lat):
+    paths, boxes = _world_grey()
     for it in items:
         lng, lat = it["lng"], it["lat"]
         w = (lng - half_lng, lng + half_lng, max(-84, lat - half_lat), min(84, lat + half_lat))
-        greys = [paths[i] for i in paths if hits(boxes[i], w)]
-        write_svg(group, slug(it["name"]), svg(w, greys, "", (lng, lat)))
+        greys = [paths[i] for i in paths if _hits(boxes[i], w)]
+        write_svg(group, slug(it["name"]), svg(w, greys, red_dot=(lng, lat)))
     print(f"{group} : {len(items)} miniatures")
 
+def build_world_features(group, items, kind):  # kind : "zone" (polygone) | "river" (ligne)
+    paths, boxes = _world_grey()
+    for it in items:
+        w = _window_around(bbox(it["geometry"]))
+        greys = [paths[i] for i in paths if _hits(boxes[i], w)]
+        if kind == "river":
+            content = svg(w, greys, red_line=line_path(it["geometry"], eps=0.1))
+        else:
+            content = svg(w, greys, red_zone=geom_path(it["geometry"], skip_small=False, eps=0.15, min_island=0.0))
+        write_svg(group, slug(it["name"]), content)
+    print(f"{group} : {len(items)} miniatures")
+
+def _load(name):
+    return json.load(open(os.path.join(DATA, name), encoding="utf-8"))
+
 def build_domtom():
-    dt = json.load(open(os.path.join(DATA, "france", "domtom.json"), encoding="utf-8"))
-    build_world_points("domtom", dt, half_lng=20, half_lat=14)
+    build_world_points("domtom", _load("france/domtom.json"), half_lng=20, half_lat=14)
+
+def build_peaks():
+    build_world_points("peak", _load("peaks.json"), half_lng=15, half_lat=11)
+
+def build_rivers():
+    build_world_features("river", _load("rivers.json"), "river")
+
+def build_seas():
+    build_world_features("sea", _load("seas.json"), "zone")
+
+def build_deserts():
+    build_world_features("desert", _load("deserts.json"), "zone")
+
+def build_ranges():
+    build_world_features("range", _load("ranges.json"), "zone")
 
 # --- point d'entrée (groupes sélectionnables en argument) -------------------
 BUILDERS = {
@@ -275,6 +335,11 @@ BUILDERS = {
     "arr": build_arr,
     "usa": build_usa,
     "domtom": build_domtom,
+    "peak": build_peaks,
+    "river": build_rivers,
+    "sea": build_seas,
+    "desert": build_deserts,
+    "range": build_ranges,
 }
 
 def main():

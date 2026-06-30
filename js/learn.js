@@ -135,9 +135,22 @@ function sectionDomtom() {
   return table2("Localisation", "Territoire", rows);
 }
 
-// --- catalogue des sections (s'étoffera) ----------------------------------- //
+// jeux de données « monde physique » (liste { name } → groupe de miniatures)
+function sectionList(getItems, group, head) {
+  const items = [...(getItems() || [])].sort((a, b) => a.name.localeCompare(b.name, "fr"));
+  const rows = items.map((it) =>
+    `<tr><td>${thumb(group, slugify(it.name))}</td><td class="l-name">${it.name}</td></tr>`).join("");
+  return table2("Localisation", head, rows);
+}
+
+// --- catalogue des sections ------------------------------------------------- //
 const SECTIONS = [
   { key: "pays", label: "🌍 Pays", build: sectionPays },
+  { key: "river", label: "🌊 Fleuves", build: () => sectionList(() => data.rivers(), "river", "Fleuve") },
+  { key: "sea", label: "🌊 Mers & océans", build: () => sectionList(() => data.set("seas"), "sea", "Mer / océan") },
+  { key: "desert", label: "🏜️ Déserts", build: () => sectionList(() => data.set("deserts"), "desert", "Désert") },
+  { key: "range", label: "⛰️ Chaînes", build: () => sectionList(() => data.set("ranges"), "range", "Chaîne de montagnes") },
+  { key: "peak", label: "🏔️ Sommets", build: () => sectionList(() => data.set("peaks"), "peak", "Sommet") },
   { key: "dept", label: "🇫🇷 Départements", build: sectionDept },
   { key: "monument", label: "🏛️ Monuments", build: sectionMonuments },
   { key: "arr", label: "🇫🇷 Arrondissements", build: sectionArr },
