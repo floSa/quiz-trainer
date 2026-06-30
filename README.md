@@ -4,6 +4,10 @@ App web pour réviser la géographie (et bientôt plus) avec de la **répétitio
 espacée** : ce qu'on rate revient vite, ce qu'on maîtrise s'espace. On ne note
 pas le quiz, on suit la **connaissance réelle** accumulée.
 
+Deux modes : les **jeux** (entraînement) et la page **📚 Apprendre** (tableaux de
+référence : drapeaux, capitales, miniatures de localisation, grandes villes,
+préfectures, photos de monuments…) pour réviser avant de jouer.
+
 Pas de build, pas de serveur applicatif : du **HTML/CSS/JS** statique +
 [Leaflet](https://leafletjs.com) pour la carte. La progression est stockée dans
 le navigateur (`localStorage`).
@@ -50,6 +54,16 @@ Filtre les **régions** (du monde) à réviser dans la barre latérale (les jeux
 carte se cadrent alors sur la zone choisie). Les jeux 🇫🇷 portent sur la France
 métropolitaine, le jeu 🇺🇸 sur les 48 états contigus.
 
+## Apprendre (tableaux de référence)
+
+La page **📚 Apprendre** rassemble des tableaux par thème (pays, fleuves, mers,
+déserts, chaînes, sommets, départements, monuments, arrondissements, DOM-TOM,
+états US). Les **pays** sont groupés par continent et triés ouest→est (Europe,
+Océanie) ou nord→sud (autres), avec drapeau, capitale, **grandes villes** et une
+**miniature de localisation**. Les **miniatures** sont des **SVG pré-générés**
+(`data/thumbs/`, projection Web Mercator) — aucune carte Leaflet sur cette page,
+donc pas de rechargement par ligne. Les **monuments** ont en plus une **photo**.
+
 ## Comment ça marche
 
 - Chaque connaissance = **compétence × pays** (ex. `capital:PER`) a une
@@ -87,8 +101,15 @@ métropolitaine, le jeu 🇺🇸 sur les 48 états contigus.
 - Déserts / chaînes : Natural Earth geography regions (noms FR).
   → `python scripts/build_deserts.py`, `python scripts/build_ranges.py`
 - Sommets : liste curatée (24 pics).  → `python scripts/build_peaks.py`
+- Préfectures : [Wikidata](https://www.wikidata.org) (P36).  → `python scripts/build_prefectures.py`
+- Photos de monuments : [Wikimedia Commons](https://commons.wikimedia.org) via
+  Wikidata `P18` (vignettes 320 px, voir attribution ci-dessous).
+- Miniatures de localisation (page Apprendre) : SVG générés à partir des
+  géométries ci-dessus.  → `python scripts/build_thumbs.py [groupes...]`
 
-Les scripts n'utilisent que la bibliothèque standard de Python.
+Les scripts de génération de **données** n'utilisent que la bibliothèque standard
+de Python. Les images de monuments proviennent de **Wikimedia Commons** (licences
+libres variées, voir chaque fichier sur Commons) ; merci aux contributeurs.
 
 ## Tests
 

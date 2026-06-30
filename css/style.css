@@ -152,6 +152,7 @@ h3 { margin: 0 0 8px; font-size: 0.95rem; color: var(--muted); }
 /* ---------- Apprendre (tableaux de référence) ---------- */
 #learn { display: block; overflow-y: auto; }
 .l-subnav { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0 18px; }
+.l-content { overflow-x: auto; }
 .l-chip { background: var(--panel2); color: var(--text); border: 1px solid var(--line); border-radius: 20px; padding: 6px 14px; font-size: 0.85rem; }
 .l-chip:hover { border-color: var(--muted); }
 .l-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
