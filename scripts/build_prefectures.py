@@ -1,8 +1,11 @@
-"""Génère data/france/prefectures.json : chef-lieu (préfecture) par département.
+"""Génère data/france/prefectures.json : { code: { pref, region } } par dépt.
 
-Source : Wikidata (P31 = département français Q6465, P2586 = code INSEE,
-P36 = capitale administrative). On ne garde que les 96 départements
-métropolitains présents dans departements.geojson.
+  - préfecture (chef-lieu) : Wikidata (P31 = département Q6465, P2586 = code,
+    P36 = capitale administrative).
+  - région : calculée géométriquement (le centroïde du département tombe dans le
+    polygone de la région), à partir des geojson déjà présents.
+
+On ne garde que les 96 départements métropolitains de departements.geojson.
 
 Lancer :  python scripts/build_prefectures.py
 """
@@ -39,8 +42,39 @@ def sparql(q, tries=4):
             time.sleep(4)
 
 
+# --- géométrie : région d'un département (point-dans-polygone) -------------- //
+def coords_avg(geom):
+    """Point représentatif : moyenne des sommets du plus grand anneau."""
+    polys = [geom["coordinates"]] if geom["type"] == "Polygon" else geom["coordinates"]
+    ring = max((poly[0] for poly in polys), key=len)
+    return (sum(p[0] for p in ring) / len(ring), sum(p[1] for p in ring) / len(ring))
+
+def in_ring(pt, ring):
+    x, y = pt
+    inside = False
+    n = len(ring)
+    j = n - 1
+    for i in range(n):
+        xi, yi = ring[i][0], ring[i][1]
+        xj, yj = ring[j][0], ring[j][1]
+        if ((yi > y) != (yj > y)) and (x < (xj - xi) * (y - yi) / (yj - yi) + xi):
+            inside = not inside
+        j = i
+    return inside
+
+def in_geom(pt, geom):
+    polys = [geom["coordinates"]] if geom["type"] == "Polygon" else geom["coordinates"]
+    for poly in polys:
+        if in_ring(pt, poly[0]) and not any(in_ring(pt, h) for h in poly[1:]):
+            return True
+    return False
+
+
 def main():
-    dep_ids = {f["id"] for f in json.load(open(os.path.join(FR, "departements.geojson"), encoding="utf-8"))["features"]}
+    deps = json.load(open(os.path.join(FR, "departements.geojson"), encoding="utf-8"))["features"]
+    regs = json.load(open(os.path.join(FR, "regions.geojson"), encoding="utf-8"))["features"]
+    dep_ids = {f["id"] for f in deps}
+
     prefs = {}
     for b in sparql(QUERY):
         code = b["code"]["value"]
@@ -49,10 +83,24 @@ def main():
     missing = sorted(dep_ids - set(prefs))
     if missing:
         print("préfectures manquantes :", missing)
-    out = {k: prefs[k] for k in sorted(prefs)}
+
+    reg_cent = [(r["properties"]["nom"], r["geometry"], coords_avg(r["geometry"])) for r in regs]
+    def region_of(geom):
+        pt = coords_avg(geom)
+        for nom, rgeom, _ in reg_cent:
+            if in_geom(pt, rgeom):
+                return nom
+        return min(reg_cent, key=lambda r: (r[2][0] - pt[0]) ** 2 + (r[2][1] - pt[1]) ** 2)[0]
+
+    out = {}
+    for f in sorted(deps, key=lambda f: f["id"]):
+        code = f["id"]
+        out[code] = {"pref": prefs.get(code, ""), "region": region_of(f["geometry"])}
+
     with open(OUT, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
-    print(f"{len(out)} préfectures -> {OUT}")
+    nb_reg = len(set(v["region"] for v in out.values()))
+    print(f"{len(out)} départements -> {OUT} ; {nb_reg} régions")
 
 
 if __name__ == "__main__":
