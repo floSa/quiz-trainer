@@ -278,7 +278,9 @@ function onRawClick(latlng) {
   if (answered || !currentQ || currentQ.interaction !== "rawclick") return;
   const c = currentQ.city;
   const d = haversine(latlng, c);
-  const correct = d <= (currentQ.threshold || games.CITY_THRESHOLD_KM);
+  // la difficulté module la tolérance de clic (facile plus permissif)
+  const tol = { facile: 1.5, normal: 1, difficile: 0.6 }[settings.difficulty()] || 1;
+  const correct = d <= (currentQ.threshold || games.CITY_THRESHOLD_KM) * tol;
   grade(correct);
   mapMod.addMarker(c.lat, c.lng, "#2e7d32");
   if (correct) {

@@ -429,13 +429,44 @@ export const WORLD_SKILLS = {
 export const WORLD_TOTAL = { world_city: 616, river: 33, sea: 30, desert: 17, range: 26, peak: 24 };
 export const WORLD_CITY_THRESHOLD_KM = 150; // clic libre sur la carte du monde
 
+// Centroïde (centre de bbox) d'un item { geometry } ou { lat, lng }, mémoïsé.
+function itemCenter(it) {
+  if (it.lat !== undefined) return it;
+  if (!it._c) {
+    let x0 = 999, x1 = -999, y0 = 999, y1 = -999;
+    const walk = (a) => {
+      if (a && typeof a[0] === "number") {
+        if (a[0] < x0) x0 = a[0];
+        if (a[0] > x1) x1 = a[0];
+        if (a[1] < y0) y0 = a[1];
+        if (a[1] > y1) y1 = a[1];
+      } else for (const b of a) walk(b);
+    };
+    walk(it.geometry.coordinates);
+    it._c = { lng: (x0 + x1) / 2, lat: (y0 + y1) / 2 };
+  }
+  return it._c;
+}
+
+// Distracteurs d'une liste nommée (fleuves, mers, déserts, chaînes, sommets) :
+// facile = les plus éloignés, normal = aléatoire, difficile = les plus proches.
+function listDistractors(target, items, k) {
+  const mode = settings.difficulty();
+  const pool = items.filter((x) => x.name !== target.name);
+  if (mode === "normal") return shuffle(pool).slice(0, k);
+  const scored = pool.map((x) => ({ x, d: distKm(itemCenter(target), itemCenter(x)) }));
+  scored.sort((a, b) => (mode === "difficile" ? a.d - b.d : b.d - a.d));
+  const head = scored.slice(0, Math.max(k * 2, 6)).map((s) => s.x);
+  return shuffle(head).slice(0, k);
+}
+
 // Générateur générique « zone surlignée en rouge → son nom » (QCM).
 // Données = liste de { name, geometry } chargée à la demande (data.set(key)).
 function buildHighlight(key, skill, ask) {
   return (cands, state, recent) => {
     const items = data.set(key) || [];
     const it = pickWeighted(items, (x) => x.name, state, skill, recent);
-    const others = shuffle(items.filter((x) => x.name !== it.name)).slice(0, 3);
+    const others = listDistractors(it, items, 3);
     const opts = shuffle([it, ...others]).map((x) => ({ id: x.name, label: x.name }));
     return q({
       skill,
@@ -458,7 +489,7 @@ export const buildRange = buildHighlight("ranges", "range", "Quelle est cette ch
 export function buildPeak(cands, state, recent) {
   const peaks = data.set("peaks");
   const p = pickWeighted(peaks, (x) => x.name, state, "peak", recent);
-  const others = shuffle(peaks.filter((x) => x.name !== p.name)).slice(0, 3);
+  const others = listDistractors(p, peaks, 3);
   const opts = shuffle([p, ...others]).map((x) => ({ id: x.name, label: x.name }));
   return q({
     skill: "peak",
@@ -476,7 +507,7 @@ export function buildPeak(cands, state, recent) {
 export function buildRiver(cands, state, recent) {
   const rivers = data.rivers();
   const r = pickWeighted(rivers, (x) => x.name, state, "river", recent);
-  const others = shuffle(rivers.filter((x) => x.name !== r.name)).slice(0, 3);
+  const others = listDistractors(r, rivers, 3);
   const opts = shuffle([r, ...others]).map((x) => ({ id: x.name, label: x.name }));
   return q({
     skill: "river",
