@@ -134,6 +134,26 @@ def bbox(geom):
     ys = [p[1] for p in pts]
     return (min(xs), max(xs), min(ys), max(ys))
 
+def main_ring(geom):
+    """Anneau extérieur du plus grand polygone (masse principale)."""
+    polys = [geom["coordinates"]] if geom["type"] == "Polygon" else geom["coordinates"]
+    return max((poly[0] for poly in polys), key=len)
+
+def main_bbox_centroid(geom):
+    ring = main_ring(geom)
+    xs = [p[0] for p in ring]
+    ys = [p[1] for p in ring]
+    return (min(xs), max(xs), min(ys), max(ys)), (sum(xs) / len(xs), sum(ys) / len(ys))
+
+def shift_lng(geom, thresh=-25):
+    """Ramène les longitudes < thresh au-delà de 180° (Pacifique : Tonga, Samoa…
+    passent à l'est de Fidji au lieu d'être hors cadre)."""
+    def w(x):
+        if x and isinstance(x[0], (int, float)):
+            return [x[0] + 360 if x[0] < thresh else x[0], x[1]]
+        return [w(y) for y in x]
+    return {"type": geom["type"], "coordinates": w(geom["coordinates"])}
+
 # --- rendu SVG --------------------------------------------------------------
 def viewbox(window):
     lon0, lon1, lat0, lat1 = window
@@ -144,7 +164,7 @@ def viewbox(window):
     w, h = x1 - x0, ybot - ytop
     return (x0, ytop, w, h)
 
-def svg(window, grey_paths, red_path=None, red_dot=None, red_line=None, red_zone=None):
+def svg(window, grey_paths, red_path=None, red_dot=None, red_line=None, red_zone=None, red_halo=None):
     x, y, w, h = viewbox(window)
     sw = max(w, h) / 400
     parts = [
@@ -154,6 +174,9 @@ def svg(window, grey_paths, red_path=None, red_dot=None, red_line=None, red_zone
     ]
     for d in grey_paths:
         parts.append(f'<path d="{d}" fill="{LAND}"/>')
+    if red_halo:  # cible minuscule : cercle rouge clair pour la repérer (sous la forme)
+        hx, hy = project(red_halo[0], red_halo[1])
+        parts.append(f'<circle cx="{hx:.3f}" cy="{hy:.3f}" r="{max(w, h) * 0.05:.3f}" fill="{RED}" fill-opacity="0.3" stroke="none"/>')
     if red_path:  # pays / entité administrative : rempli plein
         parts.append(f'<path d="{red_path}" fill="{RED}"/>')
     if red_zone:  # zone (mer, désert, chaîne) : polygone rouge translucide
@@ -194,8 +217,9 @@ WINDOWS = {
     "Asie": (25, 147, -11, 58),  # lat plafonnée : sinon l'Arctique (Mercator) tasse le continent
     "Amérique du Nord": (-170, -52, 7, 74),
     "Amérique du Sud": (-82, -34, -56, 13),
-    "Océanie": (110, 179, -48, 0),
+    "Océanie": (112, 196, -50, 8),  # dépasse 180° pour inclure Tonga/Samoa (cf. WRAP)
 }
+WRAP = {"Océanie"}  # blocs où l'on décale les longitudes négatives au-delà de 180°
 
 def block_of(subregion):
     for name, subs in BLOCKS.items():
@@ -212,12 +236,21 @@ def build_countries():
     n = 0
     for block, window in WINDOWS.items():
         members = [iso for iso, s in sub.items() if block_of(s) == block and iso in feat]
-        grey_all = {iso: geom_path(feat[iso]["geometry"], skip_small=True) for iso in members}
-        red_all = {iso: geom_path(feat[iso]["geometry"], skip_small=False) for iso in members}
+        geoms = {iso: (shift_lng(feat[iso]["geometry"]) if block in WRAP else feat[iso]["geometry"]) for iso in members}
+        grey_all = {iso: geom_path(geoms[iso], skip_small=True) for iso in members}
+        red_all = {iso: geom_path(geoms[iso], skip_small=False) for iso in members}
+        _, _, vw, vh = viewbox(window)
         for target in members:
+            geom = geoms[target]
             grey = [grey_all[iso] for iso in members if iso != target and grey_all[iso]]
-            dot = None if red_all[target] else centroid(feat[target]["geometry"])
-            content = svg(window, grey, red_all[target], dot)
+            (bx0, bx1, by0, by1), cen = main_bbox_centroid(geom)
+            # étendue projetée de la masse principale
+            tw = abs(project(bx1, (by0 + by1) / 2)[0] - project(bx0, (by0 + by1) / 2)[0])
+            th = abs(project((bx0 + bx1) / 2, by1)[1] - project((bx0 + bx1) / 2, by0)[1])
+            tiny = max(tw, th) < 0.02 * max(vw, vh)  # vraiment minuscule → difficile à repérer
+            dot = None if red_all[target] else cen        # micro-État sans forme : pastille
+            halo = cen if (red_all[target] and tiny) else None  # petit mais visible : halo
+            content = svg(window, grey, red_all[target], dot, red_halo=halo)
             write_svg("countries", target, content)
             n += 1
     print(f"countries : {n} miniatures")
