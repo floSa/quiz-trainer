@@ -5,6 +5,7 @@ import * as store from "./store.js";
 import * as games from "./games.js";
 import * as mapMod from "./map.js";
 import * as learn from "./learn.js";
+import * as settings from "./settings.js";
 
 const ZONES_KEY = "quiztrainer.zones.v1";
 
@@ -79,6 +80,20 @@ function buildSidebar() {
     wrap.innerHTML = `<input type="checkbox" value="${r}" ${selectedRegions.includes(r) ? "checked" : ""}> ${r}`;
     wrap.querySelector("input").onchange = onZoneChange;
     zl.appendChild(wrap);
+  });
+
+  const dl = $("difficulty-list");
+  dl.innerHTML = "";
+  settings.DIFFICULTY_LEVELS.forEach((d) => {
+    const b = document.createElement("button");
+    b.className = "diff-btn" + (settings.difficulty() === d.key ? " active" : "");
+    b.textContent = d.label;
+    b.onclick = () => {
+      settings.setDifficulty(d.key);
+      dl.querySelectorAll(".diff-btn").forEach((x) => x.classList.toggle("active", x === b));
+      if ($("game") && !$("game").hidden) newRound(); // nouvelle manche avec la nouvelle difficulté
+    };
+    dl.appendChild(b);
   });
 
   $("reset").onclick = () => {
