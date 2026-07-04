@@ -388,15 +388,31 @@ export function buildRiver(cands, state, recent) {
   });
 }
 
+// Noms de ville partagés par plusieurs pays → on gardera l'indice pays pour eux.
+let _ambiguousCities = null;
+function ambiguousCities() {
+  if (!_ambiguousCities) {
+    const n = {};
+    for (const c of data.citiesWorld()) n[c.name] = (n[c.name] || 0) + 1;
+    _ambiguousCities = new Set(Object.keys(n).filter((k) => n[k] > 1));
+  }
+  return _ambiguousCities;
+}
+
 export function buildWorldCity(cands, state, recent) {
   const idOf = (x) => `${x.name} (${x.country})`;
   const c = pickWeighted(data.citiesWorld(), idOf, state, "world_city", recent);
+  // On ne révèle PAS le pays (sinon trop facile), sauf si le nom est ambigu
+  // (plusieurs villes du même nom dans des pays différents).
+  const hint = ambiguousCities().has(c.name)
+    ? ` <span style="color:#9aa4b2">(${c.country})</span>`
+    : "";
   return q({
     skill: "world_city",
     item: idOf(c),
     correct: idOf(c),
     correctLabel: idOf(c),
-    stimulus: { kind: "text", value: `Place la ville : <b>${c.name}</b> <span style="color:#9aa4b2">(${c.country})</span>` },
+    stimulus: { kind: "text", value: `Place la ville : <b>${c.name}</b>${hint}` },
     interaction: "rawclick",
     city: c,
     threshold: WORLD_CITY_THRESHOLD_KM,
