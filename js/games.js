@@ -8,6 +8,7 @@
 import * as data from "./data.js";
 import * as srs from "./srs.js";
 import * as store from "./store.js";
+import * as settings from "./settings.js";
 
 export const SKILLS = {
   locate: "Situer sur la carte",
@@ -45,15 +46,71 @@ export function pickCountry(cands, state, skill, recent = []) {
   return weightedPick(pool, w);
 }
 
-// QCM de pays : bonne réponse + distracteurs (même région en priorité).
+// --- proximité géographique (pour la difficulté) --------------------------- //
+// Centroïde du plus grand polygone de chaque pays (masse principale), calculé
+// une fois depuis les géométries.
+let _cent = null;
+function centroidOf(iso3) {
+  if (!_cent) {
+    _cent = {};
+    for (const f of data.geo().features) {
+      const polys = f.geometry.type === "Polygon" ? [f.geometry.coordinates] : f.geometry.coordinates;
+      let ring = polys[0][0];
+      for (const p of polys) if (p[0].length > ring.length) ring = p[0];
+      let x0 = 999, x1 = -999, y0 = 999, y1 = -999;
+      for (const q2 of ring) {
+        if (q2[0] < x0) x0 = q2[0];
+        if (q2[0] > x1) x1 = q2[0];
+        if (q2[1] < y0) y0 = q2[1];
+        if (q2[1] > y1) y1 = q2[1];
+      }
+      _cent[f.id] = { lng: (x0 + x1) / 2, lat: (y0 + y1) / 2 };
+    }
+  }
+  return _cent[iso3];
+}
+export function distKm(a, b) {
+  const A = typeof a === "string" ? centroidOf(a) : a;
+  const B = typeof b === "string" ? centroidOf(b) : b;
+  if (!A || !B) return 1e9;
+  const R = 6371, rad = (x) => (x * Math.PI) / 180;
+  const dLat = rad(B.lat - A.lat), dLng = rad(B.lng - A.lng);
+  const s = Math.sin(dLat / 2) ** 2 + Math.cos(rad(A.lat)) * Math.cos(rad(B.lat)) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(s));
+}
+
+// Distracteurs selon la difficulté globale :
+//   facile     → autres continents en priorité
+//   normal     → même continent en priorité (comportement historique)
+//   difficile  → voisins frontaliers, puis les plus proches géographiquement
+//                (léger tirage dans le peloton de tête pour varier les manches ;
+//                 les îles, sans frontières, tombent sur « les plus proches »)
+function distractors(anchor, pool, k) {
+  const mode = settings.difficulty();
+  if (mode === "facile") {
+    const far = shuffle(pool.filter((x) => x.region !== anchor.region));
+    const rest = shuffle(pool.filter((x) => x.region === anchor.region));
+    return far.concat(rest).slice(0, k);
+  }
+  if (mode === "difficile") {
+    const borders = new Set(anchor.borders || []);
+    const scored = pool.map((x) => ({
+      x,
+      d: distKm(anchor.iso3, x.iso3) - (borders.has(x.iso3) ? 1e7 : 0) - (x.subregion === anchor.subregion ? 1e5 : 0),
+    }));
+    scored.sort((a, b) => a.d - b.d);
+    const head = scored.slice(0, Math.max(k * 2 + 1, 7)).map((s) => s.x);
+    return shuffle(head).slice(0, k);
+  }
+  const same = shuffle(pool.filter((x) => x.region === anchor.region));
+  const others = shuffle(pool.filter((x) => x.region !== anchor.region));
+  return same.concat(others).slice(0, k);
+}
+
+// QCM de pays : bonne réponse + distracteurs selon la difficulté.
 function countryOptions(correct, cands, k = 3) {
-  const same = shuffle(
-    cands.filter((c) => c.iso3 !== correct.iso3 && c.region === correct.region)
-  );
-  const others = shuffle(
-    cands.filter((c) => c.iso3 !== correct.iso3 && c.region !== correct.region)
-  );
-  return shuffle([correct, ...same.concat(others).slice(0, k)]);
+  const pool = cands.filter((c) => c.iso3 !== correct.iso3);
+  return shuffle([correct, ...distractors(correct, pool, k)]);
 }
 function textOpts(countries, label) {
   return countries.map((c) => ({ id: c.iso3, label: label(c), country: c }));
@@ -111,6 +168,52 @@ export function buildPlace(cands, state, recent, country) {
 }
 
 // --- flag ------------------------------------------------------------------ //
+// Groupes de drapeaux visuellement proches (couleurs/motifs) : en difficile,
+// les distracteurs sont piochés dans le groupe du pays cible.
+const FLAG_CONFUSIONS = [
+  ["TCD", "ROU", "AND", "MDA"],
+  ["IDN", "MCO", "POL", "SGP"],
+  ["NLD", "LUX", "RUS", "PRY"],
+  ["NOR", "ISL", "DNK", "SWE", "FIN"],
+  ["AUS", "NZL", "FJI", "TUV"],
+  ["IRL", "CIV", "ITA", "MEX", "NGA"],
+  ["MLI", "SEN", "GIN", "CMR"],
+  ["COL", "ECU", "VEN"],
+  ["SVN", "SVK", "RUS", "SRB", "HRV"],
+  ["QAT", "BHR"],
+  ["JOR", "KWT", "ARE", "SDN"],
+  ["EGY", "YEM", "SYR", "IRQ"],
+  ["HND", "SLV", "NIC", "ARG", "GTM"],
+  ["HUN", "BGR", "IRN", "TJK"],
+  ["USA", "LBR", "MYS"],
+  ["CUB", "CZE", "PHL"],
+  ["JPN", "BGD", "PLW"],
+  ["THA", "CRI", "PRK"],
+  ["TUR", "TUN"],
+  ["GRC", "URY"],
+  ["CHN", "VNM"],
+  ["BEL", "DEU"],
+];
+
+// Options pour les jeux de drapeaux : en difficile, groupe de confusion d'abord.
+function flagOptions(correct, cands, k = 3) {
+  if (settings.difficulty() === "difficile") {
+    const grp = FLAG_CONFUSIONS.find((g) => g.includes(correct.iso3));
+    if (grp) {
+      const picks = shuffle(grp.filter((i) => i !== correct.iso3))
+        .map((i) => data.byIso3(i))
+        .filter(Boolean)
+        .slice(0, k);
+      if (picks.length < k) {
+        const taken = new Set([correct.iso3, ...picks.map((p) => p.iso3)]);
+        picks.push(...distractors(correct, cands.filter((c) => !taken.has(c.iso3)), k - picks.length));
+      }
+      return shuffle([correct, ...picks]);
+    }
+  }
+  return countryOptions(correct, cands, k);
+}
+
 export function buildFlag(cands, state, recent, country) {
   const c = country || pickCountry(cands, state, "flag", recent);
   return q({
@@ -121,7 +224,7 @@ export function buildFlag(cands, state, recent, country) {
     ask: "De quel pays est ce drapeau ?",
     interaction: "options",
     optionKind: "text",
-    options: textOpts(countryOptions(c, cands), (x) => x.name),
+    options: textOpts(flagOptions(c, cands), (x) => x.name),
   });
 }
 
@@ -134,7 +237,7 @@ export function buildPickFlag(cands, state, recent, country) {
     stimulus: { kind: "text", value: `<b>${c.name}</b> : quel est son drapeau ?` },
     interaction: "options",
     optionKind: "flag",
-    options: textOpts(countryOptions(c, cands), (x) => x.name),
+    options: textOpts(flagOptions(c, cands), (x) => x.name),
     reveal: { kind: "flag", value: c },
   });
 }
@@ -180,9 +283,8 @@ export function buildNeighbor(cands, state, recent, country) {
   const correct = choice(nin(c));
   const excluded = new Set([...nbrs.map((n) => n.iso3), c.iso3]);
   const non = cands.filter((x) => !excluded.has(x.iso3));
-  const same = shuffle(non.filter((x) => x.region === c.region));
-  const others = shuffle(non.filter((x) => x.region !== c.region));
-  const pool = shuffle([correct, ...same.concat(others).slice(0, 3)]);
+  // distracteurs = NON-voisins ; en difficile ils sont proches de c → piégeux
+  const pool = shuffle([correct, ...distractors(c, non, 3)]);
   return q({
     skill: "neighbors",
     item: c.iso3,

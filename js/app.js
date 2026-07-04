@@ -201,7 +201,9 @@ function renderStimulus(q) {
       flag.className = "flag-stim";
       stim.appendChild(flag);
     }
-    flag.src = data.flagUrl(q.stimulus.value.iso2, 320);
+    // w640 + w1280 (écrans denses) : le 320 était pixelisé à ~860 px de large
+    flag.src = data.flagUrl(q.stimulus.value.iso2, 640);
+    flag.srcset = `${data.flagUrl(q.stimulus.value.iso2, 640)} 1x, ${data.flagUrl(q.stimulus.value.iso2, 1280)} 2x`;
     flag.style.display = "block";
   } else if (flag) {
     flag.style.display = "none";
@@ -252,7 +254,7 @@ function renderOptions(q) {
     if (q.optionKind === "flag") {
       b.className = "opt-flag";
       const img = document.createElement("img");
-      img.src = data.flagUrl(o.country.iso2, 160);
+      img.src = data.flagUrl(o.country.iso2, 320);
       b.appendChild(img);
     } else if (q.optionFlags && o.country) {
       b.className = "opt";
