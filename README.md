@@ -54,6 +54,23 @@ Filtre les **régions** (du monde) à réviser dans la barre latérale (les jeux
 carte se cadrent alors sur la zone choisie). Les jeux 🇫🇷 portent sur la France
 métropolitaine, le jeu 🇺🇸 sur les 48 états contigus.
 
+## Difficulté
+
+Un sélecteur **global** (barre latérale) : 🟢 Facile / 🟡 Normal / 🔴 Difficile.
+
+- **QCM pays** (carte, silhouette, drapeaux, capitales, voisins) : distracteurs
+  d'autres continents (facile), du même continent (normal), ou voisins
+  frontaliers / pays les plus proches (difficile — les îles tombent sur les îles
+  voisines). En difficile, les jeux de **drapeaux** piochent dans des groupes de
+  drapeaux **visuellement proches** (Tchad/Roumanie, Indonésie/Monaco, pays
+  nordiques…).
+- **QCM géographie physique** (fleuves, mers, déserts, chaînes, sommets) :
+  distracteurs les plus éloignés (facile) ou les plus proches (difficile).
+- **Jeux au clic libre** (villes, monuments, DOM-TOM) : tolérance ×1,5 / ×1 / ×0,6.
+- **Jeux clic-sur-carte** (place le pays, régions, départements, arrondissements,
+  états US) : en facile/normal seuls **4 polygones candidats** restent actifs
+  (éloignés/proches), en difficile tout est cliquable.
+
 ## Apprendre (tableaux de référence)
 
 La page **📚 Apprendre** rassemble des tableaux par thème (pays, fleuves, mers,
