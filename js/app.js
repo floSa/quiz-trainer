@@ -239,6 +239,9 @@ function renderOptions(q) {
       const img = document.createElement("img");
       img.src = data.flagUrl(o.country.iso2, 160);
       b.appendChild(img);
+    } else if (q.optionFlags && o.country) {
+      b.className = "opt";
+      b.innerHTML = `<img class="opt-flag-mini" src="${data.flagUrl(o.country.iso2, 40)}" alt=""> ${o.label}`;
     } else {
       b.className = "opt";
       b.textContent = o.label;

@@ -162,6 +162,7 @@ export function buildCapitalToCountry(cands, state, recent, country) {
     stimulus: { kind: "text", value: `<b>${c.capital}</b> est la capitale de quel pays ?` },
     interaction: "options",
     optionKind: "text",
+    optionFlags: true, // drapeau à côté de chaque pays proposé
     options: textOpts(countryOptions(c, cands), (x) => x.name),
   });
 }
@@ -186,9 +187,10 @@ export function buildNeighbor(cands, state, recent, country) {
     skill: "neighbors",
     item: c.iso3,
     correct: correct.iso3,
-    stimulus: { kind: "text", value: `<b>${c.name}</b> : lequel de ces pays est frontalier ?` },
+    stimulus: { kind: "text", value: `<img class="q-flag" src="${data.flagUrl(c.iso2, 40)}" alt=""> <b>${c.name}</b> : lequel de ces pays est frontalier ?` },
     interaction: "options",
     optionKind: "text",
+    optionFlags: true, // drapeau à côté de chaque pays proposé
     options: textOpts(pool, (x) => x.name),
     explain: "Voisins : " + nbrs.map((n) => n.name).join(", "),
   });

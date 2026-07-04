@@ -99,6 +99,8 @@ h3 { margin: 0 0 8px; font-size: 0.95rem; color: var(--muted); }
   border-radius: 10px; padding: 14px; font-size: 1rem; transition: background 0.1s;
 }
 .opt:hover:not(:disabled) { background: #2a3445; }
+.opt-flag-mini { width: 26px; height: auto; border-radius: 2px; vertical-align: middle; margin-right: 8px; box-shadow: 0 0 0 1px var(--line); }
+.q-flag { height: 1.05em; border-radius: 2px; vertical-align: -1px; margin-right: 6px; box-shadow: 0 0 0 1px var(--line); }
 .opt.good, .opt-flag.good { background: var(--good); border-color: var(--good); color: #fff; }
 .opt.bad, .opt-flag.bad { background: var(--accent); border-color: var(--accent); color: #fff; }
 .opt:disabled, .opt-flag:disabled { cursor: default; opacity: 0.95; }
