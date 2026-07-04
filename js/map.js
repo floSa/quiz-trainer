@@ -59,9 +59,21 @@ export function onFeatureClick(fn) { featureClick = fn; }
 export function onMapClick(fn) { mapClick = fn; }
 export function resetBase() { if (layer) layer.setStyle(BASE); }
 
+// Applique un cadrage MAINTENANT puis le REJOUE après le layout (frame suivante
+// + backstop) : corrige le tout premier affichage d'un jeu, où le conteneur
+// n'a pas encore sa taille définitive et où fitBounds cadre donc de travers.
+let _view = null;
+function applyView(fn) {
+  _view = fn;
+  fn();
+  const redo = () => { if (map && _view === fn) { map.invalidateSize(false); fn(); } };
+  requestAnimationFrame(redo);
+  setTimeout(redo, 90);
+}
+
 function fitTo(id, maxZoom = 6) {
   const l = byId[id];
-  if (l) map.fitBounds(l.getBounds(), { padding: [30, 30], maxZoom, animate: false });
+  if (l) applyView(() => map.fitBounds(l.getBounds(), { padding: [58, 58], maxZoom, animate: false }));
 }
 
 // Recadre pour montrer tous les polygones donnés (ex. bonne réponse + choix).
@@ -70,16 +82,20 @@ function fitTo(id, maxZoom = 6) {
 function fitToIds(ids, maxZoom = 10) {
   const ls = ids.map((i) => byId[i]).filter(Boolean);
   if (!ls.length) return;
-  let b = ls[0].getBounds();
-  ls.slice(1).forEach((l) => (b = b.extend(l.getBounds())));
-  map.fitBounds(b, { padding: [45, 45], maxZoom, animate: false });
+  applyView(() => {
+    let b = ls[0].getBounds();
+    ls.slice(1).forEach((l) => (b = b.extend(l.getBounds())));
+    map.fitBounds(b, { padding: [45, 45], maxZoom, animate: false });
+  });
 }
 
 // Recadre pour montrer tous les points donnés (ex. ville cherchée + clic).
 export function fitPoints(latlngs, maxZoom = 7) {
   if (!latlngs || !latlngs.length) return;
-  const b = L.latLngBounds(latlngs.map((p) => [p.lat, p.lng]));
-  map.fitBounds(b, { padding: [70, 70], maxZoom, animate: false });
+  applyView(() => {
+    const b = L.latLngBounds(latlngs.map((p) => [p.lat, p.lng]));
+    map.fitBounds(b, { padding: [70, 70], maxZoom, animate: false });
+  });
 }
 
 export function highlight(id) {
@@ -104,14 +120,16 @@ export function focusIds(idList) {
   layer.eachLayer((l) => l.setStyle(set.has(l.feature.id) ? BASE : DIM));
   const inSet = idList.map((i) => byId[i]).filter(Boolean);
   if (inSet.length) {
-    let b = inSet[0].getBounds();
-    inSet.slice(1).forEach((l) => (b = b.extend(l.getBounds())));
-    map.fitBounds(b, { padding: [8, 8] });
+    applyView(() => {
+      let b = inSet[0].getBounds();
+      inSet.slice(1).forEach((l) => (b = b.extend(l.getBounds())));
+      map.fitBounds(b, { padding: [14, 14] });
+    });
   }
 }
 
 export function fitAll() {
-  if (layer) map.fitBounds(layer.getBounds(), { padding: [8, 8] });
+  if (layer) applyView(() => map.fitBounds(layer.getBounds(), { padding: [14, 14] }));
 }
 
 export function markResult(correctId, clickedId, wasCorrect) {
@@ -133,9 +151,7 @@ export function addRiver(geometry, color = "#e8453c") {
     style: { color, weight: 3, opacity: 0.95, lineCap: "round", lineJoin: "round" },
   }).addTo(map);
   markers.push(l); // nettoyé par clearMarkers()
-  try {
-    map.fitBounds(l.getBounds(), { padding: [30, 30], maxZoom: 7, animate: false });
-  } catch (e) {}
+  applyView(() => { try { map.fitBounds(l.getBounds(), { padding: [30, 30], maxZoom: 7, animate: false }); } catch (e) {} });
   return l;
 }
 
@@ -145,9 +161,7 @@ export function addRegion(geometry, color = "#e8453c") {
     style: { color, weight: 1.2, opacity: 0.9, fillColor: color, fillOpacity: 0.4 },
   }).addTo(map);
   markers.push(l); // nettoyé par clearMarkers()
-  try {
-    map.fitBounds(l.getBounds(), { padding: [25, 25], maxZoom: 6, animate: false });
-  } catch (e) {}
+  applyView(() => { try { map.fitBounds(l.getBounds(), { padding: [25, 25], maxZoom: 6, animate: false }); } catch (e) {} });
   return l;
 }
 
@@ -161,7 +175,7 @@ export function addPeakMarker(lat, lng, zoom = 3) {
   });
   const m = L.marker([lat, lng], { icon, interactive: false }).addTo(map);
   markers.push(m); // nettoyé par clearMarkers()
-  map.setView([lat, lng], zoom, { animate: false });
+  applyView(() => map.setView([lat, lng], zoom, { animate: false }));
   return m;
 }
 
