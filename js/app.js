@@ -229,6 +229,8 @@ function renderStimulus(q) {
       // clic libre (villes FR, DOM-TOM) : on montre toute la couche affichée
       mapMod.resetBase();
       mapMod.fitAll();
+    } else if (q.interaction === "mapclick" && q.zones) {
+      mapMod.focusIds(q.zones); // facile/normal : 4 zones candidates, le reste grisé
     } else if (mapContext === "world") {
       mapMod.focusIds(candidates.map((c) => c.iso3)); // place le pays
     } else {
@@ -271,6 +273,7 @@ function renderOptions(q) {
 // --------------------------------------------------------------------------- //
 function onFeatureClick(id) {
   if (answered || !currentQ || currentQ.interaction !== "mapclick") return;
+  if (currentQ.zones && !currentQ.zones.includes(id)) return; // hors zones candidates
   answer(id);
 }
 

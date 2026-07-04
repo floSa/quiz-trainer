@@ -112,6 +112,19 @@ function countryOptions(correct, cands, k = 3) {
   const pool = cands.filter((c) => c.iso3 !== correct.iso3);
   return shuffle([correct, ...distractors(correct, pool, k)]);
 }
+
+// Jeux « clique le bon polygone » : en facile/normal on restreint à 4 zones
+// candidates surlignées (facile = éloignées, normal = proches) ; en difficile
+// tout reste cliquable (null = comportement historique).
+function clickZones(target, items, idOf, centerOf, k = 3) {
+  const mode = settings.difficulty();
+  if (mode === "difficile") return null;
+  const pool = items.filter((x) => idOf(x) !== idOf(target));
+  const scored = pool.map((x) => ({ x, d: distKm(centerOf(target), centerOf(x)) }));
+  scored.sort((a, b) => (mode === "normal" ? a.d - b.d : b.d - a.d));
+  const head = scored.slice(0, Math.max(k * 2, 6)).map((s) => s.x);
+  return [target, ...shuffle(head).slice(0, k)].map(idOf);
+}
 function textOpts(countries, label) {
   return countries.map((c) => ({ id: c.iso3, label: label(c), country: c }));
 }
@@ -163,6 +176,7 @@ export function buildPlace(cands, state, recent, country) {
     correct: c.iso3,
     stimulus: { kind: "text", value: `Place ce pays sur la carte : <b>${c.name}</b>` },
     interaction: "mapclick",
+    zones: clickZones(c, cands, (x) => x.iso3, (x) => centroidOf(x.iso3)),
     reveal: { kind: "map", value: c.iso3 },
   });
 }
@@ -357,7 +371,8 @@ const FR_ADMIN_KIND = {
 
 function buildFrAdmin(features, skill) {
   return (cands, state, recent) => {
-    const f = pickWeighted(features(), (x) => x.id, state, skill, recent);
+    const all = features();
+    const f = pickWeighted(all, (x) => x.id, state, skill, recent);
     const label = f.properties.nom;
     return q({
       skill,
@@ -366,6 +381,7 @@ function buildFrAdmin(features, skill) {
       correctLabel: label,
       stimulus: { kind: "text", value: `Place ${FR_ADMIN_KIND[skill]} : <b>${label}</b>` },
       interaction: "mapclick",
+      zones: clickZones(f, all, (x) => x.id, itemCenter),
     });
   };
 }
@@ -557,7 +573,8 @@ export const US_SKILLS = { us_state: "États américains" };
 export const US_TOTAL = { us_state: 48 };
 
 export function buildUsState(cands, state, recent) {
-  const f = pickWeighted(data.usa().features, (x) => x.id, state, "us_state", recent);
+  const all = data.usa().features;
+  const f = pickWeighted(all, (x) => x.id, state, "us_state", recent);
   return q({
     skill: "us_state",
     item: f.id,
@@ -565,6 +582,7 @@ export function buildUsState(cands, state, recent) {
     correctLabel: f.properties.nom,
     stimulus: { kind: "text", value: `Place l'état : <b>${f.properties.nom}</b>` },
     interaction: "mapclick",
+    zones: clickZones(f, all, (x) => x.id, itemCenter),
   });
 }
 
