@@ -12,6 +12,13 @@ Pas de build, pas de serveur applicatif : du **HTML/CSS/JS** statique +
 [Leaflet](https://leafletjs.com) pour la carte. La progression est stockée dans
 le navigateur (`localStorage`).
 
+## Documentation
+
+| Document | Contenu |
+|---|---|
+| [docs/CADRAGE.md](docs/CADRAGE.md) | Le **POURQUOI** : objectifs, périmètre, hypothèses, décisions |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Le **COMMENT** : modules, flux d'une manche, moteur de maîtrise, système de difficulté, sécurité |
+
 ## Démarrer
 
 ```bash
@@ -158,3 +165,23 @@ scripts/    build_data.py, build_geo.py, build_france.py, build_usa.py
 > Historique : une première version Streamlit (branche/historique git) a été
 > remplacée par cette app web pour une carte cliquable fluide. Voir
 > [CLAUDE.md](CLAUDE.md) pour l'architecture et l'ajout d'un jeu.
+
+## Licences & composants
+
+| Composant | Rôle | Licence |
+|---|---|---|
+| Leaflet 1.9.4 | Carte vectorielle (CDN unpkg) | BSD-2-Clause |
+| [mledoze/countries](https://github.com/mledoze/countries) | Pays, capitales, frontières, superficie | ODbL |
+| [Natural Earth](https://www.naturalearthdata.com/) | Géométries, fleuves, mers, reliefs | Domaine public |
+| [france-geojson](https://github.com/gregoiredavid/france-geojson) | Régions & départements FR | `<à confirmer>` (dérivé de données publiques) |
+| [GeoNames](https://www.geonames.org/) | Villes & populations | CC BY 4.0 |
+| [Wikidata](https://www.wikidata.org) | Monuments, préfectures | CC0 |
+| [Wikimedia Commons](https://commons.wikimedia.org) | Photos de monuments | licences libres variées (voir chaque fichier) |
+| [opendata.paris.fr](https://opendata.paris.fr) | Arrondissements de Paris | ODbL |
+| [PublicaMundi/MappingAPI](https://github.com/PublicaMundi/MappingAPI) | États américains | `<à confirmer>` |
+| [flagcdn.com](https://flagcdn.com) | Drapeaux (en ligne) | service tiers — `<à confirmer>` |
+| Python (bibliothèque standard) | Scripts de génération de données | PSF |
+| **Ce projet** | Code applicatif | MIT — Copyright (c) 2026 floSa |
+
+> Le dépôt ne contient pas de fichier `LICENSE` : le code est destiné à être
+> distribué sous MIT (aucun `LICENSE` créé ici sans accord explicite).
