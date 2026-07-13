@@ -169,7 +169,7 @@ donc les connaissances faibles et en retard. La **« Révision intelligente »**
 ## 6. Système de difficulté
 
 Un **sélecteur global** (barre latérale) fixe la difficulté pour **tous** les
-jeux : 🟢 facile / 🟡 normal / 🔴 difficile. Elle est lue dans
+jeux : facile / normal / difficile. Elle est lue dans
 [`js/settings.js`](../js/settings.js) (clé `quiztrainer.difficulty.v1`, défaut
 `normal`) et appliquée dans [`js/games.js`](../js/games.js) selon **quatre
 mécaniques** selon le type de jeu. Changer la difficulté relance une manche
@@ -219,8 +219,8 @@ demande** par [`data.js`](../js/data.js) : base au démarrage (`countries.json`,
 jeux « monde physique » (mers, déserts, chaînes, sommets) préchargés en tâche de
 fond ou au premier usage. Toutes générées par les scripts Python
 `scripts/build_*.py` (voir la section **Données** du [README](../README.md)).
-`data/world.geojson` est **régénérable** (`scripts/build_geo.py`) et absent du
-dépôt versionné — `<à confirmer : volontairement non commité vs oubli>`.
+`data/world.geojson` est **versionné** dans le dépôt et **régénérable** à tout
+moment via `scripts/build_geo.py`.
 
 ---
 
@@ -281,6 +281,5 @@ données personnelles** — seule une progression de quiz vit en `localStorage`.
 | Difficulté | un seul réglage global, pas par jeu | granularité par compétence |
 | Dépendance CDN | Leaflet + drapeaux hors ligne indisponibles | héberger Leaflet en local, cache des drapeaux |
 | Tests | ne couvrent que `srs.js` (logique pure) | tests des générateurs `games.js` (distracteurs, difficulté) |
-| Données du dépôt | `data/world.geojson` régénérable mais absent | documenter/committer, ou build automatisé |
 
 > Renvois : le **POURQUOI** et le périmètre V1 sont dans [CADRAGE.md](CADRAGE.md).

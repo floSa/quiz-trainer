@@ -14,8 +14,8 @@ note pas un quiz, on suit la **connaissance réelle** accumulée. Trois capacit�
    qu'on rate revient vite et ce qu'on maîtrise s'espace.
 2. **Régler la difficulté** globalement (facile/normal/difficile) : les leurres
    et les tolérances de clic deviennent plus piégeux à mesure qu'on monte.
-3. **Apprendre et suivre sa progression** : une page 📚 Apprendre (tableaux de
-   référence) et un 📊 tableau de bord (niveau global, connaissances acquises,
+3. **Apprendre et suivre sa progression** : une page Apprendre (tableaux de
+   référence) et un tableau de bord (niveau global, connaissances acquises,
    détail par item, carte des connaissances).
 
 ---
@@ -84,7 +84,7 @@ note pas un quiz, on suit la **connaissance réelle** accumulée. Trois capacit�
 
 ## 6. Décisions
 
-**Figées ✅**
+**Décisions figées**
 - **App statique + `localStorage`** plutôt qu'app serveur : mono-utilisateur,
   hébergement trivial. (Remplace une **première version Streamlit**, abandonnée
   pour une carte cliquable fluide.)
@@ -96,14 +96,12 @@ note pas un quiz, on suit la **connaissance réelle** accumulée. Trois capacit�
   l'exécution : reste servable en statique, scripts sans dépendances.
 - **Leaflet en polygones sans tuiles** : ni clé d'API ni quota.
 
-**À trancher 🔲**
+**À trancher**
 - **Difficulté par jeu** (le commentaire de `settings.js` note « pour
   l'instant » un réglage unique) — reco : garder global tant qu'il n'y a pas de
   demande.
 - **Export/import de la progression** pour le multi-appareils — reco : export
   JSON simple avant tout backend.
-- **Statut de `data/world.geojson`** (régénérable, absent du dépôt) — reco :
-  clarifier s'il doit être committé ou toujours régénéré.
 
 ---
 
